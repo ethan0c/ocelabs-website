@@ -25,7 +25,61 @@ document.addEventListener('DOMContentLoaded', function() {
             navMenu.classList.remove('active');
         }
     });
+
+    // Initialize scroll animations
+    initScrollAnimations();
+    
+    // Initialize typing effect for hero subtitle
+    initTypingEffect();
 });
+
+// Scroll Animation Observer
+function initScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+            }
+        });
+    }, observerOptions);
+
+    // Add animation classes and observe elements
+    const animateElements = document.querySelectorAll('.section-header, .service-card, .work-item, .contact-info, .contact-form');
+    
+    animateElements.forEach((el, index) => {
+        el.classList.add('animate-on-scroll');
+        // Add stagger delay for multiple elements
+        el.style.transitionDelay = `${index * 0.1}s`;
+        observer.observe(el);
+    });
+}
+
+// Typing Effect for Hero Subtitle
+function initTypingEffect() {
+    const subtitle = document.querySelector('.hero-subtitle');
+    if (!subtitle) return;
+    
+    const text = subtitle.textContent;
+    subtitle.textContent = '';
+    subtitle.style.opacity = '1';
+    
+    let i = 0;
+    function typeWriter() {
+        if (i < text.length) {
+            subtitle.textContent += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 30);
+        }
+    }
+    
+    // Start typing effect after hero title animations
+    setTimeout(typeWriter, 1200);
+}
 
 // Smooth Scrolling for Navigation Links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
