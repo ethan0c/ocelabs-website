@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize typing effect for hero subtitle
     initTypingEffect();
+    
+    // Initialize theme toggle
+    initThemeToggle();
 });
 
 // Scroll Animation Observer
@@ -94,6 +97,37 @@ function initTypingEffect() {
     
     // Start typing effect after hero title animations
     setTimeout(typeWriter, 1200);
+}
+
+// Theme Toggle Functionality
+function initThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    // Check for saved theme preference or default to system preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemTheme = prefersDarkScheme.matches ? 'dark' : 'light';
+    const currentTheme = savedTheme || systemTheme;
+    
+    // Apply the theme
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+    
+    // Listen for system theme changes
+    prefersDarkScheme.addEventListener('change', function(e) {
+        if (!localStorage.getItem('theme')) {
+            const newTheme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+        }
+    });
 }
 
 // Smooth Scrolling for Navigation Links

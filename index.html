@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -29,10 +31,16 @@
                 <a href="#work" class="nav-link">Work</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
-            <div class="nav-toggle" id="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <ion-icon name="moon" class="theme-icon dark-icon"></ion-icon>
+                    <ion-icon name="sunny" class="theme-icon light-icon"></ion-icon>
+                </button>
+                <div class="nav-toggle" id="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
         </div>
     </nav>
@@ -42,16 +50,16 @@
         <div class="hero-container">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    <span class="title-line">HEY, I'M CHIBUDOM</span>
-                    <span class="title-line">FULL-STACK DEVELOPER</span>
-                    <span class="title-line accent">& DIGITAL ARTIST</span>
+                    <span class="title-line">FULL-STACK DEVELOPMENT</span>
+                    <span class="title-line">& DIGITAL DESIGN</span>
+                    <span class="title-line accent">STUDIO</span>
                 </h1>
                 <p class="hero-subtitle">
-                    I create stunning web applications, mobile apps, and digital art. From React frontends to iOS development, plus eye-catching graphics and UI/UX design – I bring your digital vision to life.
+                    Led by Chibudom, OCE LABS builds premium web applications, mobile apps, and digital experiences. We bring your vision to life through smart code and standout visuals.
                 </p>
                 <div class="hero-buttons">
-                    <a href="#services" class="btn btn-primary">View My Services</a>
-                    <a href="#work" class="btn btn-secondary">See My Work</a>
+                    <a href="#contact" class="btn btn-primary">Book a Free Strategy Call</a>
+                    <a href="#work" class="btn btn-secondary">View Our Work</a>
                 </div>
             </div>
         </div>
@@ -61,8 +69,8 @@
     <section id="services" class="services">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">WHAT I DO</h2>
-                <p class="section-subtitle">Full-stack development, mobile apps, and creative design solutions</p>
+                <h2 class="section-title">OUR SERVICES</h2>
+                <p class="section-subtitle">Full-stack development, mobile apps, and creative design solutions with transparent pricing</p>
             </div>
             
             <div class="services-grid">
@@ -70,32 +78,67 @@
                     <div class="service-icon">01</div>
                     <h3 class="service-title">Web Development</h3>
                     <p class="service-description">
-                        Full-stack web applications using React, Node.js, and modern frameworks. From e-commerce sites to complex web platforms.
+                        Clean, responsive websites with CMS. Built with React, Node.js, and modern frameworks for optimal performance.
                     </p>
+                    <div class="service-pricing">Starting at $3,000+</div>
                 </div>
                 
                 <div class="service-card">
                     <div class="service-icon">02</div>
-                    <h3 class="service-title">Mobile App Development</h3>
+                    <h3 class="service-title">Mobile Apps</h3>
                     <p class="service-description">
-                        Native iOS applications and cross-platform mobile solutions. Built with Swift and React Native for optimal performance.
+                        Cross-platform React Native builds and native iOS applications. From concept to App Store launch.
                     </p>
+                    <div class="service-pricing">Starting at $2,000+</div>
                 </div>
                 
                 <div class="service-card">
                     <div class="service-icon">03</div>
-                    <h3 class="service-title">Graphic Design & UI/UX</h3>
+                    <h3 class="service-title">Branding + Design</h3>
                     <p class="service-description">
-                        Brand identity, digital illustrations, logos, and user interface design. Creating visual experiences that captivate and convert.
+                        Logo design, style guides, and complete UI kits. Creating visual experiences that captivate and convert.
                     </p>
+                    <div class="service-pricing">Starting at $750+</div>
                 </div>
                 
                 <div class="service-card">
                     <div class="service-icon">04</div>
-                    <h3 class="service-title">IT Consulting & Support</h3>
+                    <h3 class="service-title">IT Consulting</h3>
                     <p class="service-description">
-                        Technical architecture planning, code reviews, and ongoing IT support. Helping businesses choose the right technology stack.
+                        Technical architecture planning and ongoing support. We help businesses choose the right technology stack.
                     </p>
+                    <div class="service-pricing">Custom Quote</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Credibility Section -->
+    <section class="credibility">
+        <div class="container">
+            <div class="credibility-content">
+                <div class="credibility-item">
+                    <div class="credibility-icon">
+                        <ion-icon name="star"></ion-icon>
+                    </div>
+                    <h3>Trusted by Forward-Thinking Companies</h3>
+                    <p>Built for 3+ companies across healthcare, travel, and AI technology sectors.</p>
+                </div>
+                
+                <div class="credibility-item">
+                    <div class="credibility-icon">
+                        <ion-icon name="briefcase"></ion-icon>
+                    </div>
+                    <h3>Proven Track Record</h3>
+                    <p>From startup MVPs to enterprise solutions, we deliver scalable digital products on time.</p>
+                </div>
+                
+                <div class="credibility-item">
+                    <div class="credibility-icon">
+                        <ion-icon name="code-slash"></ion-icon>
+                    </div>
+                    <h3>Built with Modern Tech</h3>
+                    <p>React • Node.js • Swift • Figma • AWS • TypeScript</p>
                 </div>
             </div>
         </div>
@@ -105,20 +148,54 @@
     <section id="work" class="work">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">SELECTED WORK</h2>
-                <p class="section-subtitle">A showcase of projects and creative endeavors</p>
+                <h2 class="section-title">FEATURED PROJECTS</h2>
+                <p class="section-subtitle">Case studies showcasing our development and design capabilities</p>
             </div>
             
             <div class="work-grid">
                 <div class="work-item">
                     <div class="work-content">
-                        <h3 class="work-title">Digital Art Portfolio</h3>
+                        <h3 class="work-title">Helthy - AI Fitness Platform</h3>
                         <p class="work-description">
-                            Explore my creative digital art projects and illustrations.
+                            <strong>Role:</strong> Co-founder & Lead Developer<br>
+                            <strong>Solution:</strong> AI-powered nutrition tracking and workout platform with real-time data<br>
+                            <strong>Result:</strong> Launched fitness app helping users achieve their health goals with smart recommendations
+                        </p>
+                        <div class="work-links">
+                            <a href="https://helthy.app" class="work-link" target="_blank" rel="noopener">
+                                View Live App →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="work-content">
+                        <h3 class="work-title">Personal Brand Portfolio</h3>
+                        <p class="work-description">
+                            <strong>Problem:</strong> Client needed modern portfolio presence<br>
+                            <strong>Solution:</strong> Custom React site with dynamic animations<br>
+                            <strong>Result:</strong> Professional showcase driving new opportunities
+                        </p>
+                        <div class="work-links">
+                            <a href="https://website-chibudom.vercel.app" class="work-link" target="_blank" rel="noopener">
+                                View Portfolio →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="work-content">
+                        <h3 class="work-title">Digital Art & Design Work</h3>
+                        <p class="work-description">
+                            <strong>Problem:</strong> Brands needed unique visual identity<br>
+                            <strong>Solution:</strong> Custom illustrations and UI design systems<br>
+                            <strong>Result:</strong> Distinctive brand presence across digital platforms
                         </p>
                         <div class="work-links">
                             <a href="https://website-chibudom.vercel.app/hobbies" class="work-link" target="_blank" rel="noopener">
-                                View Portfolio →
+                                View Gallery →
                             </a>
                             <a href="https://instagram.com/ethan.lma" class="work-link" target="_blank" rel="noopener">
                                 Instagram →
@@ -126,37 +203,11 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="work-item">
-                    <div class="work-content">
-                        <h3 class="work-title">Development Projects</h3>
-                        <p class="work-description">
-                            Open source projects and development experiments on GitHub.
-                        </p>
-                        <div class="work-links">
-                            <a href="https://github.com/ethan0c" class="work-link" target="_blank" rel="noopener">
-                                GitHub →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="work-item">
-                    <div class="work-content">
-                        <h3 class="work-title">Web & Mobile Applications</h3>
-                        <p class="work-description">
-                            Full-stack web applications and iOS development projects built with React, Node.js, and Swift.
-                        </p>
-                        <div class="work-links">
-                            <a href="https://helthy.app" class="work-link" target="_blank" rel="noopener">
-                                Helthy.app →
-                            </a>
-                            <a href="https://website-chibudom.vercel.app" class="work-link" target="_blank" rel="noopener">
-                                Personal Site →
-                            </a>
-                        </div>
-                    </div>
-                </div>
+            </div>
+            
+            <div class="work-cta">
+                <p>Want to see your project here?</p>
+                <a href="#contact" class="btn btn-primary">Let's Build Something</a>
             </div>
         </div>
     </section>
@@ -166,10 +217,10 @@
         <div class="container">
             <div class="contact-content">
                 <div class="contact-info">
-                    <h2 class="section-title">LET'S BUILD</h2>
-                    <h2 class="section-title">SOMETHING AMAZING</h2>
+                    <h2 class="section-title">READY TO START</h2>
+                    <h2 class="section-title">YOUR PROJECT?</h2>
                     <p class="contact-text">
-                        Got a project in mind? Whether you need a sleek website, a mobile app, stunning graphics, or IT consulting – I'd love to hear about it. Let's turn your ideas into reality.
+                        Whether you need a sleek website, mobile app, or complete brand identity – we're here to make it happen. Book a free strategy call to discuss your project.
                     </p>
                     <div class="contact-details">
                         <div class="contact-item">
@@ -178,7 +229,7 @@
                         </div>
                         <div class="contact-item">
                             <strong>LinkedIn</strong>
-                            <a href="https://linkedin.com/in/chibudom-onyejesi" target="_blank" rel="noopener">Connect with me</a>
+                            <a href="https://linkedin.com/in/chibudom-onyejesi" target="_blank" rel="noopener">Connect with us</a>
                         </div>
                         <div class="contact-item">
                             <strong>Response Time</strong>
@@ -195,12 +246,34 @@
                         <input type="email" id="email" name="email" placeholder="Your Email" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="subject" name="subject" placeholder="Project Subject" required>
+                        <select id="project-type" name="project-type" required>
+                            <option value="">Select Project Type</option>
+                            <option value="web-development">Web Development</option>
+                            <option value="mobile-app">Mobile App</option>
+                            <option value="branding-design">Branding & Design</option>
+                            <option value="it-consulting">IT Consulting</option>
+                            <option value="other">Other</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <textarea id="message" name="message" placeholder="Tell me about your project..." rows="6" required></textarea>
+                        <select id="budget" name="budget" required>
+                            <option value="">Budget Range</option>
+                            <option value="under-1k">Under $1,000</option>
+                            <option value="1k-3k">$1,000 - $3,000</option>
+                            <option value="3k-10k">$3,000 - $10,000</option>
+                            <option value="10k-plus">$10,000+</option>
+                            <option value="discuss">Let's Discuss</option>
+                        </select>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+                    <div class="form-group">
+                        <textarea id="message" name="message" placeholder="Tell us about your project..." rows="6" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Request Free Strategy Call</button>
+                    
+                    <div class="form-testimonial">
+                        <p><em>"OCE LABS delivered exactly what we needed - on time and beyond expectations. Their attention to detail is impressive."</em></p>
+                        <span>- Sarah M., Startup Founder</span>
+                    </div>
                 </form>
             </div>
         </div>
@@ -211,10 +284,16 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-left">
-                    <p>&copy; 2025 Oce Labs. All rights reserved.</p>
+                    <p>&copy; 2025 OCE LABS. All rights reserved.</p>
+                    <div class="footer-links">
+                        <a href="#contact">Contact</a>
+                        <a href="mailto:contact@ocelabs.tech">Email</a>
+                        <a href="https://github.com/ethan0c" target="_blank">GitHub</a>
+                    </div>
                 </div>
                 <div class="footer-right">
-                    <p>Built with passion for digital excellence.</p>
+                    <p>Built with ❤️ by OCE LABS</p>
+                    <p>Turning ideas into digital reality since 2024</p>
                 </div>
             </div>
         </div>

@@ -16,7 +16,31 @@
     --max-width: 1200px;
 }
 
-/* Keyframe Animations */
+/* Dark mode variables */
+[data-theme="dark"] {
+    --color-black: #ffffff;
+    --color-white: #0a0a0a;
+    --color-gray: #a0a0a0;
+    --color-light-gray: #1a1a1a;
+}
+
+/* Dark mode specific adjustments */
+[data-theme="dark"] .service-pricing {
+    background: var(--color-white);
+    color: var(--color-black);
+}
+
+[data-theme="dark"] .form-testimonial {
+    background: var(--color-light-gray);
+    border-color: var(--color-gray);
+}
+
+/* Keyframe .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    align-items: stretch;
+}tions */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -83,6 +107,7 @@ body {
     color: var(--color-black);
     background-color: var(--color-white);
     overflow-x: hidden;
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .container {
@@ -162,6 +187,54 @@ body {
 .nav-menu {
     display: flex;
     gap: 2rem;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    background: none;
+    border: 2px solid var(--color-black);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    background: var(--color-black);
+    color: var(--color-white);
+}
+
+.theme-icon {
+    font-size: 1.2rem;
+    transition: var(--transition);
+    position: absolute;
+}
+
+.light-icon {
+    opacity: 0;
+    transform: rotate(180deg);
+}
+
+[data-theme="dark"] .light-icon {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+[data-theme="dark"] .dark-icon {
+    opacity: 0;
+    transform: rotate(-180deg);
 }
 
 .nav-link {
@@ -387,6 +460,10 @@ section {
     transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 300px;
 }
 
 .service-card::before {
@@ -434,6 +511,74 @@ section {
 .service-description {
     color: var(--color-gray);
     line-height: 1.6;
+}
+
+/* Service Pricing */
+.service-pricing {
+    margin-top: auto;
+    padding: 0.8rem 1.5rem;
+    background: var(--color-black);
+    color: var(--color-white);
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    align-self: stretch;
+}
+
+/* Credibility Section */
+.credibility {
+    padding: 6rem 0;
+    background: var(--color-light-gray);
+}
+
+.credibility-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+    text-align: center;
+}
+
+.credibility-item {
+    padding: 2rem;
+}
+
+.credibility-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-black);
+}
+
+.credibility-icon ion-icon {
+    font-size: 3rem;
+}
+
+.credibility-item h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.credibility-item p {
+    color: var(--color-gray);
+    line-height: 1.6;
+}
+
+/* Work Section Enhancements */
+.work-cta {
+    text-align: center;
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--color-black);
+}
+
+.work-cta p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: var(--color-gray);
 }
 
 /* Work Section */
@@ -696,6 +841,15 @@ section {
         padding: 0 1rem;
     }
     
+    .nav-actions {
+        gap: 0.5rem;
+    }
+    
+    .theme-toggle {
+        width: 35px;
+        height: 35px;
+    }
+    
     .nav-menu {
         position: fixed;
         top: 70px;
@@ -849,6 +1003,63 @@ section {
 .service-card,
 .work-item {
     animation: fadeInUp 0.6s ease-out;
+}
+
+/* Form Enhancements */
+.contact-form select {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--color-black);
+    background: var(--color-white);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: var(--transition);
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+}
+
+.contact-form select:focus {
+    outline: none;
+    border-color: var(--color-gray);
+}
+
+.form-testimonial {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--color-light-gray);
+    text-align: center;
+    font-style: italic;
+    border: 1px solid var(--color-black);
+}
+
+.form-testimonial span {
+    display: block;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    font-style: normal;
+}
+
+/* Footer Enhancements */
+.footer-links {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.footer-links a {
+    color: var(--color-gray);
+    text-decoration: none;
+    transition: var(--transition);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.footer-links a:hover {
+    color: var(--color-black);
 }
 
 /* Smooth scrolling for older browsers */
