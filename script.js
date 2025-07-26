@@ -148,39 +148,50 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Contact Form Handler
 document.getElementById('contact-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    
-    // Get form data
-    const formData = new FormData(this);
+    const form = this;
+    const formData = new FormData(form);
     const name = formData.get('name');
     const email = formData.get('email');
-    const subject = formData.get('subject');
+    const projectType = formData.get('project-type');
+    const budget = formData.get('budget');
     const message = formData.get('message');
-    
-    // Basic validation
-    if (!name || !email || !subject || !message) {
+
+    // Basic validation (all fields required)
+    if (!name || !email || !projectType || !budget || !message) {
         showNotification('Please fill in all fields.', 'error');
         return;
     }
-    
+
     if (!isValidEmail(email)) {
         showNotification('Please enter a valid email address.', 'error');
         return;
     }
-    
-    // Simulate form submission (replace with actual form handling)
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    
-    submitBtn.textContent = 'Sending...';
-    submitBtn.disabled = true;
-    
-    // Simulate API call
-    setTimeout(() => {
-        showNotification('Thank you! Your message has been sent successfully.', 'success');
-        this.reset();
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-    }, 2000);
+
+    // AJAX submit to Formspree
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            showNotification('Thank you! Your message has been sent successfully.', 'success');
+            form.reset();
+        } else {
+            return response.json().then(data => {
+                if (data && data.errors && data.errors.length > 0) {
+                    showNotification(data.errors[0].message, 'error');
+                } else {
+                    showNotification('Sorry, there was a problem sending your message.', 'error');
+                }
+            });
+        }
+    })
+    .catch(() => {
+        showNotification('Sorry, there was a problem sending your message.', 'error');
+    });
 });
 
 // Email validation function

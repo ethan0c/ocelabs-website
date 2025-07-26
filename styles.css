@@ -24,6 +24,12 @@
     --color-light-gray: #1a1a1a;
 }
 
+/* Improve placeholder color in dark mode for accessibility */
+[data-theme="dark"] ::placeholder {
+    color: #b0b0b0 !important;
+    opacity: 1;
+}
+
 /* Dark mode specific adjustments */
 [data-theme="dark"] .service-pricing {
     background: var(--color-light-gray);
@@ -445,6 +451,16 @@ section {
     margin-bottom: 1rem;
 }
 
+/* Subtle box-shadow for service cards for depth */
+.service-card {
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08), 0 1.5px 6px 0 rgba(0,0,0,0.04);
+    transition: box-shadow 0.25s cubic-bezier(.4,0,.2,1), transform 0.18s cubic-bezier(.4,0,.2,1);
+}
+.service-card:hover, .service-card:focus-within {
+    box-shadow: 0 6px 32px 0 rgba(0,0,0,0.14), 0 3px 12px 0 rgba(0,0,0,0.08);
+    transform: translateY(-2px) scale(1.012);
+}
+
 .section-subtitle {
     font-size: 1.1rem;
     color: var(--color-gray);
@@ -461,8 +477,34 @@ section {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
+}
+
+/* Theme toggle button animation */
+#theme-toggle {
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s cubic-bezier(.4,0,.2,1);
+}
+#theme-toggle .theme-icon {
+    transition: opacity 0.25s cubic-bezier(.4,0,.2,1), transform 0.25s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="dark"] #theme-toggle .dark-icon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+[data-theme="dark"] #theme-toggle .light-icon {
+    opacity: 0;
+    transform: rotate(-30deg) scale(0.7);
+}
+[data-theme="light"] #theme-toggle .dark-icon {
+    opacity: 0;
+    transform: rotate(30deg) scale(0.7);
+}
+[data-theme="light"] #theme-toggle .light-icon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
 }
 
 .service-card {
@@ -1131,6 +1173,20 @@ section {
 .contact-form select:focus {
     outline: none;
     border-color: var(--color-gray);
+}
+
+/* Dark mode form styles */
+[data-theme="dark"] .contact-form select {
+    background: var(--color-white);
+    color: var(--color-black);
+    border-color: #333;
+}
+
+[data-theme="dark"] .contact-form input,
+[data-theme="dark"] .contact-form textarea {
+    background: var(--color-white);
+    color: var(--color-black);
+    border-color: #333;
 }
 
 .form-testimonial {
