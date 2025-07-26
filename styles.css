@@ -61,6 +61,33 @@ body {
     color: var(--color-black);
     text-decoration: none;
     letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-image {
+    height: 32px;
+    width: auto;
+    transition: var(--transition);
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+/* Hide logo image if it fails to load or doesn't exist */
+.logo-image:not([src]), 
+.logo-image[src=""], 
+.logo-image[src="logo.png"]:not([alt=""]) {
+    display: none;
+}
+
+/* Logo hover effect */
+.nav-logo a:hover .logo-image {
+    transform: scale(1.05);
 }
 
 .nav-menu {
