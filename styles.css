@@ -26,13 +26,23 @@
 
 /* Dark mode specific adjustments */
 [data-theme="dark"] .service-pricing {
-    background: var(--color-white);
+    background: var(--color-light-gray);
     color: var(--color-black);
+    border-color: #333;
 }
 
 [data-theme="dark"] .form-testimonial {
     background: var(--color-light-gray);
-    border-color: var(--color-gray);
+    border-color: #333;
+    color: var(--color-black);
+}
+
+[data-theme="dark"] .form-testimonial p {
+    color: var(--color-gray);
+}
+
+[data-theme="dark"] .form-testimonial span {
+    color: var(--color-black);
 }
 
 /* Keyframe .services-grid {
@@ -513,18 +523,112 @@ section {
     line-height: 1.6;
 }
 
-/* Service Pricing */
-.service-pricing {
+/* Service Pricing - New Compact Design */
+.service-pricing-container {
     margin-top: auto;
-    padding: 0.8rem 1.5rem;
-    background: var(--color-black);
-    color: var(--color-white);
-    font-weight: 600;
-    text-align: center;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     align-self: stretch;
+}
+
+.pricing-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: var(--color-light-gray);
+    border: 1px solid #e0e0e0;
+}
+
+.pricing-from {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--color-black);
+}
+
+.pricing-details-btn {
+    background: none;
+    border: none;
+    color: var(--color-gray);
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: var(--transition);
+    font-family: var(--font-primary);
+}
+
+.pricing-details-btn:hover {
+    color: var(--color-black);
+}
+
+.pricing-details-btn ion-icon {
+    font-size: 1rem;
+}
+
+.pricing-details {
+    padding: 1rem 1.5rem;
+    background: var(--color-white);
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    animation: slideDown 0.3s ease;
+}
+
+.pricing-range {
+    font-weight: 600;
+    color: var(--color-black);
+    margin-bottom: 0.5rem;
+}
+
+.pricing-factors {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-gray);
+    line-height: 1.4;
+}
+
+.pricing-factors ion-icon {
+    font-size: 1rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 100px;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+}
+
+/* Dark mode pricing */
+[data-theme="dark"] .pricing-compact {
+    background: var(--color-light-gray);
+    border-color: #333;
+}
+
+[data-theme="dark"] .pricing-details {
+    background: var(--color-light-gray);
+    border-color: #333;
+}
+
+[data-theme="dark"] .pricing-range {
+    color: var(--color-black);
+}
+
+/* Remove old tooltip styles */
+.price-tooltip,
+.tooltip-icon,
+.tooltip-text {
+    display: none;
 }
 
 /* Credibility Section */
@@ -1032,7 +1136,13 @@ section {
     background: var(--color-light-gray);
     text-align: center;
     font-style: italic;
-    border: 1px solid var(--color-black);
+    border: 1px solid #e0e0e0;
+    color: var(--color-black);
+}
+
+.form-testimonial p {
+    color: var(--color-gray);
+    margin-bottom: 0.5rem;
 }
 
 .form-testimonial span {
@@ -1040,6 +1150,7 @@ section {
     margin-top: 0.5rem;
     font-weight: 600;
     font-style: normal;
+    color: var(--color-black);
 }
 
 /* Footer Enhancements */
@@ -1066,5 +1177,194 @@ section {
 @media (prefers-reduced-motion: no-preference) {
     html {
         scroll-behavior: smooth;
+    }
+}
+
+/* Price Estimator Button Styles */
+.price-estimator-btn {
+    background: var(--color-black);
+    border: none;
+    color: var(--color-white);
+    padding: 0.75rem 1.5rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: var(--transition);
+    font-family: var(--font-primary);
+    width: 100%;
+}
+
+.price-estimator-btn:hover {
+    background: var(--color-gray);
+    transform: translateY(-2px);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    background-color: var(--color-white);
+    margin: 5% auto;
+    padding: 0;
+    border: none;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    border-bottom: 1px solid var(--color-light-gray);
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-black);
+}
+
+.modal-close {
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--color-gray);
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    color: var(--color-black);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.estimator-section {
+    margin-bottom: 2rem;
+}
+
+.estimator-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--color-black);
+}
+
+.estimator-section select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-gray);
+    background: var(--color-white);
+    color: var(--color-black);
+    font-family: var(--font-primary);
+    font-size: 1rem;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 0.5rem;
+    width: 16px;
+    height: 16px;
+}
+
+.estimate-result {
+    background: var(--color-light-gray);
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.estimate-result h4 {
+    margin-bottom: 1rem;
+    color: var(--color-black);
+    font-weight: 600;
+}
+
+.estimate-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-black);
+    margin-bottom: 1rem;
+}
+
+.estimate-note {
+    font-size: 0.9rem;
+    color: var(--color-gray);
+    font-style: italic;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    .modal-header,
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    /* Mobile tooltip adjustments */
+    .tooltip-text {
+        width: 200px;
+        margin-left: -100px;
+        font-size: 0.8rem;
     }
 }

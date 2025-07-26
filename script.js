@@ -351,3 +351,139 @@ document.querySelectorAll('.contact-form input, .contact-form textarea').forEach
         this.style.transform = 'scale(1)';
     });
 });
+
+// Price Estimator Functions
+function openPriceEstimator(type) {
+    const modal = document.getElementById('price-estimator-modal');
+    const typeSelect = document.getElementById('estimator-type');
+    
+    // Set the project type
+    typeSelect.value = type;
+    
+    // Show modal
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    // Initial estimate calculation
+    updateEstimate();
+}
+
+function closePriceEstimator() {
+    const modal = document.getElementById('price-estimator-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+    
+    // Reset form
+    document.getElementById('price-estimator-form').reset();
+    document.getElementById('estimator-type').value = 'web';
+}
+
+function updateEstimate() {
+    const type = document.getElementById('estimator-type').value;
+    const timeline = parseFloat(document.getElementById('estimator-timeline').value);
+    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
+    
+    // Base prices for each project type
+    const basePrices = {
+        web: 3000,
+        mobile: 2000,
+        design: 750,
+        consulting: 150 // hourly rate * estimated hours
+    };
+    
+    let basePrice = basePrices[type] || 3000;
+    
+    // Add feature costs
+    let featureCost = 0;
+    checkboxes.forEach(checkbox => {
+        featureCost += parseInt(checkbox.value);
+    });
+    
+    // Calculate total with timeline multiplier
+    const total = (basePrice + featureCost) * timeline;
+    const minPrice = Math.round(total * 0.8);
+    const maxPrice = Math.round(total * 1.2);
+    
+    // Update display
+    document.getElementById('estimate-display').textContent = 
+        `$${minPrice.toLocaleString()} – $${maxPrice.toLocaleString()}`;
+}
+
+function requestDetailedQuote() {
+    const type = document.getElementById('estimator-type').value;
+    const timeline = document.getElementById('estimator-timeline').value;
+    const features = [];
+    
+    document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked').forEach(checkbox => {
+        features.push(checkbox.nextSibling.textContent.trim());
+    });
+    
+    // Prepare pre-filled contact form data
+    const projectTypeMap = {
+        web: 'web-development',
+        mobile: 'mobile-app',
+        design: 'branding-design',
+        consulting: 'it-consulting'
+    };
+    
+    const timelineMap = {
+        '1': 'Standard timeline (4-8 weeks)',
+        '1.3': 'Expedited timeline (2-4 weeks)',
+        '1.5': 'Rush timeline (1-2 weeks)'
+    };
+    
+    const preFilledMessage = `Hi! I used your price estimator and I'm interested in:
+
+Project Type: ${type.charAt(0).toUpperCase() + type.slice(1)}
+Timeline: ${timelineMap[timeline]}
+Features Needed: ${features.join(', ')}
+
+I'd love to get a detailed quote for my project. Let's discuss!`;
+    
+    // Close modal
+    closePriceEstimator();
+    
+    // Scroll to contact form
+    document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+    
+    // Pre-fill contact form
+    setTimeout(() => {
+        document.getElementById('project-type').value = projectTypeMap[type];
+        document.getElementById('message').value = preFilledMessage;
+    }, 500);
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('price-estimator-modal');
+    if (e.target === modal) {
+        closePriceEstimator();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('price-estimator-modal');
+        if (modal.style.display === 'block') {
+            closePriceEstimator();
+        }
+    }
+});
+
+// Pricing Details Toggle
+function togglePricingDetails(service) {
+    const detailsElement = document.getElementById(`pricing-details-${service}`);
+    const isVisible = detailsElement.style.display !== 'none';
+    
+    // Close all other pricing details first
+    const allDetails = document.querySelectorAll('.pricing-details');
+    allDetails.forEach(detail => {
+        if (detail !== detailsElement) {
+            detail.style.display = 'none';
+        }
+    });
+    
+    // Toggle current one
+    detailsElement.style.display = isVisible ? 'none' : 'block';
+}

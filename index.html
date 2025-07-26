@@ -80,7 +80,23 @@
                     <p class="service-description">
                         Clean, responsive websites with CMS. Built with React, Node.js, and modern frameworks for optimal performance.
                     </p>
-                    <div class="service-pricing">Starting at $3,000+</div>
+                    <div class="service-pricing-container">
+                        <div class="pricing-compact">
+                            <span class="pricing-from">From $3,000</span>
+                            <button class="pricing-details-btn" onclick="togglePricingDetails('web')">
+                                <ion-icon name="information-circle-outline"></ion-icon>
+                                View Details
+                            </button>
+                        </div>
+                        <div class="pricing-details" id="pricing-details-web" style="display: none;">
+                            <div class="pricing-range">Typically $3,000–$5,500</div>
+                            <div class="pricing-factors">
+                                <ion-icon name="information-circle"></ion-icon>
+                                Depends on pages, integrations, timelines, and design needs
+                            </div>
+                        </div>
+                    </div>
+                    <button class="price-estimator-btn" onclick="openPriceEstimator('web')">Get Custom Quote →</button>
                 </div>
                 
                 <div class="service-card">
@@ -89,7 +105,23 @@
                     <p class="service-description">
                         Cross-platform React Native builds and native iOS applications. From concept to App Store launch.
                     </p>
-                    <div class="service-pricing">Starting at $2,000+</div>
+                    <div class="service-pricing-container">
+                        <div class="pricing-compact">
+                            <span class="pricing-from">From $2,000</span>
+                            <button class="pricing-details-btn" onclick="togglePricingDetails('mobile')">
+                                <ion-icon name="information-circle-outline"></ion-icon>
+                                View Details
+                            </button>
+                        </div>
+                        <div class="pricing-details" id="pricing-details-mobile" style="display: none;">
+                            <div class="pricing-range">Typically $2,000–$4,000</div>
+                            <div class="pricing-factors">
+                                <ion-icon name="information-circle"></ion-icon>
+                                Depends on features, platforms, integrations, and complexity
+                            </div>
+                        </div>
+                    </div>
+                    <button class="price-estimator-btn" onclick="openPriceEstimator('mobile')">Get Custom Quote →</button>
                 </div>
                 
                 <div class="service-card">
@@ -98,7 +130,23 @@
                     <p class="service-description">
                         Logo design, style guides, and complete UI kits. Creating visual experiences that captivate and convert.
                     </p>
-                    <div class="service-pricing">Starting at $750+</div>
+                    <div class="service-pricing-container">
+                        <div class="pricing-compact">
+                            <span class="pricing-from">From $750</span>
+                            <button class="pricing-details-btn" onclick="togglePricingDetails('design')">
+                                <ion-icon name="information-circle-outline"></ion-icon>
+                                View Details
+                            </button>
+                        </div>
+                        <div class="pricing-details" id="pricing-details-design" style="display: none;">
+                            <div class="pricing-range">Typically $750–$2,500</div>
+                            <div class="pricing-factors">
+                                <ion-icon name="information-circle"></ion-icon>
+                                Depends on deliverables, revisions, and brand complexity
+                            </div>
+                        </div>
+                    </div>
+                    <button class="price-estimator-btn" onclick="openPriceEstimator('design')">Get Custom Quote →</button>
                 </div>
                 
                 <div class="service-card">
@@ -107,11 +155,88 @@
                     <p class="service-description">
                         Technical architecture planning and ongoing support. We help businesses choose the right technology stack.
                     </p>
-                    <div class="service-pricing">Custom Quote</div>
+                    <div class="service-pricing-container">
+                        <div class="pricing-compact">
+                            <span class="pricing-from">Custom Quote</span>
+                            <button class="pricing-details-btn" onclick="togglePricingDetails('consulting')">
+                                <ion-icon name="information-circle-outline"></ion-icon>
+                                View Details
+                            </button>
+                        </div>
+                        <div class="pricing-details" id="pricing-details-consulting" style="display: none;">
+                            <div class="pricing-range">Hourly & Project-Based</div>
+                            <div class="pricing-factors">
+                                <ion-icon name="information-circle"></ion-icon>
+                                Rate varies by project scope and technical requirements
+                            </div>
+                        </div>
+                    </div>
+                    <button class="price-estimator-btn" onclick="openPriceEstimator('consulting')">Get Custom Quote →</button>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Price Estimator Modal -->
+    <div id="price-estimator-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Build Your Custom Quote</h3>
+                <span class="modal-close" onclick="closePriceEstimator()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="price-estimator-form">
+                    <div class="estimator-section">
+                        <label>Project Type:</label>
+                        <select id="estimator-type" onchange="updateEstimate()">
+                            <option value="web">Website Development</option>
+                            <option value="mobile">Mobile App</option>
+                            <option value="design">Branding & Design</option>
+                            <option value="consulting">IT Consulting</option>
+                        </select>
+                    </div>
+
+                    <div class="estimator-section">
+                        <label>Key Features Needed:</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" value="500" onchange="updateEstimate()"> User Authentication/Login</label>
+                            <label><input type="checkbox" value="800" onchange="updateEstimate()"> Payment Processing</label>
+                            <label><input type="checkbox" value="600" onchange="updateEstimate()"> Content Management System</label>
+                            <label><input type="checkbox" value="400" onchange="updateEstimate()"> Database Integration</label>
+                            <label><input type="checkbox" value="300" onchange="updateEstimate()"> Email Notifications</label>
+                            <label><input type="checkbox" value="700" onchange="updateEstimate()"> Admin Dashboard</label>
+                            <label><input type="checkbox" value="500" onchange="updateEstimate()"> API Integration</label>
+                            <label><input type="checkbox" value="400" onchange="updateEstimate()"> Analytics & Reporting</label>
+                        </div>
+                    </div>
+
+                    <div class="estimator-section">
+                        <label>Timeline:</label>
+                        <select id="estimator-timeline" onchange="updateEstimate()">
+                            <option value="1">Standard (4-8 weeks)</option>
+                            <option value="1.3">Expedited (2-4 weeks) +30%</option>
+                            <option value="1.5">Rush (1-2 weeks) +50%</option>
+                        </select>
+                    </div>
+
+                    <div class="estimate-result">
+                        <h4>Estimated Project Range:</h4>
+                        <div class="estimate-price" id="estimate-display">$3,000 – $4,500</div>
+                        <p class="estimate-note">*This is a preliminary estimate. Let's chat to tailor it to your specific needs!</p>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-primary" onclick="requestDetailedQuote()">
+                            Request Detailed Quote
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closePriceEstimator()">
+                            Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Credibility Section -->
     <section class="credibility">
@@ -155,22 +280,6 @@
             <div class="work-grid">
                 <div class="work-item">
                     <div class="work-content">
-                        <h3 class="work-title">Helthy - AI Fitness Platform</h3>
-                        <p class="work-description">
-                            <strong>Role:</strong> Co-founder & Lead Developer<br>
-                            <strong>Solution:</strong> AI-powered nutrition tracking and workout platform with real-time data<br>
-                            <strong>Result:</strong> Launched fitness app helping users achieve their health goals with smart recommendations
-                        </p>
-                        <div class="work-links">
-                            <a href="https://helthy.app" class="work-link" target="_blank" rel="noopener">
-                                View Live App →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="work-item">
-                    <div class="work-content">
                         <h3 class="work-title">Personal Brand Portfolio</h3>
                         <p class="work-description">
                             <strong>Problem:</strong> Client needed modern portfolio presence<br>
@@ -199,6 +308,22 @@
                             </a>
                             <a href="https://instagram.com/ethan.lma" class="work-link" target="_blank" rel="noopener">
                                 Instagram →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="work-content">
+                        <h3 class="work-title">Helthy - AI Fitness Platform</h3>
+                        <p class="work-description">
+                            <strong>Role:</strong> Co-founder & Lead Developer<br>
+                            <strong>Solution:</strong> Building AI-powered nutrition tracking and workout platform with real-time data<br>
+                            <strong>Status:</strong> Currently in development - creating smart fitness recommendations for users
+                        </p>
+                        <div class="work-links">
+                            <a href="https://helthy.app" class="work-link" target="_blank" rel="noopener">
+                                Preview Development →
                             </a>
                         </div>
                     </div>
