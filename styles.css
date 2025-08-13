@@ -323,6 +323,13 @@ body {
     display: block;
     animation: slideInTitle 0.8s ease forwards;
     opacity: 0;
+    font-size: 2.1rem;
+}
+
+@media (max-width: 600px) {
+    .title-line {
+        font-size: 1.3rem;
+    }
 }
 
 .title-line:nth-child(1) {
