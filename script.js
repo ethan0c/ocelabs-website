@@ -1,3 +1,26 @@
+
+// Dynamically position the vertical line to start from the middle of the 'Start Your Project' button
+// and end at the top of the "Let's Build Something" button in the work-cta section
+function positionVerticalLine() {
+    const startBtn = document.getElementById('start-project-btn');
+    const endBtn = document.querySelector('.work-cta .btn-primary');
+    const line = document.querySelector('.vertical-bg-line');
+    if (startBtn && endBtn && line) {
+        const startRect = startBtn.getBoundingClientRect();
+        const endRect = endBtn.getBoundingClientRect();
+        const scrollY = window.scrollY || window.pageYOffset;
+        // Start from middle of startBtn
+        const startY = startRect.top + scrollY + startRect.height / 2;
+        // End at top of endBtn
+        const endY = endRect.top + scrollY;
+        line.style.top = startY + 'px';
+        line.style.height = (endY - startY) + 'px';
+    }
+}
+
+window.addEventListener('DOMContentLoaded', positionVerticalLine);
+window.addEventListener('resize', positionVerticalLine);
+window.addEventListener('scroll', positionVerticalLine);
 // Mobile Navigation Toggle
 document.addEventListener('DOMContentLoaded', function() {
     const navToggle = document.getElementById('nav-toggle');
