@@ -1,26 +1,3 @@
-
-// Dynamically position the vertical line to start from the middle of the 'Start Your Project' button
-// and end at the top of the "Let's Build Something" button in the work-cta section
-function positionVerticalLine() {
-    const startBtn = document.getElementById('start-project-btn');
-    const endBtn = document.querySelector('.work-cta .btn-primary');
-    const line = document.querySelector('.vertical-bg-line');
-    if (startBtn && endBtn && line) {
-        const startRect = startBtn.getBoundingClientRect();
-        const endRect = endBtn.getBoundingClientRect();
-        const scrollY = window.scrollY || window.pageYOffset;
-        // Start from middle of startBtn
-        const startY = startRect.top + scrollY + startRect.height / 2;
-        // End at top of endBtn
-        const endY = endRect.top + scrollY;
-        line.style.top = startY + 'px';
-        line.style.height = (endY - startY) + 'px';
-    }
-}
-
-window.addEventListener('DOMContentLoaded', positionVerticalLine);
-window.addEventListener('resize', positionVerticalLine);
-window.addEventListener('scroll', positionVerticalLine);
 // Mobile Navigation Toggle
 document.addEventListener('DOMContentLoaded', function() {
     const navToggle = document.getElementById('nav-toggle');
@@ -67,9 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize scroll animations
     initScrollAnimations();
     
-    // Initialize typing effect for hero subtitle
-    initTypingEffect();
-    
+    // Initialize magnetic buttons
+    initMagneticButtons();
+
     // Initialize theme toggle
     initThemeToggle();
 });
@@ -100,26 +77,28 @@ function initScrollAnimations() {
     });
 }
 
-// Typing Effect for Hero Subtitle
-function initTypingEffect() {
-    const subtitle = document.querySelector('.hero-subtitle');
-    if (!subtitle) return;
-    
-    const text = subtitle.textContent;
-    subtitle.textContent = '';
-    subtitle.style.opacity = '1';
-    
-    let i = 0;
-    function typeWriter() {
-        if (i < text.length) {
-            subtitle.textContent += text.charAt(i);
-            i++;
-            setTimeout(typeWriter, 30);
-        }
-    }
-    
-    // Start typing effect after hero title animations
-    setTimeout(typeWriter, 1200);
+// Magnetic Button Effect
+function initMagneticButtons() {
+    const magneticBtns = document.querySelectorAll('.btn-primary');
+
+    magneticBtns.forEach(btn => {
+        btn.addEventListener('mousemove', function(e) {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+        });
+
+        btn.addEventListener('mouseleave', function() {
+            btn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+            btn.style.transform = 'translate(0, 0)';
+        });
+
+        btn.addEventListener('mouseenter', function() {
+            btn.style.transition = 'transform 0.1s ease';
+        });
+    });
 }
 
 // Theme Toggle Functionality
@@ -337,16 +316,6 @@ window.addEventListener('load', function() {
     document.body.classList.add('loaded');
 });
 
-// Add subtle parallax effect to hero section
-window.addEventListener('scroll', function() {
-    const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero');
-    
-    if (hero) {
-        const rate = scrolled * -0.5;
-        hero.style.transform = `translateY(${rate}px)`;
-    }
-});
 
 // Add hover effects for work links
 document.querySelectorAll('.work-link').forEach(link => {
@@ -375,16 +344,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Form field focus animations
-document.querySelectorAll('.contact-form input, .contact-form textarea').forEach(field => {
-    field.addEventListener('focus', function() {
-        this.style.transform = 'scale(1.02)';
-    });
-    
-    field.addEventListener('blur', function() {
-        this.style.transform = 'scale(1)';
-    });
-});
 
 // Price Estimator Functions
 function openPriceEstimator(type) {
