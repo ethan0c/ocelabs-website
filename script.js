@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navOverlay = document.getElementById('nav-overlay');
     const navLinks = document.querySelectorAll('.nav-link');
 
+    const landingArcMenu = initLandingArcMenu();
+
     initThemeToggle();
     initMobileMenu(navToggle, navMenu, navOverlay, navLinks);
     initSmoothAnchors();
@@ -15,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             closeMobileMenu(navToggle, navMenu, navOverlay);
+            landingArcMenu.close();
             const modal = document.getElementById('price-estimator-modal');
             if (modal && modal.style.display === 'block') {
                 closePriceEstimator();
@@ -349,27 +352,17 @@ function initLandingShowreel() {
             .set('.landing-intro', { display: 'none' });
     }
 
-    gsap.from('.scene-nav-link', {
-        y: 12,
+    gsap.from('.scene-menu-toggle--nav', {
+        y: 14,
         opacity: 0,
-        duration: 0.5,
-        stagger: 0.08,
+        duration: 0.55,
         delay: 1.1,
         ease: 'power2.out'
     });
 
-    gsap.to('.scene-nav-link--one, .scene-nav-link--two', {
-        y: -8,
-        duration: 2.7,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-        stagger: 0.18
-    });
-
-    gsap.to('.scene-nav-link--three', {
-        y: 8,
-        duration: 3.2,
+    gsap.to('.scene-menu-toggle--nav', {
+        y: -2,
+        duration: 3.1,
         ease: 'sine.inOut',
         yoyo: true,
         repeat: -1
@@ -377,6 +370,160 @@ function initLandingShowreel() {
 
     initLandingTitleChoreography();
     initLandingCursorRig();
+}
+
+function initLandingArcMenu() {
+    const toggle = document.getElementById('scene-menu-toggle');
+    const panel = document.getElementById('scene-arc-panel');
+    const openIcon = toggle ? toggle.querySelector('.menu-icon-open') : null;
+    const closeIcon = toggle ? toggle.querySelector('.menu-icon-close') : null;
+
+    if (!toggle || !panel || typeof gsap === 'undefined') {
+        return { close: () => {} };
+    }
+
+    const links = gsap.utils.toArray('.scene-arc-link');
+    if (!links.length) {
+        return { close: () => {} };
+    }
+
+    let isOpen = false;
+
+    gsap.set(panel, {
+        autoAlpha: 0,
+        scale: 0.66,
+        x: 16,
+        y: -12,
+        rotation: -18,
+        transformOrigin: '100% 0%',
+        pointerEvents: 'none'
+    });
+
+    gsap.set(links, {
+        autoAlpha: 0,
+        y: -12,
+        x: 8,
+        scale: 0.56
+    });
+
+    if (openIcon && closeIcon) {
+        gsap.set(openIcon, { autoAlpha: 1, scale: 1, rotate: 0 });
+        gsap.set(closeIcon, { autoAlpha: 0, scale: 0.74, rotate: -24 });
+    }
+
+    const menuTimeline = gsap.timeline({
+        paused: true,
+        defaults: { ease: 'power3.out' },
+        onStart: () => {
+            panel.style.pointerEvents = 'auto';
+            panel.setAttribute('aria-hidden', 'false');
+        },
+        onReverseComplete: () => {
+            panel.style.pointerEvents = 'none';
+            panel.setAttribute('aria-hidden', 'true');
+        }
+    });
+
+    menuTimeline
+        .to(panel, {
+            autoAlpha: 1,
+            scale: 1,
+            x: 0,
+            y: 0,
+            rotation: 0,
+            duration: 0.45
+        })
+        .to(links, {
+            autoAlpha: 1,
+            y: 0,
+            x: 0,
+            scale: 1,
+            stagger: 0.07,
+            duration: 0.32
+        }, '-=0.26');
+
+    if (openIcon && closeIcon) {
+        menuTimeline
+            .to(openIcon, {
+                autoAlpha: 0,
+                scale: 0.74,
+                rotate: 24,
+                duration: 0.18
+            }, '<')
+            .to(closeIcon, {
+                autoAlpha: 1,
+                scale: 1,
+                rotate: 0,
+                duration: 0.18
+            }, '<');
+    }
+
+    const resetToggleIcons = () => {
+        if (!openIcon || !closeIcon) {
+            return;
+        }
+
+        gsap.to(openIcon, { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.16, overwrite: true });
+        gsap.to(closeIcon, { autoAlpha: 0, scale: 0.74, rotate: -24, duration: 0.16, overwrite: true });
+    };
+
+    const setToggleIconsOpen = () => {
+        if (!openIcon || !closeIcon) {
+            return;
+        }
+
+        gsap.to(openIcon, { autoAlpha: 0, scale: 0.74, rotate: 24, duration: 0.16, overwrite: true });
+        gsap.to(closeIcon, { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.16, overwrite: true });
+    };
+
+    const close = () => {
+        if (!isOpen) {
+            return;
+        }
+
+        isOpen = false;
+        toggle.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        resetToggleIcons();
+        menuTimeline.reverse();
+    };
+
+    const open = () => {
+        if (isOpen) {
+            return;
+        }
+
+        isOpen = true;
+        toggle.classList.add('is-open');
+        toggle.setAttribute('aria-expanded', 'true');
+        setToggleIconsOpen();
+        menuTimeline.play(0);
+    };
+
+    toggle.addEventListener('click', () => {
+        if (isOpen) {
+            close();
+            return;
+        }
+
+        open();
+    });
+
+    links.forEach((link) => {
+        link.addEventListener('click', close);
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!isOpen) {
+            return;
+        }
+
+        if (!panel.contains(event.target) && !toggle.contains(event.target)) {
+            close();
+        }
+    });
+
+    return { close };
 }
 
 function initLandingTitleChoreography() {

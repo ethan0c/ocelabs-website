@@ -46,6 +46,16 @@
                     <ion-icon name="moon" class="theme-icon dark-icon"></ion-icon>
                     <ion-icon name="sunny" class="theme-icon light-icon"></ion-icon>
                 </button>
+                <button
+                    class="scene-menu-toggle scene-menu-toggle--nav"
+                    id="scene-menu-toggle"
+                    aria-expanded="false"
+                    aria-controls="scene-arc-panel"
+                    aria-label="Toggle quick navigation"
+                >
+                    <ion-icon name="grid-outline" class="scene-menu-icon menu-icon-open"></ion-icon>
+                    <ion-icon name="close-outline" class="scene-menu-icon menu-icon-close"></ion-icon>
+                </button>
                 <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
                     <span></span>
                     <span></span>
@@ -53,16 +63,24 @@
                 </button>
             </div>
         </div>
+        <div class="scene-arc-panel scene-arc-panel--nav" id="scene-arc-panel" aria-hidden="true">
+            <a href="services.html" class="scene-arc-link scene-arc-link--one" data-label="Services" aria-label="Services">
+                <ion-icon name="layers-outline" aria-hidden="true"></ion-icon>
+                <span class="sr-only">Services</span>
+            </a>
+            <a href="work.html" class="scene-arc-link scene-arc-link--two" data-label="Work" aria-label="Work">
+                <ion-icon name="sparkles-outline" aria-hidden="true"></ion-icon>
+                <span class="sr-only">Work</span>
+            </a>
+            <a href="contact.html" class="scene-arc-link scene-arc-link--three" data-label="Contact" aria-label="Contact">
+                <ion-icon name="chatbubbles-outline" aria-hidden="true"></ion-icon>
+                <span class="sr-only">Contact</span>
+            </a>
+        </div>
     </nav>
 
     <main class="landing-main">
         <section class="hero hero--scene">
-            <div class="scene-nav" aria-label="Primary">
-                <a href="services.html" class="scene-nav-link scene-nav-link--one" data-note="SYSTEMS + STRATEGY">Services</a>
-                <a href="work.html" class="scene-nav-link scene-nav-link--two" data-note="SELECTED BUILDS">Work</a>
-                <a href="contact.html" class="scene-nav-link scene-nav-link--three" data-note="START IN 24H">Contact</a>
-            </div>
-
             <div class="caps-orbit" aria-hidden="true">
                 <span class="orbit-label orbit-label--tl">PRODUCT STRATEGY</span>
                 <span class="orbit-label orbit-label--tr">CREATIVE ENGINEERING</span>
