@@ -1,538 +1,467 @@
-// Mobile Navigation Toggle
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     const navToggle = document.getElementById('nav-toggle');
     const navMenu = document.getElementById('nav-menu');
     const navOverlay = document.getElementById('nav-overlay');
     const navLinks = document.querySelectorAll('.nav-link');
 
-    // Toggle mobile menu
-    navToggle.addEventListener('click', function() {
-        navToggle.classList.toggle('active');
-        navMenu.classList.toggle('active');
-        navOverlay.classList.toggle('active');
-        document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
-    });
+    initThemeToggle();
+    initMobileMenu(navToggle, navMenu, navOverlay, navLinks);
+    initSmoothAnchors();
+    initActiveNav(navLinks);
+    initGsapAnimations();
+    initMagneticButtons();
+    initContactForm();
 
-    // Close mobile menu when clicking on a link
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
-            navOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-    });
-
-    // Close mobile menu when clicking on overlay
-    navOverlay.addEventListener('click', function() {
-        navToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-        navOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-    });
-
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
-            navOverlay.classList.remove('active');
-            document.body.style.overflow = '';
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeMobileMenu(navToggle, navMenu, navOverlay);
+            const modal = document.getElementById('price-estimator-modal');
+            if (modal && modal.style.display === 'block') {
+                closePriceEstimator();
+            }
         }
     });
 
-    // Initialize scroll animations
-    initScrollAnimations();
-    
-    // Initialize magnetic buttons
-    initMagneticButtons();
+    document.addEventListener('click', (event) => {
+        if (event.target === navOverlay) {
+            closeMobileMenu(navToggle, navMenu, navOverlay);
+        }
 
-    // Initialize theme toggle
-    initThemeToggle();
-
-    // Initialize section parallax
-    initParallaxEffects();
+        const modal = document.getElementById('price-estimator-modal');
+        if (event.target === modal) {
+            closePriceEstimator();
+        }
+    });
 });
 
-// Scroll Animation Observer
-function initScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animated');
-            }
-        });
-    }, observerOptions);
-
-    // Add animation classes and observe elements
-    const animateElements = document.querySelectorAll('.section-header, .service-card, .work-item, .contact-info, .contact-form');
-    
-    animateElements.forEach((el, index) => {
-        el.classList.add('animate-on-scroll');
-        // Add stagger delay for multiple elements
-        el.style.transitionDelay = `${index * 0.1}s`;
-        observer.observe(el);
-    });
-}
-
-// Magnetic Button Effect
-function initMagneticButtons() {
-    const magneticBtns = document.querySelectorAll('.btn-primary');
-
-    magneticBtns.forEach(btn => {
-        btn.addEventListener('mousemove', function(e) {
-            const rect = btn.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-
-            btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
-        });
-
-        btn.addEventListener('mouseleave', function() {
-            btn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-            btn.style.transform = 'translate(0, 0)';
-        });
-
-        btn.addEventListener('mouseenter', function() {
-            btn.style.transition = 'transform 0.1s ease';
-        });
-    });
-}
-
-// Theme Toggle Functionality
 function initThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    // Check for saved theme preference or default to system preference
+    if (!themeToggle) {
+        return;
+    }
+
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     const savedTheme = localStorage.getItem('theme');
-    const systemTheme = prefersDarkScheme.matches ? 'dark' : 'light';
-    const currentTheme = savedTheme || systemTheme;
-    
-    // Apply the theme
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    
-    // Toggle theme on button click
-    themeToggle.addEventListener('click', function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
+    const defaultTheme = prefersDark.matches ? 'dark' : 'light';
+
+    document.documentElement.setAttribute('data-theme', savedTheme || defaultTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
     });
-    
-    // Listen for system theme changes
-    prefersDarkScheme.addEventListener('change', function(e) {
+
+    prefersDark.addEventListener('change', (event) => {
         if (!localStorage.getItem('theme')) {
-            const newTheme = e.matches ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
+            document.documentElement.setAttribute('data-theme', event.matches ? 'dark' : 'light');
         }
     });
 }
 
-// Lightweight parallax for section containers
-function initParallaxEffects() {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (prefersReducedMotion || window.innerWidth < 900) {
+function initMobileMenu(navToggle, navMenu, navOverlay, navLinks) {
+    if (!navToggle || !navMenu || !navOverlay) {
         return;
     }
 
-    const parallaxLayers = [
-        { element: document.querySelector('.hero-container'), speed: 0.16 },
-        { element: document.querySelector('.services .container'), speed: 0.08 },
-        { element: document.querySelector('.credibility .container'), speed: 0.1 },
-        { element: document.querySelector('.work .container'), speed: 0.12 },
-        { element: document.querySelector('.contact .container'), speed: 0.06 },
-    ].filter(layer => layer.element);
-
-    if (!parallaxLayers.length) {
-        return;
-    }
-
-    parallaxLayers.forEach(({ element }) => {
-        element.style.willChange = 'transform';
+    navToggle.addEventListener('click', () => {
+        const isOpen = navMenu.classList.toggle('active');
+        navOverlay.classList.toggle('active', isOpen);
+        navToggle.classList.toggle('active', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
     });
 
-    let ticking = false;
+    navLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+            closeMobileMenu(navToggle, navMenu, navOverlay);
+        });
+    });
+}
 
-    const updateParallax = () => {
-        const viewportCenter = window.innerHeight / 2;
+function closeMobileMenu(navToggle, navMenu, navOverlay) {
+    if (!navToggle || !navMenu || !navOverlay) {
+        return;
+    }
 
-        parallaxLayers.forEach(({ element, speed }) => {
-            const rect = element.getBoundingClientRect();
-            const elementCenter = rect.top + rect.height / 2;
-            const distanceFromCenter = elementCenter - viewportCenter;
-            const shift = Math.max(-48, Math.min(48, -distanceFromCenter * speed * 0.2));
+    navMenu.classList.remove('active');
+    navOverlay.classList.remove('active');
+    navToggle.classList.remove('active');
+    document.body.style.overflow = '';
+}
 
-            element.style.transform = `translate3d(0, ${shift.toFixed(2)}px, 0)`;
+function initSmoothAnchors() {
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', (event) => {
+            const href = anchor.getAttribute('href');
+            const target = href ? document.querySelector(href) : null;
+            if (!target) {
+                return;
+            }
+
+            event.preventDefault();
+            const top = target.offsetTop - 72;
+            window.scrollTo({ top, behavior: 'smooth' });
+        });
+    });
+}
+
+function initActiveNav(navLinks) {
+    const sections = document.querySelectorAll('section[id]');
+
+    const update = () => {
+        let current = 'home';
+
+        sections.forEach((section) => {
+            const top = section.offsetTop - 120;
+            const height = section.offsetHeight;
+
+            if (window.scrollY >= top && window.scrollY < top + height) {
+                current = section.id;
+            }
         });
 
-        ticking = false;
+        navLinks.forEach((link) => {
+            link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+        });
     };
 
-    const requestTick = () => {
-        if (!ticking) {
-            window.requestAnimationFrame(updateParallax);
-            ticking = true;
-        }
-    };
-
-    window.addEventListener('scroll', requestTick, { passive: true });
-    window.addEventListener('resize', requestTick);
-    updateParallax();
+    window.addEventListener('scroll', update, { passive: true });
+    update();
 }
 
-// Smooth Scrolling for Navigation Links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            const offsetTop = target.offsetTop - 80; // Account for fixed nav
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
+function initGsapAnimations() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+        return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+        return;
+    }
+
+    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl
+        .from('.nav', { y: -30, opacity: 0, duration: 0.6 })
+        .from('.hero-eyebrow', { y: 24, opacity: 0, duration: 0.5 }, '-=0.2')
+        .from('.title-line', { yPercent: 110, opacity: 0, stagger: 0.08, duration: 0.75 }, '-=0.1')
+        .from('.hero-subtitle', { y: 20, opacity: 0, duration: 0.55 }, '-=0.25')
+        .from('.hero-buttons .btn', { y: 16, opacity: 0, stagger: 0.1, duration: 0.45 }, '-=0.2')
+        .from('.hero-rail .rail-card', { x: 24, opacity: 0, stagger: 0.08, duration: 0.45 }, '-=0.35');
+
+    gsap.utils.toArray('[data-gsap="reveal-header"]').forEach((header) => {
+        gsap.from(header, {
+            y: 40,
+            opacity: 0,
+            duration: 0.7,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: header,
+                start: 'top 80%'
+            }
+        });
+    });
+
+    gsap.utils.toArray('[data-gsap="service-card"]').forEach((card, index) => {
+        gsap.from(card, {
+            y: 50,
+            opacity: 0,
+            duration: 0.65,
+            ease: 'power2.out',
+            delay: index * 0.04,
+            scrollTrigger: {
+                trigger: card,
+                start: 'top 86%'
+            }
+        });
+    });
+
+    gsap.utils.toArray('[data-gsap="credibility-item"]').forEach((item, index) => {
+        gsap.from(item, {
+            y: 34,
+            opacity: 0,
+            duration: 0.55,
+            delay: index * 0.05,
+            scrollTrigger: {
+                trigger: item,
+                start: 'top 86%'
+            }
+        });
+    });
+
+    gsap.utils.toArray('[data-gsap="work-item"]').forEach((item, index) => {
+        gsap.from(item, {
+            y: 48,
+            opacity: 0,
+            duration: 0.6,
+            delay: index * 0.035,
+            scrollTrigger: {
+                trigger: item,
+                start: 'top 88%'
+            }
+        });
+    });
+
+    gsap.from('[data-gsap="contact-left"]', {
+        x: -30,
+        opacity: 0,
+        duration: 0.65,
+        scrollTrigger: {
+            trigger: '#contact',
+            start: 'top 76%'
         }
     });
-});
 
-// Contact Form Handler
-document.getElementById('contact-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const form = this;
-    const formData = new FormData(form);
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const projectType = formData.get('project-type');
-    const budget = formData.get('budget');
-    const message = formData.get('message');
-
-    // Basic validation (all fields required)
-    if (!name || !email || !projectType || !budget || !message) {
-        showNotification('Please fill in all fields.', 'error');
-        return;
-    }
-
-    if (!isValidEmail(email)) {
-        showNotification('Please enter a valid email address.', 'error');
-        return;
-    }
-
-    // AJAX submit to Formspree
-    fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Accept': 'application/json'
+    gsap.from('[data-gsap="contact-right"]', {
+        x: 30,
+        opacity: 0,
+        duration: 0.65,
+        scrollTrigger: {
+            trigger: '#contact',
+            start: 'top 76%'
         }
-    })
-    .then(response => {
-        if (response.ok) {
-            showNotification('Thank you! Your message has been sent successfully.', 'success');
-            form.reset();
-        } else {
-            return response.json().then(data => {
-                if (data && data.errors && data.errors.length > 0) {
-                    showNotification(data.errors[0].message, 'error');
-                } else {
-                    showNotification('Sorry, there was a problem sending your message.', 'error');
+    });
+
+    gsap.to('.glow-a', {
+        yPercent: 25,
+        xPercent: 12,
+        ease: 'none',
+        scrollTrigger: {
+            trigger: 'body',
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.8
+        }
+    });
+
+    gsap.to('.glow-b', {
+        yPercent: -18,
+        xPercent: -8,
+        ease: 'none',
+        scrollTrigger: {
+            trigger: 'body',
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.9
+        }
+    });
+}
+
+function initMagneticButtons() {
+    const buttons = document.querySelectorAll('.btn-primary, .price-estimator-btn');
+
+    buttons.forEach((button) => {
+        button.addEventListener('mousemove', (event) => {
+            const rect = button.getBoundingClientRect();
+            const x = event.clientX - rect.left - rect.width / 2;
+            const y = event.clientY - rect.top - rect.height / 2;
+            button.style.transform = `translate(${x * 0.08}px, ${y * 0.08}px)`;
+        });
+
+        button.addEventListener('mouseleave', () => {
+            button.style.transform = 'translate(0, 0)';
+        });
+    });
+}
+
+function initContactForm() {
+    const form = document.getElementById('contact-form');
+    if (!form) {
+        return;
+    }
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const projectType = formData.get('project-type');
+        const budget = formData.get('budget');
+        const message = formData.get('message');
+
+        if (!name || !email || !projectType || !budget || !message) {
+            showNotification('Please fill in all fields.', 'error');
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            showNotification('Please enter a valid email address.', 'error');
+            return;
+        }
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { Accept: 'application/json' }
+        })
+            .then((response) => {
+                if (response.ok) {
+                    showNotification('Thank you! Your message has been sent successfully.', 'success');
+                    form.reset();
+                    return;
                 }
-            });
-        }
-    })
-    .catch(() => {
-        showNotification('Sorry, there was a problem sending your message.', 'error');
-    });
-});
 
-// Email validation function
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+                return response.json().then((data) => {
+                    if (data && data.errors && data.errors.length > 0) {
+                        showNotification(data.errors[0].message, 'error');
+                    } else {
+                        showNotification('Sorry, there was a problem sending your message.', 'error');
+                    }
+                });
+            })
+            .catch(() => {
+                showNotification('Sorry, there was a problem sending your message.', 'error');
+            });
+    });
 }
 
-// Notification system
+function isValidEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
+
 function showNotification(message, type = 'info') {
-    // Remove existing notifications
-    const existingNotifications = document.querySelectorAll('.notification');
-    existingNotifications.forEach(notification => notification.remove());
-    
-    // Create notification element
+    document.querySelectorAll('.notification').forEach((item) => item.remove());
+
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
-    
-    // Add styles
     notification.style.cssText = `
         position: fixed;
-        top: 100px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        background: ${type === 'success' ? '#000' : '#fff'};
-        color: ${type === 'success' ? '#fff' : '#000'};
-        border: 2px solid #000;
+        top: 92px;
+        right: 16px;
         z-index: 9999;
-        font-family: 'Inter', sans-serif;
-        font-weight: 500;
+        background: ${type === 'success' ? '#0f0e13' : '#fff'};
+        color: ${type === 'success' ? '#fff' : '#111'};
+        border: 1px solid #111;
+        border-radius: 999px;
+        padding: 0.7rem 1rem;
+        font-size: 0.76rem;
         text-transform: uppercase;
-        letter-spacing: 1px;
-        font-size: 0.9rem;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
+        letter-spacing: 0.1em;
+        transform: translateX(120%);
+        transition: transform 0.25s ease;
     `;
-    
+
     document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
+    requestAnimationFrame(() => {
         notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Remove after delay
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }, 4000);
+    });
+
+    window.setTimeout(() => {
+        notification.style.transform = 'translateX(120%)';
+        window.setTimeout(() => notification.remove(), 240);
+    }, 3200);
 }
 
-// Scroll-based animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe elements for animation
-document.addEventListener('DOMContentLoaded', function() {
-    const animatedElements = document.querySelectorAll('.service-card, .work-item');
-    
-    animatedElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
-});
-
-// Navigation highlight on scroll
-window.addEventListener('scroll', function() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    let currentSection = '';
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.offsetHeight;
-        
-        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-            currentSection = section.getAttribute('id');
-        }
-    });
-    
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${currentSection}`) {
-            link.classList.add('active');
-        }
-    });
-});
-
-// Add active state styles for navigation
-const style = document.createElement('style');
-style.textContent = `
-    .nav-link.active::after {
-        width: 100%;
-    }
-`;
-document.head.appendChild(style);
-
-// Preloader (optional)
-window.addEventListener('load', function() {
-    document.body.classList.add('loaded');
-});
-
-
-// Add hover effects for work links
-document.querySelectorAll('.work-link').forEach(link => {
-    link.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateX(5px)';
-    });
-    
-    link.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateX(0)';
-    });
-});
-
-// Keyboard navigation support
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const navToggle = document.getElementById('nav-toggle');
-        const navMenu = document.getElementById('nav-menu');
-        const navOverlay = document.getElementById('nav-overlay');
-        
-        if (navMenu.classList.contains('active')) {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
-            navOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    }
-});
-
-
-// Price Estimator Functions
 function openPriceEstimator(type) {
     const modal = document.getElementById('price-estimator-modal');
     const typeSelect = document.getElementById('estimator-type');
-    
-    // Set the project type
+
+    if (!modal || !typeSelect) {
+        return;
+    }
+
     typeSelect.value = type;
-    
-    // Show modal
     modal.style.display = 'block';
+    modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    
-    // Initial estimate calculation
     updateEstimate();
 }
 
 function closePriceEstimator() {
     const modal = document.getElementById('price-estimator-modal');
+    const form = document.getElementById('price-estimator-form');
+
+    if (!modal) {
+        return;
+    }
+
     modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    
-    // Reset form
-    document.getElementById('price-estimator-form').reset();
-    document.getElementById('estimator-type').value = 'web';
+
+    if (form) {
+        form.reset();
+    }
+
+    const typeSelect = document.getElementById('estimator-type');
+    if (typeSelect) {
+        typeSelect.value = 'web';
+    }
 }
 
 function updateEstimate() {
     const type = document.getElementById('estimator-type').value;
     const timeline = parseFloat(document.getElementById('estimator-timeline').value);
-    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
-    
-    // Base prices for each project type
+    const checked = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
+
     const basePrices = {
         web: 3000,
         mobile: 2000,
         design: 750,
-        consulting: 150 // hourly rate * estimated hours
+        consulting: 150
     };
-    
-    let basePrice = basePrices[type] || 3000;
-    
-    // Add feature costs
+
+    const base = basePrices[type] || 3000;
+
     let featureCost = 0;
-    checkboxes.forEach(checkbox => {
-        featureCost += parseInt(checkbox.value);
+    checked.forEach((checkbox) => {
+        featureCost += parseInt(checkbox.value, 10);
     });
-    
-    // Calculate total with timeline multiplier
-    const total = (basePrice + featureCost) * timeline;
-    const minPrice = Math.round(total * 0.8);
-    const maxPrice = Math.round(total * 1.2);
-    
-    // Update display
-    document.getElementById('estimate-display').textContent = 
-        `$${minPrice.toLocaleString()} – $${maxPrice.toLocaleString()}`;
+
+    const total = (base + featureCost) * timeline;
+    const min = Math.round(total * 0.8);
+    const max = Math.round(total * 1.2);
+
+    const output = document.getElementById('estimate-display');
+    if (output) {
+        output.textContent = `$${min.toLocaleString()} - $${max.toLocaleString()}`;
+    }
 }
 
 function requestDetailedQuote() {
     const type = document.getElementById('estimator-type').value;
     const timeline = document.getElementById('estimator-timeline').value;
     const features = [];
-    
-    document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked').forEach(checkbox => {
-        features.push(checkbox.nextSibling.textContent.trim());
+
+    document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked').forEach((checkbox) => {
+        features.push(checkbox.parentElement.textContent.trim());
     });
-    
-    // Prepare pre-filled contact form data
+
     const projectTypeMap = {
         web: 'web-development',
         mobile: 'mobile-app',
         design: 'branding-design',
         consulting: 'it-consulting'
     };
-    
+
     const timelineMap = {
         '1': 'Standard timeline (4-8 weeks)',
         '1.3': 'Expedited timeline (2-4 weeks)',
         '1.5': 'Rush timeline (1-2 weeks)'
     };
-    
-    const preFilledMessage = `Hi! I used your price estimator and I'm interested in:
 
-Project Type: ${type.charAt(0).toUpperCase() + type.slice(1)}
-Timeline: ${timelineMap[timeline]}
-Features Needed: ${features.join(', ')}
+    const preFilledMessage = `Hi! I used your price estimator and I'm interested in:\n\nProject Type: ${type}\nTimeline: ${timelineMap[timeline]}\nFeatures Needed: ${features.join(', ')}\n\nI'd love to get a detailed quote.`;
 
-I'd love to get a detailed quote for my project. Let's discuss!`;
-    
-    // Close modal
     closePriceEstimator();
-    
-    // Scroll to contact form
+
     document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
-    
-    // Pre-fill contact form
-    setTimeout(() => {
-        document.getElementById('project-type').value = projectTypeMap[type];
+
+    window.setTimeout(() => {
+        document.getElementById('project-type').value = projectTypeMap[type] || 'web-development';
         document.getElementById('message').value = preFilledMessage;
     }, 500);
 }
 
-// Close modal when clicking outside
-document.addEventListener('click', function(e) {
-    const modal = document.getElementById('price-estimator-modal');
-    if (e.target === modal) {
-        closePriceEstimator();
+function togglePricingDetails(type) {
+    const panel = document.getElementById(`pricing-details-${type}`);
+    if (!panel) {
+        return;
     }
-});
 
-// Close modal with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const modal = document.getElementById('price-estimator-modal');
-        if (modal.style.display === 'block') {
-            closePriceEstimator();
-        }
-    }
-});
-
-// Pricing Details Toggle
-function togglePricingDetails(service) {
-    const detailsElement = document.getElementById(`pricing-details-${service}`);
-    const isVisible = detailsElement.style.display !== 'none';
-    
-    // Close all other pricing details first
-    const allDetails = document.querySelectorAll('.pricing-details');
-    allDetails.forEach(detail => {
-        if (detail !== detailsElement) {
-            detail.style.display = 'none';
-        }
-    });
-    
-    // Toggle current one
-    detailsElement.style.display = isVisible ? 'none' : 'block';
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
 }

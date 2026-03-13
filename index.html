@@ -4,410 +4,300 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OCE Labs - Digital Development</title>
-    <meta name="description" content="OCE Labs - Professional digital development services, web solutions, and creative projects.">
+    <meta name="description" content="OCE Labs creates ambitious websites and apps with high-performance engineering and design-forward execution.">
     <link rel="icon" type="image/png" href="icon-logo.png">
     <link rel="shortcut icon" type="image/png" href="icon-logo.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Unbounded:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Unbounded:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
+    <div class="page-atmosphere" aria-hidden="true">
+        <span class="glow glow-a"></span>
+        <span class="glow glow-b"></span>
+        <span class="glow glow-c"></span>
+        <span class="grain"></span>
+    </div>
+
+    <nav class="nav" id="top-nav">
         <div class="nav-overlay" id="nav-overlay"></div>
         <div class="nav-container">
-            <div class="nav-logo">
-                <a href="#home">
-                    <img src="icon-logo.png" alt="Oce Labs" class="logo-image">
+            <a class="nav-logo" href="#home">
+                <img src="icon-logo.png" alt="Oce Labs" class="logo-image">
                 <span class="logo-text">OCE LABS</span>
-                </a>
-            </div>
+            </a>
+
             <div class="nav-menu" id="nav-menu">
                 <a href="#home" class="nav-link">Home</a>
                 <a href="#services" class="nav-link">Services</a>
                 <a href="#work" class="nav-link">Work</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
+
             <div class="nav-actions">
                 <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
                     <ion-icon name="moon" class="theme-icon dark-icon"></ion-icon>
                     <ion-icon name="sunny" class="theme-icon light-icon"></ion-icon>
                 </button>
-                <div class="nav-toggle" id="nav-toggle">
+                <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
                     <span></span>
                     <span></span>
                     <span></span>
-                </div>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <p class="hero-eyebrow">Creative Development Studio</p>
-                <h1 class="hero-title">
-                    <span class="title-line">BUILD WEBSITES</span>
-                    <span class="title-line">& APPS</span>
-                    <span class="title-line accent">FASTER. CLEANER.</span>
-                    <span class="title-line accent">SMARTER.</span>
-                </h1>
-                <p class="hero-subtitle">
-                    Exceptional code. Striking design. Results that speak for themselves.
-                </p>
-                <div class="hero-buttons">
-                    <a href="#contact" class="btn btn-primary" id="start-project-btn">Start Your Project</a>
-                    <a href="#work" class="btn btn-secondary">See Our Work</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">OUR SERVICES</h2>
-                <p class="section-subtitle">Full-stack development, mobile apps, and creative design solutions with transparent pricing</p>
-            </div>
-            
-            <div class="services-grid">
-                <div class="service-card animate-on-scroll">
-                    <div class="service-icon">01</div>
-                    <h3 class="service-title">Web Development</h3>
-                    <p class="service-description">
-                        Clean, responsive websites with CMS. Built with React, Node.js, and modern frameworks for optimal performance.
+    <main>
+        <section id="home" class="hero section-shell">
+            <div class="container hero-grid">
+                <div class="hero-copy" data-gsap="hero-copy">
+                    <p class="hero-eyebrow">Creative Engineering Studio</p>
+                    <h1 class="hero-title">
+                        <span class="title-line">DIGITAL</span>
+                        <span class="title-line">PRODUCTS</span>
+                        <span class="title-line accent">WITH EDGE.</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        OCE Labs designs and builds websites and apps that balance visual identity,
+                        technical depth, and speed to market.
                     </p>
-                    <div class="service-pricing-container">
-                        <div class="pricing-compact">
-                            <span class="pricing-from">From $1,500</span>
-                            <button class="pricing-details-btn" onclick="togglePricingDetails('web')">
-                                <ion-icon name="information-circle-outline"></ion-icon>
-                                View Details
-                            </button>
-                        </div>
-                        <div class="pricing-details" id="pricing-details-web" style="display: none;">
-                            <div class="pricing-range">Typically $1,500 – $7,500</div>
-                            <div class="pricing-factors">
-                                <ion-icon name="information-circle"></ion-icon>
-                                Depends on pages, integrations, timelines, and design needs
-                            </div>
-                        </div>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn btn-primary" id="start-project-btn">Start Your Project</a>
+                        <a href="#work" class="btn btn-secondary">Explore Work</a>
                     </div>
-                    <button class="price-estimator-btn" onclick="openPriceEstimator('web')">Get Custom Quote →</button>
                 </div>
-                
-                <div class="service-card animate-on-scroll">
-                    <div class="service-icon">02</div>
-                    <h3 class="service-title">Mobile Apps</h3>
-                    <p class="service-description">
-                        Cross-platform React Native builds and native iOS applications. From concept to App Store launch.
-                    </p>
-                    <div class="service-pricing-container">
-                        <div class="pricing-compact">
-                            <span class="pricing-from">From $3,000</span>
-                            <button class="pricing-details-btn" onclick="togglePricingDetails('mobile')">
-                                <ion-icon name="information-circle-outline"></ion-icon>
-                                View Details
-                            </button>
-                        </div>
-                        <div class="pricing-details" id="pricing-details-mobile" style="display: none;">
-                            <div class="pricing-range">Typically $3,000 – $8,500</div>
-                            <div class="pricing-factors">
-                                <ion-icon name="information-circle"></ion-icon>
-                                Depends on features, platforms, integrations, and complexity
-                            </div>
-                        </div>
-                    </div>
-                    <button class="price-estimator-btn" onclick="openPriceEstimator('mobile')">Get Custom Quote →</button>
-                </div>
-                
-                <div class="service-card animate-on-scroll">
-                    <div class="service-icon">03</div>
-                    <h3 class="service-title">Branding + Design</h3>
-                    <p class="service-description">
-                        Logo design, style guides, and complete UI kits. Creating visual experiences that captivate and convert.
-                    </p>
-                    <div class="service-pricing-container">
-                        <div class="pricing-compact">
-                            <span class="pricing-from">From $750</span>
-                            <button class="pricing-details-btn" onclick="togglePricingDetails('design')">
-                                <ion-icon name="information-circle-outline"></ion-icon>
-                                View Details
-                            </button>
-                        </div>
-                        <div class="pricing-details" id="pricing-details-design" style="display: none;">
-                            <div class="pricing-range">Typically $750 – $6,500</div>
-                            <div class="pricing-factors">
-                                <ion-icon name="information-circle"></ion-icon>
-                                Depends on deliverables, revisions, and brand complexity
-                            </div>
-                        </div>
-                    </div>
-                    <button class="price-estimator-btn" onclick="openPriceEstimator('design')">Get Custom Quote →</button>
-                </div>
+
+                <aside class="hero-rail" data-gsap="hero-rail">
+                    <article class="rail-card">
+                        <span class="rail-label">Core Stack</span>
+                        <p>React, Next.js, Node, Swift, TypeScript</p>
+                    </article>
+                    <article class="rail-card">
+                        <span class="rail-label">Delivery Tempo</span>
+                        <p>Rapid prototypes, production-ready execution</p>
+                    </article>
+                    <article class="rail-card">
+                        <span class="rail-label">Focus</span>
+                        <p>Web platforms, apps, and brand-forward systems</p>
+                    </article>
+                </aside>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Price Estimator Modal -->
-    <div id="price-estimator-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Build Your Custom Quote</h3>
-                <span class="modal-close" onclick="closePriceEstimator()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="price-estimator-form">
-                    <div class="estimator-section">
-                        <label>Project Type:</label>
-                        <select id="estimator-type" onchange="updateEstimate()">
-                            <option value="web">Website Development</option>
-                            <option value="mobile">Mobile App</option>
-                            <option value="design">Branding & Design</option>
-                        </select>
-                    </div>
+        <section id="services" class="services section-shell">
+            <div class="container">
+                <header class="section-header" data-gsap="reveal-header">
+                    <p class="section-kicker">What We Do</p>
+                    <h2 class="section-title">SERVICES ENGINEERED FOR MOMENTUM</h2>
+                    <p class="section-subtitle">Clear scope, transparent pricing, and technical quality from kickoff to launch.</p>
+                </header>
 
-                    <div class="estimator-section">
-                        <label>Key Features Needed:</label>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" value="500" onchange="updateEstimate()"> User Authentication/Login</label>
-                            <label><input type="checkbox" value="800" onchange="updateEstimate()"> Payment Processing</label>
-                            <label><input type="checkbox" value="600" onchange="updateEstimate()"> Content Management System</label>
-                            <label><input type="checkbox" value="400" onchange="updateEstimate()"> Database Integration</label>
-                            <label><input type="checkbox" value="300" onchange="updateEstimate()"> Email Notifications</label>
-                            <label><input type="checkbox" value="700" onchange="updateEstimate()"> Admin Dashboard</label>
-                            <label><input type="checkbox" value="500" onchange="updateEstimate()"> API Integration</label>
-                            <label><input type="checkbox" value="400" onchange="updateEstimate()"> Analytics & Reporting</label>
+                <div class="services-grid">
+                    <article class="service-card" data-gsap="service-card">
+                        <div class="service-head">
+                            <span class="service-index">01</span>
+                            <h3 class="service-title">Web Development</h3>
                         </div>
-                    </div>
-
-                    <div class="estimator-section">
-                        <label>Timeline:</label>
-                        <select id="estimator-timeline" onchange="updateEstimate()">
-                            <option value="1">Standard (4-8 weeks)</option>
-                            <option value="1.3">Expedited (2-4 weeks) +30%</option>
-                            <option value="1.5">Rush (1-2 weeks) +50%</option>
-                        </select>
-                    </div>
-
-                    <div class="estimate-result">
-                        <h4>Estimated Project Range:</h4>
-                        <div class="estimate-price" id="estimate-display">$3,000 – $4,500</div>
-                        <p class="estimate-note">*This is a preliminary estimate. Let's chat to tailor it to your specific needs!</p>
-                    </div>
-
-                    <div class="modal-actions">
-                        <button type="button" class="btn btn-primary" onclick="requestDetailedQuote()">
-                            Request Detailed Quote
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="closePriceEstimator()">
-                            Close
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Credibility Section -->
-    <section class="credibility">
-        <div class="container">
-            <div class="credibility-content">
-                <div class="credibility-item">
-                    <div class="credibility-icon">
-                        <ion-icon name="star"></ion-icon>
-                    </div>
-                    <h3>Trusted by Forward-Thinking Companies</h3>
-                    <p>Built for 3+ companies across healthcare, travel, and AI technology sectors.</p>
-                </div>
-                
-                <div class="credibility-item">
-                    <div class="credibility-icon">
-                        <ion-icon name="briefcase"></ion-icon>
-                    </div>
-                    <h3>Proven Track Record</h3>
-                    <p>From startup MVPs to enterprise solutions, we deliver scalable digital products on time.</p>
-                </div>
-                
-                <div class="credibility-item">
-                    <div class="credibility-icon">
-                        <ion-icon name="code-slash"></ion-icon>
-                    </div>
-                    <h3>Built with Modern Tech</h3>
-                    <p>React • Node.js • Swift • Figma • AWS • TypeScript</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Work Section -->
-    <section id="work" class="work">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">FEATURED PROJECTS</h2>
-                <p class="section-subtitle">Case studies showcasing our development and design capabilities</p>
-            </div>
-            
-            <div class="work-grid">
-                <div class="work-item animate-on-scroll">
-                    <div class="work-number">01</div>
-                    <div class="work-content">
-                        <h3 class="work-title">Personal Brand Portfolio</h3>
-                        <p class="work-description">
-                            A custom React Next.js website with dynamic animations — resulting in new professional opportunities.
+                        <p class="service-description">
+                            Responsive websites and web apps with strong architecture, clean interactions, and CMS support where needed.
                         </p>
+                        <div class="service-pricing-container">
+                            <div class="pricing-compact">
+                                <span class="pricing-from">From $1,500</span>
+                                <button class="pricing-details-btn" onclick="togglePricingDetails('web')">
+                                    <ion-icon name="information-circle-outline"></ion-icon>
+                                    View Details
+                                </button>
+                            </div>
+                            <div class="pricing-details" id="pricing-details-web" style="display: none;">
+                                <div class="pricing-range">Typically $1,500 - $7,500</div>
+                                <div class="pricing-factors">
+                                    <ion-icon name="information-circle"></ion-icon>
+                                    Depends on pages, integrations, timelines, and design needs
+                                </div>
+                            </div>
+                        </div>
+                        <button class="price-estimator-btn" onclick="openPriceEstimator('web')">Get Custom Quote</button>
+                    </article>
+
+                    <article class="service-card" data-gsap="service-card">
+                        <div class="service-head">
+                            <span class="service-index">02</span>
+                            <h3 class="service-title">Mobile Apps</h3>
+                        </div>
+                        <p class="service-description">
+                            Cross-platform React Native and native iOS builds from product planning through app-store deployment.
+                        </p>
+                        <div class="service-pricing-container">
+                            <div class="pricing-compact">
+                                <span class="pricing-from">From $3,000</span>
+                                <button class="pricing-details-btn" onclick="togglePricingDetails('mobile')">
+                                    <ion-icon name="information-circle-outline"></ion-icon>
+                                    View Details
+                                </button>
+                            </div>
+                            <div class="pricing-details" id="pricing-details-mobile" style="display: none;">
+                                <div class="pricing-range">Typically $3,000 - $8,500</div>
+                                <div class="pricing-factors">
+                                    <ion-icon name="information-circle"></ion-icon>
+                                    Depends on features, platforms, integrations, and complexity
+                                </div>
+                            </div>
+                        </div>
+                        <button class="price-estimator-btn" onclick="openPriceEstimator('mobile')">Get Custom Quote</button>
+                    </article>
+
+                    <article class="service-card" data-gsap="service-card">
+                        <div class="service-head">
+                            <span class="service-index">03</span>
+                            <h3 class="service-title">Branding + Design</h3>
+                        </div>
+                        <p class="service-description">
+                            Visual systems, UI kits, and identity direction that make your product instantly recognizable.
+                        </p>
+                        <div class="service-pricing-container">
+                            <div class="pricing-compact">
+                                <span class="pricing-from">From $750</span>
+                                <button class="pricing-details-btn" onclick="togglePricingDetails('design')">
+                                    <ion-icon name="information-circle-outline"></ion-icon>
+                                    View Details
+                                </button>
+                            </div>
+                            <div class="pricing-details" id="pricing-details-design" style="display: none;">
+                                <div class="pricing-range">Typically $750 - $6,500</div>
+                                <div class="pricing-factors">
+                                    <ion-icon name="information-circle"></ion-icon>
+                                    Depends on deliverables, revisions, and brand complexity
+                                </div>
+                            </div>
+                        </div>
+                        <button class="price-estimator-btn" onclick="openPriceEstimator('design')">Get Custom Quote</button>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="credibility section-shell">
+            <div class="container credibility-grid">
+                <article class="credibility-item" data-gsap="credibility-item">
+                    <ion-icon name="star"></ion-icon>
+                    <h3>Trusted Partners</h3>
+                    <p>Built for companies across healthcare, travel, AI, and startup ecosystems.</p>
+                </article>
+                <article class="credibility-item" data-gsap="credibility-item">
+                    <ion-icon name="flash"></ion-icon>
+                    <h3>Fast Execution</h3>
+                    <p>From concept to production with clear communication and deliberate quality checks.</p>
+                </article>
+                <article class="credibility-item" data-gsap="credibility-item">
+                    <ion-icon name="code-slash"></ion-icon>
+                    <h3>Modern Stack</h3>
+                    <p>React, Node, TypeScript, Swift, AWS, and performant frontend architecture.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="work" class="work section-shell">
+            <div class="container">
+                <header class="section-header" data-gsap="reveal-header">
+                    <p class="section-kicker">Selected Work</p>
+                    <h2 class="section-title">PROJECTS WITH A SHARP POINT OF VIEW</h2>
+                </header>
+
+                <div class="work-grid">
+                    <article class="work-item" data-gsap="work-item">
+                        <span class="work-number">01</span>
+                        <h3 class="work-title">Personal Brand Portfolio</h3>
+                        <p class="work-description">A React Next.js portfolio with expressive motion and clear storytelling.</p>
                         <div class="work-meta">
                             <span class="work-tag">React</span>
                             <span class="work-tag">Next.js</span>
-                            <span class="work-tag">Animation</span>
+                            <span class="work-tag">Motion</span>
                         </div>
-                        <div class="work-links">
-                            <a href="https://chibudomonyejesi.com" class="work-link" target="_blank" rel="noopener">
-                                View Portfolio <span class="work-link-arrow">&rarr;</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                        <a href="https://chibudomonyejesi.com" class="work-link" target="_blank" rel="noopener">View Project</a>
+                    </article>
 
-                <div class="work-item animate-on-scroll">
-                    <div class="work-number">02</div>
-                    <div class="work-content">
+                    <article class="work-item" data-gsap="work-item">
+                        <span class="work-number">02</span>
                         <h3 class="work-title">Digital Art & Design Work</h3>
-                        <p class="work-description">
-                            Custom illustrations and UI design systems — creating distinctive brand presence across digital platforms.
-                        </p>
+                        <p class="work-description">Illustration and visual design work that extends product identity across channels.</p>
                         <div class="work-meta">
                             <span class="work-tag">Illustration</span>
                             <span class="work-tag">UI Design</span>
                             <span class="work-tag">Branding</span>
                         </div>
-                        <div class="work-links">
-                            <a href="https://instagram.com/ethan.lma" class="work-link" target="_blank" rel="noopener">
-                                Instagram <span class="work-link-arrow">&rarr;</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                        <a href="https://instagram.com/ethan.lma" class="work-link" target="_blank" rel="noopener">View Project</a>
+                    </article>
 
-                <div class="work-item animate-on-scroll">
-                    <div class="work-number">03</div>
-                    <div class="work-content">
+                    <article class="work-item" data-gsap="work-item">
+                        <span class="work-number">03</span>
                         <h3 class="work-title">Helthy - AI Fitness Platform</h3>
-                        <p class="work-description">
-                            AI-powered nutrition tracking and workout platform with smart advice and insights. Currently in development.
-                        </p>
+                        <p class="work-description">An AI-powered fitness and nutrition product with smart guidance and tracking.</p>
                         <div class="work-meta">
-                            <span class="work-tag">AI/ML</span>
+                            <span class="work-tag">AI</span>
                             <span class="work-tag">React Native</span>
-                            <span class="work-tag">Full-Stack</span>
+                            <span class="work-tag">Full Stack</span>
                         </div>
-                        <div class="work-links">
-                            <a href="https://helthy.app" class="work-link" target="_blank" rel="noopener">
-                                Preview Development <span class="work-link-arrow">&rarr;</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                        <a href="https://helthy.app" class="work-link" target="_blank" rel="noopener">View Project</a>
+                    </article>
 
-                <div class="work-item animate-on-scroll">
-                    <div class="work-number">04</div>
-                    <div class="work-content">
+                    <article class="work-item" data-gsap="work-item">
+                        <span class="work-number">04</span>
                         <h3 class="work-title">Temegs Website</h3>
-                        <p class="work-description">
-                            Business website focused on clarity, responsive layouts, and fast loading across devices.
-                        </p>
+                        <p class="work-description">A clean business website centered on clarity, speed, and responsive behavior.</p>
                         <div class="work-meta">
                             <span class="work-tag">Web Development</span>
-                            <span class="work-tag">Responsive Design</span>
+                            <span class="work-tag">Responsive</span>
                             <span class="work-tag">Frontend</span>
                         </div>
-                        <div class="work-links">
-                            <a href="https://temegs.vercel.app" class="work-link" target="_blank" rel="noopener">
-                                View Website <span class="work-link-arrow">&rarr;</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                        <a href="https://temegs.vercel.app" class="work-link" target="_blank" rel="noopener">View Project</a>
+                    </article>
 
-                <div class="work-item animate-on-scroll">
-                    <div class="work-number">05</div>
-                    <div class="work-content">
+                    <article class="work-item" data-gsap="work-item">
+                        <span class="work-number">05</span>
                         <h3 class="work-title">Concepta Website</h3>
-                        <p class="work-description">
-                            A modern brand-forward web experience built with careful UI pacing and production-grade frontend polish.
-                        </p>
+                        <p class="work-description">Brand-forward marketing site with careful pacing and production-ready polish.</p>
                         <div class="work-meta">
                             <span class="work-tag">Brand Website</span>
-                            <span class="work-tag">UI Design</span>
+                            <span class="work-tag">UI Direction</span>
                             <span class="work-tag">Performance</span>
                         </div>
-                        <div class="work-links">
-                            <a href="https://concepta-five.vercel.app/" class="work-link" target="_blank" rel="noopener">
-                                View Website <span class="work-link-arrow">&rarr;</span>
-                            </a>
-                        </div>
-                    </div>
+                        <a href="https://concepta-five.vercel.app/" class="work-link" target="_blank" rel="noopener">View Project</a>
+                    </article>
                 </div>
 
+                <div class="work-cta" data-gsap="reveal-header">
+                    <p>Want to see your project here?</p>
+                    <a href="#contact" class="btn btn-primary">Let's Build Something</a>
+                </div>
             </div>
-            
-            <div class="work-cta">
-                <p>Want to see your project here?</p>
-                <a href="#contact" class="btn btn-primary">Let's Build Something</a>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h2 class="section-title">READY TO START</h2>
-                    <h2 class="section-title">YOUR PROJECT?</h2>
+        <section id="contact" class="contact section-shell">
+            <div class="container contact-content">
+                <div class="contact-info" data-gsap="contact-left">
+                    <p class="section-kicker">Let's Talk</p>
+                    <h2 class="section-title">READY TO BUILD SOMETHING SERIOUS?</h2>
                     <p class="contact-text">
-                        Whether you need a sleek website, mobile app, or complete brand identity – we're here to make it happen. Book a free strategy call to discuss your project.
+                        Whether you need a high-converting website, a product MVP, or a complete visual system,
+                        OCE Labs can design and ship it with precision.
                     </p>
                     <div class="contact-details">
-                        <div class="contact-item">
-                            <a href="mailto:contact@ocelabs.tech" class="contact-icon-link" aria-label="Email">
-                                <ion-icon name="mail-outline" style="font-size: 1.5em; vertical-align: middle;"></ion-icon>
-                            </a>
-                            <a href="https://linkedin.com/in/chibudom-onyejesi" class="contact-icon-link" target="_blank" rel="noopener" aria-label="LinkedIn">
-                                <ion-icon name="logo-linkedin" style="font-size: 1.5em; vertical-align: middle;"></ion-icon>
-                            </a>
-                        </div>
-                        <div class="contact-item">
-                            <span class="response-time-badge" style="display:inline-flex;align-items:center;">
-                                <ion-icon class="response-time-icon" name="flash-outline" style="color:#fff;vertical-align:middle;"></ion-icon>
-                                <span class="response-time-text" style="margin-left:0.3em; font-weight:400; color:#fff; background:rgba(255,255,255,0.13); padding:0.2em 0.7em; border-radius:1em; font-size:0.98em; letter-spacing:0.01em;">Usually within 24 hours</span>
-                            </span>
-                            <style>
-                            [data-theme="dark"] .response-time-badge .response-time-icon,
-                            [data-theme="dark"] .response-time-badge .response-time-text {
-                                color: #111 !important;
-                            }
-                            [data-theme="dark"] .response-time-badge .response-time-text {
-                                background: rgba(255,255,255,0.13) !important;
-                            }
-                            [data-theme="light"] .response-time-badge .response-time-icon,
-                            [data-theme="light"] .response-time-badge .response-time-text {
-                                color: #fff !important;
-                            }
-                            [data-theme="light"] .response-time-badge .response-time-text {
-                                background: rgba(0,0,0,0.10) !important;
-                            }
-                            </style>
-                        </div>
+                        <a href="mailto:contact@ocelabs.tech" class="contact-icon-link" aria-label="Email">
+                            <ion-icon name="mail-outline"></ion-icon>
+                        </a>
+                        <a href="https://linkedin.com/in/chibudom-onyejesi" class="contact-icon-link" target="_blank" rel="noopener" aria-label="LinkedIn">
+                            <ion-icon name="logo-linkedin"></ion-icon>
+                        </a>
+                        <span class="response-time">Usually within 24 hours</span>
                     </div>
                 </div>
-                
-                <form class="contact-form" id="contact-form" action="https://formspree.io/f/movldbbk" method="POST">
+
+                <form class="contact-form" id="contact-form" action="https://formspree.io/f/movldbbk" method="POST" data-gsap="contact-right">
                     <div class="form-group">
                         <input type="text" id="name" name="name" placeholder="Your Name" required>
                     </div>
@@ -438,36 +328,89 @@
                         <textarea id="message" name="message" placeholder="Tell us about your project..." rows="6" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary btn-full">Request Free Strategy Call</button>
-                    
                     <div class="form-testimonial">
-                        <p><em>"OCE Labs delivered exactly what we needed - on time and beyond expectations. Their attention to detail is impressive."</em></p>
+                        <p><em>"OCE Labs delivered exactly what we needed - on time and beyond expectations."</em></p>
                         <span>- Sarah M., Startup Founder</span>
                     </div>
                 </form>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-left">
-                    <p>&copy; 2025 OCE LABS. All rights reserved.</p>
-                    <div class="footer-links">
-                        <a href="#contact">Contact</a>
-                        <a href="mailto:contact@ocelabs.tech">Email</a>
-                        <a href="https://github.com/ethan0c" target="_blank">GitHub</a>
-                    </div>
+        <div class="container footer-content">
+            <div class="footer-left">
+                <p>&copy; 2025 OCE LABS. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#contact">Contact</a>
+                    <a href="mailto:contact@ocelabs.tech">Email</a>
+                    <a href="https://github.com/ethan0c" target="_blank" rel="noopener">GitHub</a>
                 </div>
-                <div class="footer-right">
-                    <p>Built with <ion-icon name="heart" style="color:inherit;vertical-align:middle;"></ion-icon> by OCE LABS</p>
-                    <p>Turning dreams into digital reality since 2024</p>
-                </div>
+            </div>
+            <div class="footer-right">
+                <p>Built with <ion-icon name="heart"></ion-icon> by OCE LABS</p>
+                <p>Turning dreams into digital reality since 2024</p>
             </div>
         </div>
     </footer>
 
+    <div id="price-estimator-modal" class="modal" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Build Your Custom Quote</h3>
+                <button class="modal-close" onclick="closePriceEstimator()" aria-label="Close price estimator">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="price-estimator-form">
+                    <div class="estimator-section">
+                        <label for="estimator-type">Project Type:</label>
+                        <select id="estimator-type" onchange="updateEstimate()">
+                            <option value="web">Website Development</option>
+                            <option value="mobile">Mobile App</option>
+                            <option value="design">Branding & Design</option>
+                        </select>
+                    </div>
+
+                    <div class="estimator-section">
+                        <label>Key Features Needed:</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" value="500" onchange="updateEstimate()"> User Authentication/Login</label>
+                            <label><input type="checkbox" value="800" onchange="updateEstimate()"> Payment Processing</label>
+                            <label><input type="checkbox" value="600" onchange="updateEstimate()"> Content Management System</label>
+                            <label><input type="checkbox" value="400" onchange="updateEstimate()"> Database Integration</label>
+                            <label><input type="checkbox" value="300" onchange="updateEstimate()"> Email Notifications</label>
+                            <label><input type="checkbox" value="700" onchange="updateEstimate()"> Admin Dashboard</label>
+                            <label><input type="checkbox" value="500" onchange="updateEstimate()"> API Integration</label>
+                            <label><input type="checkbox" value="400" onchange="updateEstimate()"> Analytics & Reporting</label>
+                        </div>
+                    </div>
+
+                    <div class="estimator-section">
+                        <label for="estimator-timeline">Timeline:</label>
+                        <select id="estimator-timeline" onchange="updateEstimate()">
+                            <option value="1">Standard (4-8 weeks)</option>
+                            <option value="1.3">Expedited (2-4 weeks) +30%</option>
+                            <option value="1.5">Rush (1-2 weeks) +50%</option>
+                        </select>
+                    </div>
+
+                    <div class="estimate-result">
+                        <h4>Estimated Project Range:</h4>
+                        <div class="estimate-price" id="estimate-display">$3,000 - $4,500</div>
+                        <p class="estimate-note">This is a preliminary estimate. Let's tailor it to your exact scope.</p>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-primary" onclick="requestDetailedQuote()">Request Detailed Quote</button>
+                        <button type="button" class="btn btn-secondary" onclick="closePriceEstimator()">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
