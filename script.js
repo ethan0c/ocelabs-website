@@ -4,15 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const navOverlay = document.getElementById('nav-overlay');
     const navLinks = document.querySelectorAll('.nav-link');
 
-    const introTransitions = initScreenIntroTransitions();
+    initScreenIntroTransitions();
     const landingArcMenu = initLandingArcMenu();
 
     initThemeToggle();
     initMobileMenu(navToggle, navMenu, navOverlay, navLinks);
-    initPageLinkTransitions(introTransitions, landingArcMenu);
     initSmoothAnchors();
     initActiveNav(navLinks);
-    initNavAutoHide();
+
     initGsapAnimations();
     initMagneticButtons();
     initContactForm();
@@ -43,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initScreenIntroTransitions() {
     const intro = document.getElementById('screen-intro');
     if (!intro) {
-        return { runOut: (url) => { window.location.href = url; } };
+        return;
     }
 
     const inner = intro.querySelector('.screen-intro-inner');
@@ -53,7 +52,6 @@ function initScreenIntroTransitions() {
     const line = intro.querySelector('.screen-intro-rule');
     const hasGsap = typeof gsap !== 'undefined';
     const introStartTime = performance.now();
-    const skipIntroOnLoad = sessionStorage.getItem('oce_skip_next_intro') === '1';
 
     const hideImmediately = () => {
         intro.style.pointerEvents = 'none';
@@ -65,18 +63,6 @@ function initScreenIntroTransitions() {
             intro.style.visibility = 'hidden';
         }
     };
-
-    if (skipIntroOnLoad) {
-        sessionStorage.removeItem('oce_skip_next_intro');
-        hideImmediately();
-
-        return {
-            runOut: (url) => {
-                sessionStorage.setItem('oce_skip_next_intro', '1');
-                window.location.href = url;
-            }
-        };
-    }
 
     if (hasGsap) {
         const scheduleDismiss = () => {
@@ -109,77 +95,6 @@ function initScreenIntroTransitions() {
         if (event.persisted) {
             hideImmediately();
         }
-    });
-
-    return {
-        runOut: (url) => {
-            if (!hasGsap) {
-                sessionStorage.setItem('oce_skip_next_intro', '1');
-                window.location.href = url;
-                return;
-            }
-
-            intro.style.pointerEvents = 'auto';
-            intro.setAttribute('aria-hidden', 'false');
-
-            gsap.timeline({
-                defaults: { ease: 'power2.out' },
-                onComplete: () => {
-                    sessionStorage.setItem('oce_skip_next_intro', '1');
-                    window.location.href = url;
-                }
-            })
-                .set(intro, { autoAlpha: 1 })
-                .fromTo(line, { scaleX: 0, transformOrigin: '50% 50%' }, { scaleX: 1, duration: 0.2 })
-                .fromTo(wordmark, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.18 }, '-=0.1')
-                .fromTo(caption, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.18 }, '-=0.12')
-                .fromTo(logo, { autoAlpha: 0, scale: 0.8 }, { autoAlpha: 1, scale: 1, duration: 0.22 }, '-=0.18');
-        }
-    };
-}
-
-function initPageLinkTransitions(introTransitions, landingArcMenu) {
-    let transitioning = false;
-
-    document.querySelectorAll('a[href]').forEach((anchor) => {
-        anchor.addEventListener('click', (event) => {
-            const rawHref = anchor.getAttribute('href');
-            if (!rawHref) {
-                return;
-            }
-
-            if (
-                rawHref.startsWith('#') ||
-                rawHref.startsWith('mailto:') ||
-                rawHref.startsWith('tel:') ||
-                rawHref.startsWith('javascript:') ||
-                anchor.target === '_blank' ||
-                anchor.hasAttribute('download')
-            ) {
-                return;
-            }
-
-            const targetUrl = new URL(rawHref, window.location.href);
-            const currentUrl = new URL(window.location.href);
-
-            if (targetUrl.origin !== currentUrl.origin) {
-                return;
-            }
-
-            if (targetUrl.href === currentUrl.href) {
-                return;
-            }
-
-            event.preventDefault();
-
-            if (transitioning) {
-                return;
-            }
-
-            transitioning = true;
-            landingArcMenu.close();
-            introTransitions.runOut(targetUrl.href);
-        });
     });
 }
 
@@ -265,53 +180,6 @@ function initActiveNav(navLinks) {
     });
 }
 
-function initNavAutoHide() {
-    const nav = document.getElementById('top-nav');
-    const isLanding = document.body.classList.contains('landing-page');
-
-    if (!nav || isLanding) {
-        nav?.classList.remove('nav-hidden');
-        return;
-    }
-
-    nav.classList.remove('nav-hidden');
-
-    let lastY = window.scrollY;
-    let hasScrolledDown = false;
-    let ticking = false;
-
-    const updateNavState = () => {
-        const currentY = window.scrollY;
-        const delta = currentY - lastY;
-        const isNearTop = currentY < 14;
-
-        const isMobileMenuOpen = document.getElementById('nav-menu')?.classList.contains('active');
-        const isArcMenuOpen = document.getElementById('scene-menu-toggle')?.getAttribute('aria-expanded') === 'true';
-        const shouldKeepVisible = isMobileMenuOpen || isArcMenuOpen;
-
-        if (delta > 2) {
-            hasScrolledDown = true;
-        }
-
-        if (!hasScrolledDown) {
-            nav.classList.remove('nav-hidden');
-        } else if (isNearTop || shouldKeepVisible || delta < -5) {
-            nav.classList.remove('nav-hidden');
-        } else if (delta > 5 && currentY > 100) {
-            nav.classList.add('nav-hidden');
-        }
-
-        lastY = currentY;
-        ticking = false;
-    };
-
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            window.requestAnimationFrame(updateNavState);
-            ticking = true;
-        }
-    }, { passive: true });
-}
 
 function initGsapAnimations() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {

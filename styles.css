@@ -183,13 +183,8 @@ body {
     -webkit-backdrop-filter: blur(14px);
     background: color-mix(in srgb, var(--bg) 78%, transparent);
     border-bottom: 1px solid var(--line);
-    transition: transform 0.32s ease, opacity 0.32s ease;
-    will-change: transform;
 }
 
-.nav.nav-hidden {
-    transform: translateY(calc(-100% - 2px));
-}
 
 .nav-container {
     width: min(100% - calc(var(--gutter) * 2), var(--max-width));

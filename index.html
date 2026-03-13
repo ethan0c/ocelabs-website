@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OCE Labs - Home</title>
     <meta name="description" content="OCE Labs builds ambitious digital products with engineering precision and design-forward execution.">
+    <script>
+        (function () {
+            var saved = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+        })();
+    </script>
     <link rel="icon" type="image/png" href="icon-logo.png">
     <link rel="shortcut icon" type="image/png" href="icon-logo.png">
     <link rel="stylesheet" href="styles.css">
