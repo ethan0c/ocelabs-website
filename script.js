@@ -52,6 +52,7 @@ function initScreenIntroTransitions() {
     const caption = intro.querySelector('.screen-intro-caption');
     const line = intro.querySelector('.screen-intro-rule');
     const hasGsap = typeof gsap !== 'undefined';
+    const introStartTime = performance.now();
 
     const hideImmediately = () => {
         intro.style.pointerEvents = 'none';
@@ -65,6 +66,19 @@ function initScreenIntroTransitions() {
     };
 
     if (hasGsap) {
+        const scheduleDismiss = () => {
+            const elapsed = performance.now() - introStartTime;
+            const remaining = Math.max(1000 - elapsed, 0);
+
+            window.setTimeout(() => {
+                gsap.to(intro, {
+                    autoAlpha: 0,
+                    duration: 0.34,
+                    onComplete: hideImmediately
+                });
+            }, remaining);
+        };
+
         gsap.set(intro, { autoAlpha: 1 });
         gsap.set(inner, { autoAlpha: 1, y: 0, scale: 1 });
 
@@ -73,18 +87,15 @@ function initScreenIntroTransitions() {
             .from(wordmark, { autoAlpha: 0, y: 9, duration: 0.25 }, '-=0.2')
             .from(line, { scaleX: 0, transformOrigin: '50% 50%', duration: 0.26 }, '-=0.18')
             .from(caption, { autoAlpha: 0, y: 6, duration: 0.22 }, '-=0.14')
-            .to(intro, {
-                autoAlpha: 0,
-                duration: 0.34,
-                delay: 0.16,
-                onComplete: hideImmediately
-            });
+            .call(scheduleDismiss);
     } else {
-        window.setTimeout(hideImmediately, 420);
+        window.setTimeout(hideImmediately, 1000);
     }
 
-    window.addEventListener('pageshow', () => {
-        hideImmediately();
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            hideImmediately();
+        }
     });
 
     return {
