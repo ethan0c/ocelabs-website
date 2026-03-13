@@ -139,28 +139,34 @@ function initGsapAnimations() {
 
     const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     heroTl
-        .from('.nav', { y: -30, opacity: 0, duration: 0.6, delay: isLanding ? 0.25 : 0 })
-        .from('.hero-eyebrow', { y: 24, opacity: 0, duration: 0.5 }, '-=0.2')
-        .from('.title-line', { yPercent: 110, opacity: 0, stagger: 0.08, duration: 0.75 }, '-=0.1')
-        .from('.hero-subtitle', { y: 20, opacity: 0, duration: 0.55 }, '-=0.25')
-        .from('.hero-buttons .btn', { y: 16, opacity: 0, stagger: 0.1, duration: 0.45 }, '-=0.2');
+        .from('.nav', { y: -20, opacity: 0, duration: 0.5, delay: isLanding ? 0.25 : 0 })
+        .fromTo('.hero-eyebrow',
+            { opacity: 0, filter: 'blur(6px)', y: 8 },
+            { opacity: 1, filter: 'blur(0px)', y: 0, duration: 0.5 },
+        '-=0.15')
+        .fromTo('.title-line',
+            { opacity: 0, filter: 'blur(10px)', y: 18 },
+            { opacity: 1, filter: 'blur(0px)', y: 0, stagger: 0.07, duration: 0.62 },
+        '-=0.2')
+        .fromTo('.hero-subtitle',
+            { opacity: 0, filter: 'blur(6px)', y: 10 },
+            { opacity: 1, filter: 'blur(0px)', y: 0, duration: 0.5 },
+        '-=0.3')
+        .from('.hero-buttons .btn', { y: 12, opacity: 0, stagger: 0.08, duration: 0.38 }, '-=0.2');
 
     if (isLanding) {
         heroTl
-            .from('.orbit-label', {
-                opacity: 0,
-                scale: 0.92,
-                duration: 0.65,
-                stagger: 0.05
-            }, '-=0.45')
+            .fromTo('.orbit-label',
+                { opacity: 0, y: 6 },
+                { opacity: 1, y: 0, duration: 0.5, stagger: 0.04 },
+            '-=0.4')
             .from('.shape', {
                 opacity: 0,
-                scale: 0.78,
-                rotation: -18,
-                duration: 0.75,
-                stagger: 0.07,
+                scale: 0.82,
+                duration: 0.65,
+                stagger: 0.06,
                 ease: 'power2.out'
-            }, '-=0.5');
+            }, '-=0.45');
 
         gsap.to('.shape--ring', {
             rotation: 360,
@@ -172,9 +178,15 @@ function initGsapAnimations() {
 
         gsap.to('.shape--cube', {
             rotationY: '+=360',
-            rotationX: '+=180',
-            y: -14,
-            duration: 9,
+            rotationX: '+=360',
+            duration: 10,
+            ease: 'none',
+            repeat: -1
+        });
+
+        gsap.to('.shape--cube', {
+            y: -16,
+            duration: 4,
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1
@@ -182,8 +194,14 @@ function initGsapAnimations() {
 
         gsap.to('.shape--diamond', {
             rotation: '+=360',
-            x: 22,
-            duration: 11,
+            duration: 13,
+            ease: 'none',
+            repeat: -1
+        });
+
+        gsap.to('.shape--diamond', {
+            x: 18,
+            duration: 5,
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1
@@ -360,14 +378,6 @@ function initLandingShowreel() {
         ease: 'power2.out'
     });
 
-    gsap.to('.scene-menu-toggle--nav', {
-        y: -2,
-        duration: 3.1,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1
-    });
-
     initLandingTitleChoreography();
     initLandingCursorRig();
 }
@@ -391,19 +401,16 @@ function initLandingArcMenu() {
 
     gsap.set(panel, {
         autoAlpha: 0,
-        scale: 0.66,
-        x: 16,
-        y: -12,
-        rotation: -18,
+        scale: 0.9,
+        y: -6,
         transformOrigin: '100% 0%',
         pointerEvents: 'none'
     });
 
     gsap.set(links, {
         autoAlpha: 0,
-        y: -12,
-        x: 8,
-        scale: 0.56
+        y: -4,
+        scale: 0.88
     });
 
     if (openIcon && closeIcon) {
@@ -428,19 +435,18 @@ function initLandingArcMenu() {
         .to(panel, {
             autoAlpha: 1,
             scale: 1,
-            x: 0,
             y: 0,
-            rotation: 0,
-            duration: 0.45
+            duration: 0.26,
+            ease: 'power2.out'
         })
         .to(links, {
             autoAlpha: 1,
             y: 0,
-            x: 0,
             scale: 1,
-            stagger: 0.07,
-            duration: 0.32
-        }, '-=0.26');
+            stagger: 0.055,
+            duration: 0.2,
+            ease: 'power2.out'
+        }, '-=0.12');
 
     if (openIcon && closeIcon) {
         menuTimeline
@@ -546,10 +552,11 @@ function initLandingTitleChoreography() {
 
         gsap.timeline()
             .to(lines, {
-                y: -34,
                 opacity: 0,
-                stagger: 0.04,
-                duration: 0.28,
+                filter: 'blur(8px)',
+                y: -10,
+                stagger: 0.035,
+                duration: 0.22,
                 ease: 'power2.in',
                 onComplete: () => {
                     lines.forEach((line, index) => {
@@ -558,12 +565,13 @@ function initLandingTitleChoreography() {
                 }
             })
             .fromTo(lines,
-                { y: 34, opacity: 0 },
+                { opacity: 0, filter: 'blur(8px)', y: 10 },
                 {
-                    y: 0,
                     opacity: 1,
+                    filter: 'blur(0px)',
+                    y: 0,
                     stagger: 0.05,
-                    duration: 0.42,
+                    duration: 0.38,
                     ease: 'power3.out'
                 }
             );

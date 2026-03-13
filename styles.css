@@ -15,7 +15,7 @@
     --accent: #ff6a3d;
     --accent-soft: rgba(255, 106, 61, 0.2);
     --ok: #96e6a1;
-    --font-primary: 'Inter', sans-serif;
+    --font-primary: 'Space Grotesk', sans-serif;
     --font-display: 'Unbounded', sans-serif;
     --max-width: 1220px;
     --gutter: 0.8rem;
@@ -1008,37 +1008,23 @@ body {
 }
 
 .scene-menu-toggle {
-    pointer-events: auto;
     width: 40px;
     height: 40px;
     border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--text) 36%, transparent);
-    background:
-        radial-gradient(circle at 34% 22%, rgba(255, 255, 255, 0.26), transparent 46%),
-        linear-gradient(160deg, color-mix(in srgb, var(--surface-2) 84%, transparent), color-mix(in srgb, var(--surface) 58%, transparent));
-    box-shadow:
-        inset 0 1px 0 color-mix(in srgb, #fff 46%, transparent),
-        0 16px 40px color-mix(in srgb, #000 42%, transparent),
-        0 0 30px color-mix(in srgb, var(--accent) 24%, transparent);
+    border: 1px solid var(--line);
+    background: transparent;
     color: var(--text-dim);
     display: grid;
     place-items: center;
     cursor: pointer;
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    backdrop-filter: blur(20px) saturate(145%);
-    -webkit-backdrop-filter: blur(20px) saturate(145%);
     position: relative;
+    transition: border-color 0.25s ease, color 0.25s ease;
 }
 
 .scene-menu-toggle:hover,
 .scene-menu-toggle.is-open {
-    transform: translateY(-2px) scale(1.03);
-    border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
     color: var(--text);
-    box-shadow:
-        inset 0 1px 0 color-mix(in srgb, #fff 54%, transparent),
-        0 20px 45px color-mix(in srgb, #000 48%, transparent),
-        0 0 34px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .scene-menu-icon {
@@ -1062,30 +1048,20 @@ body {
 
 .scene-arc-panel {
     position: fixed;
-    top: calc(var(--nav-height) - 0.35rem);
-    right: calc(var(--gutter) + 0.2rem);
-    width: min(86vw, 236px);
-    height: min(86vw, 236px);
-    pointer-events: none;
-    border-radius: 0 0 0 236px;
-    background:
-        radial-gradient(120% 120% at 100% 0, color-mix(in srgb, var(--accent) 14%, transparent), transparent 58%),
-        linear-gradient(170deg, color-mix(in srgb, var(--surface-2) 90%, transparent), color-mix(in srgb, var(--surface) 56%, transparent));
-    border: 1px solid color-mix(in srgb, var(--text) 20%, transparent);
-    box-shadow:
-        inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent),
-        0 14px 30px color-mix(in srgb, #000 36%, transparent);
-    transform-origin: 100% 0;
+    top: calc(var(--nav-height) + 0.5rem);
+    right: var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem;
+    background: color-mix(in srgb, var(--surface-2) 96%, transparent);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    transform-origin: top right;
     z-index: 110;
-}
-
-.scene-arc-panel::after {
-    content: '';
-    position: absolute;
-    inset: 42px 42px 0 0;
-    border-radius: inherit;
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
 }
 
 .scene-arc-panel--nav {
@@ -1094,82 +1070,43 @@ body {
 }
 
 .scene-arc-link {
-    position: absolute;
     pointer-events: auto;
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
+    width: 58px;
+    height: 54px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.28rem;
     text-decoration: none;
     color: var(--text-dim);
-    border: 1px solid color-mix(in srgb, var(--text) 26%, transparent);
-    border-radius: 50%;
-    background: linear-gradient(
-        140deg,
-        color-mix(in srgb, var(--surface-2) 80%, transparent),
-        color-mix(in srgb, var(--surface) 50%, transparent)
-    );
-    box-shadow:
-        inset 0 1px 0 color-mix(in srgb, #fff 38%, transparent),
-        0 8px 18px color-mix(in srgb, #000 28%, transparent);
-    transition: transform 0.28s ease, border-color 0.28s ease, color 0.28s ease, box-shadow 0.28s ease;
-    transform: translate(-50%, -50%);
-    z-index: 2;
+    border-radius: 10px;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .scene-arc-link::after {
     content: attr(data-label);
-    position: absolute;
-    right: calc(100% + 0.45rem);
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.54rem;
-    letter-spacing: 0.12em;
+    font-size: 0.46rem;
+    letter-spacing: 0.11em;
     text-transform: uppercase;
     font-weight: 700;
-    color: var(--text);
-    background: color-mix(in srgb, var(--surface) 92%, transparent);
-    border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
-    border-radius: 999px;
-    padding: 0.3rem 0.46rem;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
+    color: inherit;
     white-space: nowrap;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
 }
 
 .scene-arc-link:hover {
-    transform: translate(-50%, calc(-50% - 2px)) scale(1.05);
-    border-color: color-mix(in srgb, var(--accent) 74%, transparent);
+    background: var(--surface-3);
     color: var(--text);
-    box-shadow:
-        inset 0 1px 0 color-mix(in srgb, #fff 52%, transparent),
-        0 10px 20px color-mix(in srgb, #000 34%, transparent),
-        0 0 18px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
-.scene-arc-link:hover::after,
-.scene-arc-link:focus-visible::after {
+.scene-arc-link:hover::after {
     opacity: 1;
 }
 
 .scene-arc-link ion-icon {
     font-size: 1.06rem;
-}
-
-.scene-arc-link--one {
-    left: 19%;
-    top: 72%;
-}
-
-.scene-arc-link--two {
-    left: 45%;
-    top: 44%;
-}
-
-.scene-arc-link--three {
-    left: 73%;
-    top: 19%;
 }
 
 .sr-only {
@@ -1221,41 +1158,41 @@ body {
     width: 240px;
     height: 240px;
     border-radius: 50%;
-    top: 10%;
-    left: 5%;
+    top: 6%;
+    left: -2%;
     border-width: 2px;
     background: transparent;
 }
 
 .shape--cube {
-    width: 124px;
-    height: 124px;
-    top: 16%;
-    right: 8%;
+    width: 110px;
+    height: 110px;
+    top: 12%;
+    right: 2%;
     transform: rotateX(35deg) rotateY(36deg);
 }
 
 .shape--diamond {
-    width: 96px;
-    height: 96px;
-    bottom: 12%;
-    left: 8%;
+    width: 88px;
+    height: 88px;
+    bottom: 14%;
+    left: 3%;
     transform: rotate(45deg) rotateX(20deg);
 }
 
 .shape--orb {
-    width: 160px;
-    height: 160px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
-    bottom: 9%;
-    right: 9%;
+    bottom: 7%;
+    right: 3%;
     background: radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--accent) 52%, transparent), transparent 70%);
 }
 
 .shape--grid {
-    width: 240px;
-    height: 130px;
-    top: 60%;
+    width: 280px;
+    height: 150px;
+    top: 68%;
     left: 50%;
     transform: translateX(-50%) rotateX(64deg);
     background-image:
@@ -1294,24 +1231,6 @@ body {
         height: 95px;
     }
 
-    .scene-arc-panel {
-        right: 0.8rem;
-        width: min(82vw, 214px);
-        height: min(82vw, 214px);
-    }
-
-    .scene-arc-panel::after {
-        inset: 38px 38px 0 0;
-    }
-
-    .scene-arc-link {
-        width: 40px;
-        height: 40px;
-    }
-
-    .scene-arc-link--one { left: 19%; top: 73%; }
-    .scene-arc-link--two { left: 44%; top: 44%; }
-    .scene-arc-link--three { left: 73%; top: 19%; }
 }
 
 @media (max-width: 760px) {
@@ -1328,33 +1247,14 @@ body {
         opacity: 0.72;
     }
 
-    .scene-arc-panel {
-        width: min(72vw, 184px);
-        height: min(72vw, 184px);
-        top: calc(var(--nav-height) - 0.3rem);
-        right: 0.6rem;
-    }
-
-    .scene-arc-panel::after {
-        inset: 32px 32px 0 0;
-    }
-
     .scene-arc-link {
-        width: 34px;
-        height: 34px;
-    }
-
-    .scene-arc-link ion-icon {
-        font-size: 0.92rem;
+        width: 50px;
+        height: 46px;
     }
 
     .scene-arc-link::after {
         display: none;
     }
-
-    .scene-arc-link--one { left: 19%; top: 74%; }
-    .scene-arc-link--two { left: 43%; top: 44%; }
-    .scene-arc-link--three { left: 72%; top: 19%; }
 
     .orbit-label {
         font-size: 0.55rem;
@@ -1381,14 +1281,6 @@ body {
         max-width: 44ch;
     }
 
-    .scene-arc-panel {
-        width: min(74vw, 196px);
-        height: min(74vw, 196px);
-    }
-
-    .scene-arc-panel::after {
-        inset: 34px 34px 0 0;
-    }
 }
 
 @media (max-height: 730px) {
