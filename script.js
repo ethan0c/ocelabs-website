@@ -129,7 +129,10 @@ function initNavAutoHide() {
         return;
     }
 
+    nav.classList.remove('nav-hidden');
+
     let lastY = window.scrollY;
+    let hasScrolledDown = false;
     let ticking = false;
 
     const updateNavState = () => {
@@ -141,9 +144,15 @@ function initNavAutoHide() {
         const isArcMenuOpen = document.getElementById('scene-menu-toggle')?.getAttribute('aria-expanded') === 'true';
         const shouldKeepVisible = isMobileMenuOpen || isArcMenuOpen;
 
-        if (isNearTop || shouldKeepVisible || delta < -5) {
+        if (delta > 2) {
+            hasScrolledDown = true;
+        }
+
+        if (!hasScrolledDown) {
             nav.classList.remove('nav-hidden');
-        } else if (delta > 5 && currentY > 84) {
+        } else if (isNearTop || shouldKeepVisible || delta < -5) {
+            nav.classList.remove('nav-hidden');
+        } else if (delta > 5 && currentY > 100) {
             nav.classList.add('nav-hidden');
         }
 
