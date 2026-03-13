@@ -47,6 +47,28 @@ body {
     overflow-x: hidden;
 }
 
+[data-theme="dark"] .subpage {
+    --bg: #141318;
+    --surface: #1c1a22;
+    --surface-2: #24212d;
+    --surface-3: #2c2836;
+    --text: #f2eee7;
+    --text-dim: #b8b1a5;
+    --line: rgba(242, 238, 231, 0.16);
+    --accent: #d66a42;
+}
+
+[data-theme="light"] .subpage {
+    --bg: #ece8dd;
+    --surface: #f6f2e9;
+    --surface-2: #e8e2d6;
+    --surface-3: #ddd4c5;
+    --text: #1f2124;
+    --text-dim: #5f5a52;
+    --line: rgba(31, 33, 36, 0.2);
+    --accent: #b45a3a;
+}
+
 .page-atmosphere {
     position: fixed;
     inset: 0;
@@ -114,6 +136,12 @@ body {
     -webkit-backdrop-filter: blur(14px);
     background: color-mix(in srgb, var(--bg) 78%, transparent);
     border-bottom: 1px solid var(--line);
+    transition: transform 0.32s ease, opacity 0.32s ease;
+    will-change: transform;
+}
+
+.nav.nav-hidden {
+    transform: translateY(calc(-100% - 2px));
 }
 
 .nav-container {
@@ -378,6 +406,21 @@ body {
     line-height: 0.86;
     letter-spacing: -0.03em;
     text-wrap: balance;
+    display: grid;
+    gap: 0.02em;
+}
+
+.subpage .section-title-line {
+    display: block;
+    color: var(--text);
+}
+
+.subpage .section-title-line--accent {
+    color: var(--accent);
+}
+
+.subpage .section-title-line--muted {
+    color: color-mix(in srgb, var(--text) 60%, transparent);
 }
 
 .subpage .section-subtitle {
@@ -517,6 +560,10 @@ body {
     font-size: 0.94rem;
 }
 
+.subpage .service-description {
+    color: color-mix(in srgb, var(--text) 74%, transparent);
+}
+
 .service-pricing-container {
     margin-top: auto;
 }
@@ -548,6 +595,10 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     cursor: pointer;
+}
+
+.subpage .pricing-details-btn {
+    color: color-mix(in srgb, var(--text) 70%, transparent);
 }
 
 .pricing-details {
@@ -678,6 +729,10 @@ body {
     font-size: 0.92rem;
 }
 
+.subpage .work-description {
+    color: color-mix(in srgb, var(--text) 74%, transparent);
+}
+
 .work-meta {
     margin-top: 1rem;
     display: flex;
@@ -693,6 +748,11 @@ body {
     letter-spacing: 0.08em;
     font-size: 0.62rem;
     color: var(--text-dim);
+}
+
+.subpage .work-tag {
+    color: color-mix(in srgb, var(--text) 70%, transparent);
+    border-color: color-mix(in srgb, var(--text) 24%, transparent);
 }
 
 .work-link {
@@ -812,6 +872,12 @@ body {
     padding: 0.45rem 0.8rem;
     font-size: 0.75rem;
     color: var(--text-dim);
+}
+
+.subpage .response-time {
+    color: color-mix(in srgb, var(--text) 78%, transparent);
+    border-color: color-mix(in srgb, var(--text) 24%, transparent);
+    background: color-mix(in srgb, var(--surface-2) 72%, transparent);
 }
 
 .form-group {

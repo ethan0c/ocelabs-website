@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu(navToggle, navMenu, navOverlay, navLinks);
     initSmoothAnchors();
     initActiveNav(navLinks);
+    initNavAutoHide();
     initGsapAnimations();
     initMagneticButtons();
     initContactForm();
@@ -117,6 +118,45 @@ function initActiveNav(navLinks) {
         const normalizedHref = href === '/' ? 'index.html' : href;
         link.classList.toggle('active', normalizedHref === currentPath);
     });
+}
+
+function initNavAutoHide() {
+    const nav = document.getElementById('top-nav');
+    const isLanding = document.body.classList.contains('landing-page');
+
+    if (!nav || isLanding) {
+        nav?.classList.remove('nav-hidden');
+        return;
+    }
+
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const updateNavState = () => {
+        const currentY = window.scrollY;
+        const delta = currentY - lastY;
+        const isNearTop = currentY < 14;
+
+        const isMobileMenuOpen = document.getElementById('nav-menu')?.classList.contains('active');
+        const isArcMenuOpen = document.getElementById('scene-menu-toggle')?.getAttribute('aria-expanded') === 'true';
+        const shouldKeepVisible = isMobileMenuOpen || isArcMenuOpen;
+
+        if (isNearTop || shouldKeepVisible || delta < -5) {
+            nav.classList.remove('nav-hidden');
+        } else if (delta > 5 && currentY > 84) {
+            nav.classList.add('nav-hidden');
+        }
+
+        lastY = currentY;
+        ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(updateNavState);
+            ticking = true;
+        }
+    }, { passive: true });
 }
 
 function initGsapAnimations() {
