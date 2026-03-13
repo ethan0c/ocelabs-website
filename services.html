@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCE Labs - Services</title>
+    <meta name="description" content="Explore OCE Labs services for web development, mobile apps, and branding systems.">
+    <link rel="icon" type="image/png" href="icon-logo.png">
+    <link rel="shortcut icon" type="image/png" href="icon-logo.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Unbounded:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <div class="page-atmosphere" aria-hidden="true">
+        <span class="glow glow-a"></span>
+        <span class="glow glow-b"></span>
+        <span class="glow glow-c"></span>
+        <span class="grain"></span>
+    </div>
+
+    <nav class="nav" id="top-nav">
+        <div class="nav-overlay" id="nav-overlay"></div>
+        <div class="nav-container">
+            <a class="nav-logo" href="index.html">
+                <img src="icon-logo.png" alt="Oce Labs" class="logo-image">
+                <span class="logo-text">OCE LABS</span>
+            </a>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="work.html" class="nav-link">Work</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <ion-icon name="moon" class="theme-icon dark-icon"></ion-icon>
+                    <ion-icon name="sunny" class="theme-icon light-icon"></ion-icon>
+                </button>
+                <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="services section-shell" style="padding-top: calc(var(--nav-height) + 2.4rem);">
+            <div class="container">
+                <header class="section-header" data-gsap="reveal-header">
+                    <p class="section-kicker">What We Do</p>
+                    <h2 class="section-title">SERVICES ENGINEERED FOR MOMENTUM</h2>
+                    <p class="section-subtitle">Clear scope, transparent pricing, and technical quality from kickoff to launch.</p>
+                </header>
+
+                <div class="services-grid">
+                    <article class="service-card" data-gsap="service-card">
+                        <div class="service-head">
+                            <span class="service-index">01</span>
+                            <h3 class="service-title">Web Development</h3>
+                        </div>
+                        <p class="service-description">Responsive websites and web apps with strong architecture and clean interactions.</p>
+                        <div class="service-pricing-container">
+                            <div class="pricing-compact">
+                                <span class="pricing-from">From $1,500</span>
+                                <button class="pricing-details-btn" onclick="togglePricingDetails('web')">
+                                    <ion-icon name="information-circle-outline"></ion-icon>
+                                    View Details
+                                </button>
+                            </div>
+                            <div class="pricing-details" id="pricing-details-web" style="display: none;">
+                                <div class="pricing-range">Typically $1,500 - $7,500</div>
+                                <div class="pricing-factors"><ion-icon name="information-circle"></ion-icon>Depends on pages, integrations, and timeline.</div>
+                            </div>
+                        </div>
+                        <button class="price-estimator-btn" onclick="openPriceEstimator('web')">Get Custom Quote</button>
+                    </article>
+
+                    <article class="service-card" data-gsap="service-card">
+                        <div class="service-head">
+                            <span class="service-index">02</span>
+                            <h3 class="service-title">Mobile Apps</h3>
+                        </div>
+                        <p class="service-description">Cross-platform React Native and native iOS products from planning to launch.</p>
+                        <div class="service-pricing-container">
+                            <div class="pricing-compact">
+                                <span class="pricing-from">From $3,000</span>
+                                <button class="pricing-details-btn" onclick="togglePricingDetails('mobile')">
+                                    <ion-icon name="information-circle-outline"></ion-icon>
+                                    View Details
+                                </button>
+                            </div>
+                            <div class="pricing-details" id="pricing-details-mobile" style="display: none;">
+                                <div class="pricing-range">Typically $3,000 - $8,500</div>
+                                <div class="pricing-factors"><ion-icon name="information-circle"></ion-icon>Depends on complexity, integrations, and platforms.</div>
+                            </div>
+                        </div>
+                        <button class="price-estimator-btn" onclick="openPriceEstimator('mobile')">Get Custom Quote</button>
+                    </article>
+
+                    <article class="service-card" data-gsap="service-card">
+                        <div class="service-head">
+                            <span class="service-index">03</span>
+                            <h3 class="service-title">Branding + Design</h3>
+                        </div>
+                        <p class="service-description">Visual systems, UI kits, and identity direction that make products memorable.</p>
+                        <div class="service-pricing-container">
+                            <div class="pricing-compact">
+                                <span class="pricing-from">From $750</span>
+                                <button class="pricing-details-btn" onclick="togglePricingDetails('design')">
+                                    <ion-icon name="information-circle-outline"></ion-icon>
+                                    View Details
+                                </button>
+                            </div>
+                            <div class="pricing-details" id="pricing-details-design" style="display: none;">
+                                <div class="pricing-range">Typically $750 - $6,500</div>
+                                <div class="pricing-factors"><ion-icon name="information-circle"></ion-icon>Depends on deliverables and revision cycles.</div>
+                            </div>
+                        </div>
+                        <button class="price-estimator-btn" onclick="openPriceEstimator('design')">Get Custom Quote</button>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-left">
+                <p>&copy; 2025 OCE LABS. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="work.html">Work</a>
+                    <a href="mailto:contact@ocelabs.tech">Email</a>
+                    <a href="https://github.com/ethan0c" target="_blank" rel="noopener">GitHub</a>
+                </div>
+            </div>
+            <div class="footer-right">
+                <p>Built with <ion-icon name="heart"></ion-icon> by OCE LABS</p>
+                <p>Turning dreams into digital reality since 2024</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="price-estimator-modal" class="modal" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Build Your Custom Quote</h3>
+                <button class="modal-close" onclick="closePriceEstimator()" aria-label="Close price estimator">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="price-estimator-form">
+                    <div class="estimator-section">
+                        <label for="estimator-type">Project Type:</label>
+                        <select id="estimator-type" onchange="updateEstimate()">
+                            <option value="web">Website Development</option>
+                            <option value="mobile">Mobile App</option>
+                            <option value="design">Branding & Design</option>
+                        </select>
+                    </div>
+                    <div class="estimator-section">
+                        <label>Key Features Needed:</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" value="500" onchange="updateEstimate()"> User Authentication/Login</label>
+                            <label><input type="checkbox" value="800" onchange="updateEstimate()"> Payment Processing</label>
+                            <label><input type="checkbox" value="600" onchange="updateEstimate()"> Content Management System</label>
+                            <label><input type="checkbox" value="400" onchange="updateEstimate()"> Database Integration</label>
+                            <label><input type="checkbox" value="300" onchange="updateEstimate()"> Email Notifications</label>
+                            <label><input type="checkbox" value="700" onchange="updateEstimate()"> Admin Dashboard</label>
+                            <label><input type="checkbox" value="500" onchange="updateEstimate()"> API Integration</label>
+                            <label><input type="checkbox" value="400" onchange="updateEstimate()"> Analytics & Reporting</label>
+                        </div>
+                    </div>
+                    <div class="estimator-section">
+                        <label for="estimator-timeline">Timeline:</label>
+                        <select id="estimator-timeline" onchange="updateEstimate()">
+                            <option value="1">Standard (4-8 weeks)</option>
+                            <option value="1.3">Expedited (2-4 weeks) +30%</option>
+                            <option value="1.5">Rush (1-2 weeks) +50%</option>
+                        </select>
+                    </div>
+                    <div class="estimate-result">
+                        <h4>Estimated Project Range:</h4>
+                        <div class="estimate-price" id="estimate-display">$3,000 - $4,500</div>
+                        <p class="estimate-note">This is a preliminary estimate. Let's tailor it to your exact scope.</p>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-primary" onclick="requestDetailedQuote()">Request Detailed Quote</button>
+                        <button type="button" class="btn btn-secondary" onclick="closePriceEstimator()">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

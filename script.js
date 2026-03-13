@@ -107,27 +107,13 @@ function initSmoothAnchors() {
 }
 
 function initActiveNav(navLinks) {
-    const sections = document.querySelectorAll('section[id]');
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
 
-    const update = () => {
-        let current = 'home';
-
-        sections.forEach((section) => {
-            const top = section.offsetTop - 120;
-            const height = section.offsetHeight;
-
-            if (window.scrollY >= top && window.scrollY < top + height) {
-                current = section.id;
-            }
-        });
-
-        navLinks.forEach((link) => {
-            link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
-        });
-    };
-
-    window.addEventListener('scroll', update, { passive: true });
-    update();
+    navLinks.forEach((link) => {
+        const href = link.getAttribute('href') || '';
+        const normalizedHref = href === '/' ? 'index.html' : href;
+        link.classList.toggle('active', normalizedHref === currentPath);
+    });
 }
 
 function initGsapAnimations() {
@@ -142,14 +128,108 @@ function initGsapAnimations() {
         return;
     }
 
+    const isLanding = document.body.classList.contains('landing-page');
+
+    if (isLanding) {
+        initLandingShowreel();
+    }
+
     const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     heroTl
-        .from('.nav', { y: -30, opacity: 0, duration: 0.6 })
+        .from('.nav', { y: -30, opacity: 0, duration: 0.6, delay: isLanding ? 0.25 : 0 })
         .from('.hero-eyebrow', { y: 24, opacity: 0, duration: 0.5 }, '-=0.2')
         .from('.title-line', { yPercent: 110, opacity: 0, stagger: 0.08, duration: 0.75 }, '-=0.1')
         .from('.hero-subtitle', { y: 20, opacity: 0, duration: 0.55 }, '-=0.25')
-        .from('.hero-buttons .btn', { y: 16, opacity: 0, stagger: 0.1, duration: 0.45 }, '-=0.2')
-        .from('.hero-rail .rail-card', { x: 24, opacity: 0, stagger: 0.08, duration: 0.45 }, '-=0.35');
+        .from('.hero-buttons .btn', { y: 16, opacity: 0, stagger: 0.1, duration: 0.45 }, '-=0.2');
+
+    if (isLanding) {
+        heroTl
+            .from('.orbit-label', {
+                opacity: 0,
+                scale: 0.92,
+                duration: 0.65,
+                stagger: 0.05
+            }, '-=0.45')
+            .from('.shape', {
+                opacity: 0,
+                scale: 0.78,
+                rotation: -18,
+                duration: 0.75,
+                stagger: 0.07,
+                ease: 'power2.out'
+            }, '-=0.5');
+
+        gsap.to('.shape--ring', {
+            rotation: 360,
+            transformOrigin: '50% 50%',
+            duration: 14,
+            ease: 'none',
+            repeat: -1
+        });
+
+        gsap.to('.shape--cube', {
+            rotationY: '+=360',
+            rotationX: '+=180',
+            y: -14,
+            duration: 9,
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: -1
+        });
+
+        gsap.to('.shape--diamond', {
+            rotation: '+=360',
+            x: 22,
+            duration: 11,
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: -1
+        });
+
+        gsap.to('.shape--orb', {
+            y: -24,
+            scale: 1.16,
+            duration: 6.5,
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: -1
+        });
+
+        gsap.to('.shape--grid', {
+            rotationZ: 360,
+            duration: 18,
+            ease: 'none',
+            repeat: -1
+        });
+
+        gsap.to('.orbit-label--tl, .orbit-label--br', {
+            y: -10,
+            opacity: 0.88,
+            duration: 2.8,
+            ease: 'sine.inOut',
+            repeat: -1,
+            yoyo: true
+        });
+
+        gsap.to('.orbit-label--tr, .orbit-label--bl', {
+            y: 10,
+            opacity: 0.65,
+            duration: 3.2,
+            ease: 'sine.inOut',
+            repeat: -1,
+            yoyo: true
+        });
+
+        gsap.to('.hero-copy--center', {
+            y: -8,
+            duration: 4.5,
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: -1
+        });
+    } else {
+        heroTl.from('.hero-rail .rail-card', { x: 24, opacity: 0, stagger: 0.08, duration: 0.45 }, '-=0.35');
+    }
 
     gsap.utils.toArray('[data-gsap="reveal-header"]').forEach((header) => {
         gsap.from(header, {
@@ -228,24 +308,147 @@ function initGsapAnimations() {
         yPercent: 25,
         xPercent: 12,
         ease: 'none',
-        scrollTrigger: {
-            trigger: 'body',
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: 0.8
-        }
+        ...(isLanding ? { duration: 9, yoyo: true, repeat: -1, ease: 'sine.inOut' } : {
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0.8
+            }
+        })
     });
 
     gsap.to('.glow-b', {
         yPercent: -18,
         xPercent: -8,
-        ease: 'none',
-        scrollTrigger: {
-            trigger: 'body',
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: 0.9
-        }
+        ...(isLanding ? { duration: 7.5, yoyo: true, repeat: -1, ease: 'sine.inOut' } : {
+            ease: 'none',
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0.9
+            }
+        })
+    });
+}
+
+function initLandingShowreel() {
+    const intro = document.querySelector('.landing-intro');
+
+    if (intro) {
+        const introTl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
+        introTl
+            .fromTo('.landing-intro-logo',
+                { autoAlpha: 0, scale: 0.72, rotation: -18 },
+                { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.75 }
+            )
+            .to('.landing-intro-line', { scaleX: 1, duration: 0.45 }, '-=0.35')
+            .fromTo('.landing-intro-tag', { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.38 }, '-=0.18')
+            .to('.landing-intro', { autoAlpha: 0, duration: 0.52, delay: 0.22 })
+            .set('.landing-intro', { display: 'none' });
+    }
+
+    gsap.from('.scene-nav-link', {
+        y: 12,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.08,
+        delay: 1.1,
+        ease: 'power2.out'
+    });
+
+    gsap.to('.scene-nav-link--one, .scene-nav-link--two', {
+        y: -8,
+        duration: 2.7,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        stagger: 0.18
+    });
+
+    gsap.to('.scene-nav-link--three', {
+        y: 8,
+        duration: 3.2,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+    });
+
+    initLandingTitleChoreography();
+    initLandingCursorRig();
+}
+
+function initLandingTitleChoreography() {
+    const lines = gsap.utils.toArray('.hero-title .title-line');
+    if (!lines.length) {
+        return;
+    }
+
+    const titleSets = [
+        ['BUILD BOLD', 'DIGITAL WORLDS', 'THAT MOVE.'],
+        ['LAUNCH FASTER', 'LOOK SHARPER', 'SCALE CLEAN.'],
+        ['CRAFT MOTION', 'SHIP PRODUCTS', 'OWN ATTENTION.'],
+        ['CREATE IMPACT', 'DESIGN SYSTEMS', 'CODE FEARLESS.'],
+    ];
+
+    let currentSet = 0;
+
+    gsap.delayedCall(15, function swapTitles() {
+        currentSet = (currentSet + 1) % titleSets.length;
+
+        gsap.timeline()
+            .to(lines, {
+                y: -34,
+                opacity: 0,
+                stagger: 0.04,
+                duration: 0.28,
+                ease: 'power2.in',
+                onComplete: () => {
+                    lines.forEach((line, index) => {
+                        line.textContent = titleSets[currentSet][index];
+                    });
+                }
+            })
+            .fromTo(lines,
+                { y: 34, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    stagger: 0.05,
+                    duration: 0.42,
+                    ease: 'power3.out'
+                }
+            );
+
+        gsap.delayedCall(15, swapTitles);
+    });
+}
+
+function initLandingCursorRig() {
+    const shapes = {
+        ring: document.querySelector('.shape--ring'),
+        cube: document.querySelector('.shape--cube'),
+        diamond: document.querySelector('.shape--diamond'),
+        orb: document.querySelector('.shape--orb'),
+        grid: document.querySelector('.shape--grid'),
+        copy: document.querySelector('.hero-copy--center'),
+    };
+
+    if (!shapes.ring || !window.matchMedia('(pointer: fine)').matches) {
+        return;
+    }
+
+    window.addEventListener('mousemove', (event) => {
+        const nx = (event.clientX / window.innerWidth - 0.5) * 2;
+        const ny = (event.clientY / window.innerHeight - 0.5) * 2;
+
+        gsap.to(shapes.ring, { x: nx * 28, y: ny * 20, rotationY: nx * 22, rotationX: -ny * 16, duration: 0.8, ease: 'power3.out' });
+        gsap.to(shapes.cube, { x: nx * -30, y: ny * -24, rotationY: nx * -46, rotationX: ny * 30, duration: 0.9, ease: 'power3.out' });
+        gsap.to(shapes.diamond, { x: nx * 24, y: ny * -16, rotation: nx * 18, duration: 0.9, ease: 'power3.out' });
+        gsap.to(shapes.orb, { x: nx * -18, y: ny * 16, scale: 1.08 + Math.abs(nx) * 0.06, duration: 0.85, ease: 'power3.out' });
+        gsap.to(shapes.grid, { x: nx * 14, y: ny * 12, rotationX: 64 + ny * 8, rotationY: nx * 12, duration: 0.9, ease: 'power3.out' });
+        gsap.to(shapes.copy, { x: nx * 9, y: ny * 7, duration: 0.9, ease: 'power3.out' });
     });
 }
 

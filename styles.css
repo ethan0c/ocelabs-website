@@ -18,6 +18,7 @@
     --font-primary: 'Inter', sans-serif;
     --font-display: 'Unbounded', sans-serif;
     --max-width: 1220px;
+    --gutter: 0.8rem;
     --radius: 20px;
     --nav-height: 78px;
 }
@@ -94,7 +95,7 @@ body {
 }
 
 .container {
-    width: min(100% - 2.4rem, var(--max-width));
+    width: min(100% - calc(var(--gutter) * 2), var(--max-width));
     margin-inline: auto;
 }
 
@@ -116,7 +117,7 @@ body {
 }
 
 .nav-container {
-    width: min(100% - 2.4rem, var(--max-width));
+    width: min(100% - calc(var(--gutter) * 2), var(--max-width));
     margin-inline: auto;
     height: 100%;
     display: flex;
@@ -889,5 +890,362 @@ body {
         animation: none !important;
         transition: none !important;
         scroll-behavior: auto !important;
+    }
+}
+
+.landing-page {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.landing-page .nav {
+    background: transparent;
+    border-bottom: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.landing-page .nav-menu,
+.landing-page .nav-toggle {
+    display: none;
+}
+
+.landing-page .nav-logo {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.4rem 0.75rem 0.4rem 0.42rem;
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.landing-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 130;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 1rem;
+    background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--surface-2) 92%, transparent), var(--bg));
+}
+
+.landing-intro-logo {
+    width: 84px;
+    height: 84px;
+    border-radius: 999px;
+    box-shadow: 0 0 42px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.landing-intro-line {
+    width: 220px;
+    height: 1px;
+    transform: scaleX(0);
+    background: color-mix(in srgb, var(--text) 48%, transparent);
+}
+
+.landing-intro-tag {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.landing-page .landing-main {
+    height: 100dvh;
+}
+
+.landing-page .hero--scene {
+    position: relative;
+    min-height: 100dvh;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+}
+
+.landing-page .hero-center {
+    position: absolute;
+    top: calc(var(--nav-height) + ((100dvh - var(--nav-height)) / 2));
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    width: min(100% - 1.2rem, 940px);
+    max-height: calc(100dvh - var(--nav-height) - 0.9rem);
+    text-align: center;
+    display: grid;
+    place-items: center;
+}
+
+.landing-page .hero-copy--center {
+    margin-inline: auto;
+    max-width: 760px;
+    display: grid;
+    gap: 0.45rem;
+}
+
+.landing-page .hero-eyebrow {
+    margin-bottom: 0.5rem;
+}
+
+.landing-page .hero-title {
+    font-size: clamp(2.5rem, 7.8vw, 6.8rem);
+    line-height: 0.92;
+}
+
+.landing-page .hero-subtitle {
+    margin-inline: auto;
+    max-width: 50ch;
+    font-size: clamp(0.92rem, 1.8vw, 1.05rem);
+}
+
+.landing-page .hero-buttons {
+    justify-content: center;
+}
+
+.caps-orbit {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.scene-nav {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 6;
+}
+
+.scene-nav-link {
+    position: absolute;
+    pointer-events: auto;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.64rem;
+    font-weight: 600;
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.58rem 0.95rem;
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.scene-nav-link:hover {
+    transform: translateY(-3px) scale(1.02);
+    border-color: color-mix(in srgb, var(--accent) 62%, transparent);
+    background: color-mix(in srgb, var(--surface-2) 78%, transparent);
+}
+
+.scene-nav-link--one {
+    top: 20%;
+    left: 14%;
+}
+
+.scene-nav-link--two {
+    top: 23%;
+    right: 14%;
+}
+
+.scene-nav-link--three {
+    bottom: 17%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.scene-nav-link--three:hover {
+    transform: translateX(-50%) translateY(-3px) scale(1.02);
+}
+
+.orbit-label {
+    position: absolute;
+    text-transform: uppercase;
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+    color: color-mix(in srgb, var(--text) 58%, transparent);
+    white-space: nowrap;
+}
+
+.orbit-label--tl { top: 14%; left: 6%; }
+.orbit-label--tr { top: 16%; right: 6%; }
+.orbit-label--bl { bottom: 13%; left: 8%; }
+.orbit-label--br { bottom: 14%; right: 7%; }
+.orbit-label--ml { top: 50%; left: 3.6%; transform: rotate(-90deg); }
+.orbit-label--mr { top: 50%; right: 3.6%; transform: rotate(90deg); }
+
+.figure-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    transform-style: preserve-3d;
+    perspective: 1200px;
+    z-index: 2;
+}
+
+.shape {
+    position: absolute;
+    border: 1px solid color-mix(in srgb, var(--text) 34%, transparent);
+    background: color-mix(in srgb, var(--surface-2) 74%, transparent);
+    box-shadow: 0 0 28px color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+.shape--ring {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    top: 18%;
+    left: 13%;
+    border-width: 2px;
+    background: transparent;
+}
+
+.shape--cube {
+    width: 124px;
+    height: 124px;
+    top: 26%;
+    right: 15%;
+    transform: rotateX(35deg) rotateY(36deg);
+}
+
+.shape--diamond {
+    width: 96px;
+    height: 96px;
+    bottom: 21%;
+    left: 21%;
+    transform: rotate(45deg) rotateX(20deg);
+}
+
+.shape--orb {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    bottom: 16%;
+    right: 18%;
+    background: radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--accent) 52%, transparent), transparent 70%);
+}
+
+.shape--grid {
+    width: 240px;
+    height: 130px;
+    top: 54%;
+    left: 50%;
+    transform: translateX(-50%) rotateX(64deg);
+    background-image:
+        linear-gradient(color-mix(in srgb, var(--text) 24%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--text) 24%, transparent) 1px, transparent 1px);
+    background-size: 16px 16px;
+    background-color: transparent;
+}
+
+@media (max-width: 980px) {
+    .landing-page .hero-title {
+        font-size: clamp(2.2rem, 10vw, 4.6rem);
+    }
+
+    .landing-page .hero-center {
+        width: min(100% - 1rem, 820px);
+    }
+
+    .orbit-label--ml,
+    .orbit-label--mr {
+        display: none;
+    }
+
+    .shape--ring {
+        width: 170px;
+        height: 170px;
+    }
+
+    .shape--orb {
+        width: 120px;
+        height: 120px;
+    }
+
+    .shape--grid {
+        width: 170px;
+        height: 95px;
+    }
+
+    .scene-nav-link--one { left: 8%; }
+    .scene-nav-link--two { right: 8%; }
+}
+
+@media (max-width: 760px) {
+    .landing-page .hero--scene {
+        min-height: 100vh;
+        padding: 0;
+    }
+
+    .landing-page .hero-center {
+        width: min(100% - 0.9rem, 760px);
+    }
+
+    .caps-orbit {
+        opacity: 0.72;
+    }
+
+    .scene-nav {
+        inset: auto 0 1.1rem 0;
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .scene-nav-link {
+        position: static;
+        font-size: 0.56rem;
+        letter-spacing: 0.13em;
+        padding: 0.52rem 0.72rem;
+    }
+
+    .scene-nav-link--three:hover,
+    .scene-nav-link:hover {
+        transform: translateY(-2px);
+    }
+
+    .orbit-label {
+        font-size: 0.55rem;
+        letter-spacing: 0.13em;
+    }
+
+    .orbit-label--tl { top: 12%; left: 4%; }
+    .orbit-label--tr { top: 12%; right: 4%; }
+    .orbit-label--bl { bottom: 8%; left: 5%; }
+    .orbit-label--br { bottom: 8%; right: 5%; }
+
+    .shape--cube,
+    .shape--diamond {
+        display: none;
+    }
+}
+
+@media (max-height: 860px) {
+    .landing-page .hero-title {
+        font-size: clamp(2rem, 6.8vw, 5rem);
+    }
+
+    .landing-page .hero-subtitle {
+        max-width: 44ch;
+    }
+
+    .scene-nav-link--three {
+        bottom: 13%;
+    }
+}
+
+@media (max-height: 730px) {
+    .landing-page {
+        overflow-y: auto;
+    }
+
+    .landing-page .hero--scene {
+        min-height: 730px;
+    }
+
+    .orbit-label--tl,
+    .orbit-label--tr,
+    .orbit-label--bl,
+    .orbit-label--br {
+        display: none;
     }
 }
