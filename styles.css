@@ -5,16 +5,16 @@
 }
 
 :root {
-    --bg: #0f0e13;
-    --surface: #171620;
-    --surface-2: #1f1d2a;
-    --surface-3: #262334;
-    --text: #f6f1eb;
-    --text-dim: #c6bdaf;
-    --line: rgba(246, 241, 235, 0.14);
-    --accent: #ff6a3d;
-    --accent-soft: rgba(255, 106, 61, 0.2);
-    --ok: #96e6a1;
+    --bg: #120b1e;
+    --surface: #1c1230;
+    --surface-2: #251840;
+    --surface-3: #2e1f52;
+    --text: #faf0ff;
+    --text-dim: #c4aedd;
+    --line: rgba(250, 240, 255, 0.12);
+    --accent: #ff3fa4;
+    --accent-soft: rgba(255, 63, 164, 0.18);
+    --ok: #f5e642;
     --font-primary: 'Space Grotesk', sans-serif;
     --font-display: 'Unbounded', sans-serif;
     --max-width: 1220px;
@@ -24,15 +24,15 @@
 }
 
 [data-theme="light"] {
-    --bg: #f6f0e8;
-    --surface: #fff8ef;
-    --surface-2: #fffdf8;
-    --surface-3: #efe5da;
-    --text: #1a1a1c;
-    --text-dim: #544d43;
-    --line: rgba(26, 26, 28, 0.16);
-    --accent: #da4f24;
-    --accent-soft: rgba(218, 79, 36, 0.18);
+    --bg: #fdf0f8;
+    --surface: #fff5fc;
+    --surface-2: #f8e8f5;
+    --surface-3: #eed8ee;
+    --text: #1a0828;
+    --text-dim: #6b3d7a;
+    --line: rgba(26, 8, 40, 0.13);
+    --accent: #c4006e;
+    --accent-soft: rgba(196, 0, 110, 0.14);
 }
 
 html {
@@ -47,26 +47,73 @@ body {
     overflow-x: hidden;
 }
 
+.screen-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 170;
+    display: grid;
+    place-items: center;
+    background:
+        radial-gradient(120% 120% at 12% 0, color-mix(in srgb, var(--accent) 20%, transparent), transparent 52%),
+        radial-gradient(100% 120% at 100% 100%, color-mix(in srgb, var(--surface-3) 86%, transparent), transparent 60%),
+        var(--bg);
+}
+
+.screen-intro-inner {
+    width: min(92vw, 460px);
+    display: grid;
+    justify-items: center;
+    gap: 0.72rem;
+}
+
+.screen-intro-logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--text) 24%, transparent);
+    box-shadow: 0 0 30px color-mix(in srgb, var(--accent) 36%, transparent);
+}
+
+.screen-intro-wordmark {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 4.6vw, 2.1rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.screen-intro-rule {
+    width: min(76vw, 320px);
+    height: 1px;
+    background: color-mix(in srgb, var(--text) 40%, transparent);
+}
+
+.screen-intro-caption {
+    font-size: 0.66rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text-dim) 92%, transparent);
+}
+
 [data-theme="dark"] .subpage {
-    --bg: #141318;
-    --surface: #1c1a22;
-    --surface-2: #24212d;
-    --surface-3: #2c2836;
-    --text: #f2eee7;
-    --text-dim: #b8b1a5;
-    --line: rgba(242, 238, 231, 0.16);
-    --accent: #d66a42;
+    --bg: #0e0818;
+    --surface: #180e28;
+    --surface-2: #201438;
+    --surface-3: #281a48;
+    --text: #f8eeff;
+    --text-dim: #b8a2d0;
+    --line: rgba(248, 238, 255, 0.12);
+    --accent: #f030a0;
 }
 
 [data-theme="light"] .subpage {
-    --bg: #ece8dd;
-    --surface: #f6f2e9;
-    --surface-2: #e8e2d6;
-    --surface-3: #ddd4c5;
-    --text: #1f2124;
-    --text-dim: #5f5a52;
-    --line: rgba(31, 33, 36, 0.2);
-    --accent: #b45a3a;
+    --bg: #f8eaf5;
+    --surface: #fdf2fa;
+    --surface-2: #f0dff0;
+    --surface-3: #e6d0e8;
+    --text: #180624;
+    --text-dim: #623570;
+    --line: rgba(24, 6, 36, 0.16);
+    --accent: #b0006a;
 }
 
 .page-atmosphere {
@@ -1363,19 +1410,15 @@ body {
 
 .scene-arc-panel {
     position: fixed;
-    top: calc(var(--nav-height) + 0.5rem);
-    right: var(--gutter);
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.4rem;
-    background: color-mix(in srgb, var(--surface-2) 96%, transparent);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
-    transform-origin: top right;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 0.35rem var(--gutter) 0.5rem;
+    background: color-mix(in srgb, var(--bg) 90%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transform-origin: top center;
     z-index: 110;
 }
 
@@ -1386,42 +1429,43 @@ body {
 
 .scene-arc-link {
     pointer-events: auto;
-    width: 58px;
-    height: 54px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: inline-flex;
     justify-content: center;
-    gap: 0.28rem;
+    align-items: center;
     text-decoration: none;
     color: var(--text-dim);
-    border-radius: 10px;
-    transition: background 0.2s ease, color 0.2s ease;
-}
-
-.scene-arc-link::after {
-    content: attr(data-label);
-    font-size: 0.46rem;
-    letter-spacing: 0.11em;
     text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.62rem;
     font-weight: 700;
-    color: inherit;
-    white-space: nowrap;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+    transition: color 0.2s ease;
 }
 
 .scene-arc-link:hover {
-    background: var(--surface-3);
     color: var(--text);
 }
 
-.scene-arc-link:hover::after {
-    opacity: 1;
+.scene-arc-items {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: center;
+    justify-items: center;
+    gap: 0.35rem;
+    min-height: 1.8rem;
 }
 
-.scene-arc-link ion-icon {
-    font-size: 1.06rem;
+.scene-arc-line {
+    height: 1px;
+    background: color-mix(in srgb, var(--text) 24%, transparent);
+    transform-origin: 50% 50%;
+}
+
+.scene-arc-line--top {
+    margin-bottom: 0.35rem;
+}
+
+.scene-arc-line--bottom {
+    margin-top: 0.35rem;
 }
 
 .sr-only {
@@ -1556,6 +1600,15 @@ body {
 
     .landing-page .hero-center {
         width: min(100% - 0.9rem, 760px);
+    }
+
+    .scene-arc-items {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .scene-arc-link {
+        letter-spacing: 0.14em;
+        font-size: 0.56rem;
     }
 
     .caps-orbit {

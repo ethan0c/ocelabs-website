@@ -15,10 +15,13 @@
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body class="landing-page">
-    <div class="landing-intro" aria-hidden="true">
-        <img src="icon-logo.png" alt="" class="landing-intro-logo">
-        <div class="landing-intro-line"></div>
-        <p class="landing-intro-tag">OCE LABS DIGITAL STUDIO</p>
+    <div class="screen-intro" id="screen-intro" aria-hidden="true">
+        <div class="screen-intro-inner">
+            <img src="icon-logo.png" alt="" class="screen-intro-logo">
+            <p class="screen-intro-wordmark">OCE LABS</p>
+            <div class="screen-intro-rule"></div>
+            <p class="screen-intro-caption">CREATIVE ENGINEERING STUDIO</p>
+        </div>
     </div>
 
     <div class="page-atmosphere" aria-hidden="true">
@@ -65,18 +68,14 @@
         </div>
     </nav>
     <div class="scene-arc-panel scene-arc-panel--nav" id="scene-arc-panel" aria-hidden="true">
-        <a href="services.html" class="scene-arc-link scene-arc-link--one" data-label="Services" aria-label="Services">
-            <ion-icon name="layers-outline" aria-hidden="true"></ion-icon>
-            <span class="sr-only">Services</span>
-        </a>
-        <a href="work.html" class="scene-arc-link scene-arc-link--two" data-label="Work" aria-label="Work">
-            <ion-icon name="sparkles-outline" aria-hidden="true"></ion-icon>
-            <span class="sr-only">Work</span>
-        </a>
-        <a href="contact.html" class="scene-arc-link scene-arc-link--three" data-label="Contact" aria-label="Contact">
-            <ion-icon name="chatbubbles-outline" aria-hidden="true"></ion-icon>
-            <span class="sr-only">Contact</span>
-        </a>
+        <div class="scene-arc-line scene-arc-line--top" aria-hidden="true"></div>
+        <div class="scene-arc-items">
+            <a href="index.html" class="scene-arc-link scene-arc-item">Home</a>
+            <a href="services.html" class="scene-arc-link scene-arc-item">Services</a>
+            <a href="work.html" class="scene-arc-link scene-arc-item">Work</a>
+            <a href="contact.html" class="scene-arc-link scene-arc-item">Contact</a>
+        </div>
+        <div class="scene-arc-line scene-arc-line--bottom" aria-hidden="true"></div>
     </div>
 
     <main class="landing-main">

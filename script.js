@@ -4,10 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const navOverlay = document.getElementById('nav-overlay');
     const navLinks = document.querySelectorAll('.nav-link');
 
+    const introTransitions = initScreenIntroTransitions();
     const landingArcMenu = initLandingArcMenu();
 
     initThemeToggle();
     initMobileMenu(navToggle, navMenu, navOverlay, navLinks);
+    initPageLinkTransitions(introTransitions, landingArcMenu);
     initSmoothAnchors();
     initActiveNav(navLinks);
     initNavAutoHide();
@@ -37,6 +39,118 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+function initScreenIntroTransitions() {
+    const intro = document.getElementById('screen-intro');
+    if (!intro) {
+        return { runOut: (url) => { window.location.href = url; } };
+    }
+
+    const inner = intro.querySelector('.screen-intro-inner');
+    const logo = intro.querySelector('.screen-intro-logo');
+    const wordmark = intro.querySelector('.screen-intro-wordmark');
+    const caption = intro.querySelector('.screen-intro-caption');
+    const line = intro.querySelector('.screen-intro-rule');
+    const hasGsap = typeof gsap !== 'undefined';
+
+    const hideImmediately = () => {
+        intro.style.pointerEvents = 'none';
+        intro.setAttribute('aria-hidden', 'true');
+        if (hasGsap) {
+            gsap.set(intro, { autoAlpha: 0 });
+        } else {
+            intro.style.opacity = '0';
+            intro.style.visibility = 'hidden';
+        }
+    };
+
+    if (hasGsap) {
+        gsap.set(intro, { autoAlpha: 1 });
+        gsap.set(inner, { autoAlpha: 1, y: 0, scale: 1 });
+
+        gsap.timeline({ defaults: { ease: 'power3.out' } })
+            .from(logo, { autoAlpha: 0, scale: 0.74, rotation: -14, duration: 0.4 })
+            .from(wordmark, { autoAlpha: 0, y: 9, duration: 0.25 }, '-=0.2')
+            .from(line, { scaleX: 0, transformOrigin: '50% 50%', duration: 0.26 }, '-=0.18')
+            .from(caption, { autoAlpha: 0, y: 6, duration: 0.22 }, '-=0.14')
+            .to(intro, {
+                autoAlpha: 0,
+                duration: 0.34,
+                delay: 0.16,
+                onComplete: hideImmediately
+            });
+    } else {
+        window.setTimeout(hideImmediately, 420);
+    }
+
+    window.addEventListener('pageshow', () => {
+        hideImmediately();
+    });
+
+    return {
+        runOut: (url) => {
+            if (!hasGsap) {
+                window.location.href = url;
+                return;
+            }
+
+            intro.style.pointerEvents = 'auto';
+            intro.setAttribute('aria-hidden', 'false');
+
+            gsap.timeline({ defaults: { ease: 'power2.out' }, onComplete: () => { window.location.href = url; } })
+                .set(intro, { autoAlpha: 1 })
+                .fromTo(line, { scaleX: 0, transformOrigin: '50% 50%' }, { scaleX: 1, duration: 0.2 })
+                .fromTo(wordmark, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.18 }, '-=0.1')
+                .fromTo(caption, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.18 }, '-=0.12')
+                .fromTo(logo, { autoAlpha: 0, scale: 0.8 }, { autoAlpha: 1, scale: 1, duration: 0.22 }, '-=0.18');
+        }
+    };
+}
+
+function initPageLinkTransitions(introTransitions, landingArcMenu) {
+    let transitioning = false;
+
+    document.querySelectorAll('a[href]').forEach((anchor) => {
+        anchor.addEventListener('click', (event) => {
+            const rawHref = anchor.getAttribute('href');
+            if (!rawHref) {
+                return;
+            }
+
+            if (
+                rawHref.startsWith('#') ||
+                rawHref.startsWith('mailto:') ||
+                rawHref.startsWith('tel:') ||
+                rawHref.startsWith('javascript:') ||
+                anchor.target === '_blank' ||
+                anchor.hasAttribute('download')
+            ) {
+                return;
+            }
+
+            const targetUrl = new URL(rawHref, window.location.href);
+            const currentUrl = new URL(window.location.href);
+
+            if (targetUrl.origin !== currentUrl.origin) {
+                return;
+            }
+
+            if (targetUrl.href === currentUrl.href) {
+                return;
+            }
+
+            event.preventDefault();
+
+            if (transitioning) {
+                return;
+            }
+
+            transitioning = true;
+            landingArcMenu.close();
+            introTransitions.runOut(targetUrl.href);
+        });
+    });
+}
 
 function initThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
@@ -187,8 +301,10 @@ function initGsapAnimations() {
     }
 
     const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    if (!isLanding) {
+        heroTl.from('.nav', { y: -20, opacity: 0, duration: 0.5 });
+    }
     heroTl
-        .from('.nav', { y: -20, opacity: 0, duration: 0.5, delay: isLanding ? 0.25 : 0 })
         .fromTo('.hero-eyebrow',
             { opacity: 0, filter: 'blur(6px)', y: 8 },
             { opacity: 1, filter: 'blur(0px)', y: 0, duration: 0.5 },
@@ -442,7 +558,10 @@ function initLandingArcMenu() {
     }
 
     const links = gsap.utils.toArray('.scene-arc-link');
-    if (!links.length) {
+    const items = gsap.utils.toArray('.scene-arc-item');
+    const dividerLines = gsap.utils.toArray('.scene-arc-line');
+
+    if (!items.length) {
         return { close: () => {} };
     }
 
@@ -450,17 +569,22 @@ function initLandingArcMenu() {
 
     gsap.set(panel, {
         autoAlpha: 0,
-        scale: 0.9,
-        y: -6,
-        transformOrigin: '100% 0%',
+        y: -10,
+        transformOrigin: '50% 0%',
         pointerEvents: 'none'
     });
 
-    gsap.set(links, {
+    gsap.set(items, {
         autoAlpha: 0,
-        y: -4,
-        scale: 0.88
+        y: -6
     });
+
+    if (dividerLines.length) {
+        gsap.set(dividerLines, {
+            scaleX: 0.12,
+            autoAlpha: 0.3
+        });
+    }
 
     if (openIcon && closeIcon) {
         gsap.set(openIcon, { autoAlpha: 1, scale: 1, rotate: 0 });
@@ -483,19 +607,23 @@ function initLandingArcMenu() {
     menuTimeline
         .to(panel, {
             autoAlpha: 1,
-            scale: 1,
             y: 0,
-            duration: 0.26,
-            ease: 'power2.out'
-        })
-        .to(links, {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-            stagger: 0.055,
             duration: 0.2,
             ease: 'power2.out'
-        }, '-=0.12');
+        })
+        .to(dividerLines, {
+            scaleX: 1,
+            autoAlpha: 1,
+            duration: 0.28,
+            stagger: 0.06
+        }, '-=0.1')
+        .to(items, {
+            autoAlpha: 1,
+            y: 0,
+            stagger: 0.05,
+            duration: 0.2,
+            ease: 'power2.out'
+        }, '-=0.2');
 
     if (openIcon && closeIcon) {
         menuTimeline
