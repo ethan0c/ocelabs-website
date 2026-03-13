@@ -14,7 +14,7 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
-<body>
+<body class="subpage services-page">
     <div class="page-atmosphere" aria-hidden="true">
         <span class="glow glow-a"></span>
         <span class="glow glow-b"></span>
@@ -40,6 +40,16 @@
                     <ion-icon name="moon" class="theme-icon dark-icon"></ion-icon>
                     <ion-icon name="sunny" class="theme-icon light-icon"></ion-icon>
                 </button>
+                <button
+                    class="scene-menu-toggle scene-menu-toggle--nav"
+                    id="scene-menu-toggle"
+                    aria-expanded="false"
+                    aria-controls="scene-arc-panel"
+                    aria-label="Toggle quick navigation"
+                >
+                    <ion-icon name="grid-outline" class="scene-menu-icon menu-icon-open"></ion-icon>
+                    <ion-icon name="close-outline" class="scene-menu-icon menu-icon-close"></ion-icon>
+                </button>
                 <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
                     <span></span>
                     <span></span>
@@ -47,19 +57,41 @@
                 </button>
             </div>
         </div>
+        <div class="scene-arc-panel scene-arc-panel--nav" id="scene-arc-panel" aria-hidden="true">
+            <a href="services.html" class="scene-arc-link scene-arc-link--one" data-label="Services" aria-label="Services">
+                <ion-icon name="layers-outline" aria-hidden="true"></ion-icon>
+                <span class="sr-only">Services</span>
+            </a>
+            <a href="work.html" class="scene-arc-link scene-arc-link--two" data-label="Work" aria-label="Work">
+                <ion-icon name="sparkles-outline" aria-hidden="true"></ion-icon>
+                <span class="sr-only">Work</span>
+            </a>
+            <a href="contact.html" class="scene-arc-link scene-arc-link--three" data-label="Contact" aria-label="Contact">
+                <ion-icon name="chatbubbles-outline" aria-hidden="true"></ion-icon>
+                <span class="sr-only">Contact</span>
+            </a>
+        </div>
     </nav>
 
     <main>
-        <section class="services section-shell" style="padding-top: calc(var(--nav-height) + 2.4rem);">
+        <section class="services section-shell section-shell--subpage" style="padding-top: calc(var(--nav-height) + 2.4rem);">
             <div class="container">
-                <header class="section-header" data-gsap="reveal-header">
-                    <p class="section-kicker">What We Do</p>
-                    <h2 class="section-title">SERVICES ENGINEERED FOR MOMENTUM</h2>
-                    <p class="section-subtitle">Clear scope, transparent pricing, and technical quality from kickoff to launch.</p>
-                </header>
+                <div class="subpage-hero" data-gsap="reveal-header">
+                    <header class="section-header section-header--subpage">
+                        <p class="section-kicker">What We Do</p>
+                        <h2 class="section-title">SERVICES ENGINEERED FOR MOMENTUM</h2>
+                        <p class="section-subtitle">Clear scope, transparent pricing, and technical quality from kickoff to launch.</p>
+                    </header>
+                    <div class="subpage-orbit" aria-label="Quick links">
+                        <a class="subpage-orbit-link" href="services.html"><ion-icon name="layers-outline"></ion-icon><span>Services</span></a>
+                        <a class="subpage-orbit-link" href="work.html"><ion-icon name="sparkles-outline"></ion-icon><span>Work</span></a>
+                        <a class="subpage-orbit-link" href="contact.html"><ion-icon name="chatbubbles-outline"></ion-icon><span>Contact</span></a>
+                    </div>
+                </div>
 
                 <div class="services-grid">
                     <article class="service-card" data-gsap="service-card">
+                        <div class="service-icon"><ion-icon name="globe-outline"></ion-icon></div>
                         <div class="service-head">
                             <span class="service-index">01</span>
                             <h3 class="service-title">Web Development</h3>
@@ -82,6 +114,7 @@
                     </article>
 
                     <article class="service-card" data-gsap="service-card">
+                        <div class="service-icon"><ion-icon name="phone-portrait-outline"></ion-icon></div>
                         <div class="service-head">
                             <span class="service-index">02</span>
                             <h3 class="service-title">Mobile Apps</h3>
@@ -104,6 +137,7 @@
                     </article>
 
                     <article class="service-card" data-gsap="service-card">
+                        <div class="service-icon"><ion-icon name="color-wand-outline"></ion-icon></div>
                         <div class="service-head">
                             <span class="service-index">03</span>
                             <h3 class="service-title">Branding + Design</h3>

@@ -14,7 +14,7 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
-<body>
+<body class="subpage work-page">
     <div class="page-atmosphere" aria-hidden="true">
         <span class="glow glow-a"></span>
         <span class="glow glow-b"></span>
@@ -40,6 +40,16 @@
                     <ion-icon name="moon" class="theme-icon dark-icon"></ion-icon>
                     <ion-icon name="sunny" class="theme-icon light-icon"></ion-icon>
                 </button>
+                <button
+                    class="scene-menu-toggle scene-menu-toggle--nav"
+                    id="scene-menu-toggle"
+                    aria-expanded="false"
+                    aria-controls="scene-arc-panel"
+                    aria-label="Toggle quick navigation"
+                >
+                    <ion-icon name="grid-outline" class="scene-menu-icon menu-icon-open"></ion-icon>
+                    <ion-icon name="close-outline" class="scene-menu-icon menu-icon-close"></ion-icon>
+                </button>
                 <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
                     <span></span>
                     <span></span>
@@ -47,18 +57,41 @@
                 </button>
             </div>
         </div>
+        <div class="scene-arc-panel scene-arc-panel--nav" id="scene-arc-panel" aria-hidden="true">
+            <a href="services.html" class="scene-arc-link scene-arc-link--one" data-label="Services" aria-label="Services">
+                <ion-icon name="layers-outline" aria-hidden="true"></ion-icon>
+                <span class="sr-only">Services</span>
+            </a>
+            <a href="work.html" class="scene-arc-link scene-arc-link--two" data-label="Work" aria-label="Work">
+                <ion-icon name="sparkles-outline" aria-hidden="true"></ion-icon>
+                <span class="sr-only">Work</span>
+            </a>
+            <a href="contact.html" class="scene-arc-link scene-arc-link--three" data-label="Contact" aria-label="Contact">
+                <ion-icon name="chatbubbles-outline" aria-hidden="true"></ion-icon>
+                <span class="sr-only">Contact</span>
+            </a>
+        </div>
     </nav>
 
     <main>
-        <section class="work section-shell" style="padding-top: calc(var(--nav-height) + 2.4rem);">
+        <section class="work section-shell section-shell--subpage" style="padding-top: calc(var(--nav-height) + 2.4rem);">
             <div class="container">
-                <header class="section-header" data-gsap="reveal-header">
-                    <p class="section-kicker">Selected Work</p>
-                    <h2 class="section-title">PROJECTS WITH A SHARP POINT OF VIEW</h2>
-                </header>
+                <div class="subpage-hero" data-gsap="reveal-header">
+                    <header class="section-header section-header--subpage">
+                        <p class="section-kicker">Selected Work</p>
+                        <h2 class="section-title">PROJECTS WITH A SHARP POINT OF VIEW</h2>
+                        <p class="section-subtitle">Brand experiences, product builds, and growth systems shipped with intent.</p>
+                    </header>
+                    <div class="subpage-orbit" aria-label="Quick links">
+                        <a class="subpage-orbit-link" href="services.html"><ion-icon name="layers-outline"></ion-icon><span>Services</span></a>
+                        <a class="subpage-orbit-link" href="work.html"><ion-icon name="sparkles-outline"></ion-icon><span>Work</span></a>
+                        <a class="subpage-orbit-link" href="contact.html"><ion-icon name="chatbubbles-outline"></ion-icon><span>Contact</span></a>
+                    </div>
+                </div>
 
                 <div class="work-grid">
                     <article class="work-item" data-gsap="work-item">
+                        <div class="work-icon"><ion-icon name="person-circle-outline"></ion-icon></div>
                         <span class="work-number">01</span>
                         <h3 class="work-title">Personal Brand Portfolio</h3>
                         <p class="work-description">A React Next.js portfolio with expressive motion and clear storytelling.</p>
@@ -67,6 +100,7 @@
                     </article>
 
                     <article class="work-item" data-gsap="work-item">
+                        <div class="work-icon"><ion-icon name="images-outline"></ion-icon></div>
                         <span class="work-number">02</span>
                         <h3 class="work-title">Digital Art & Design Work</h3>
                         <p class="work-description">Illustration and visual design work that extends product identity across channels.</p>
@@ -75,6 +109,7 @@
                     </article>
 
                     <article class="work-item" data-gsap="work-item">
+                        <div class="work-icon"><ion-icon name="fitness-outline"></ion-icon></div>
                         <span class="work-number">03</span>
                         <h3 class="work-title">Helthy - AI Fitness Platform</h3>
                         <p class="work-description">An AI-powered fitness and nutrition product with smart guidance and tracking.</p>
@@ -83,6 +118,7 @@
                     </article>
 
                     <article class="work-item" data-gsap="work-item">
+                        <div class="work-icon"><ion-icon name="desktop-outline"></ion-icon></div>
                         <span class="work-number">04</span>
                         <h3 class="work-title">Temegs Website</h3>
                         <p class="work-description">A clean business website centered on clarity, speed, and responsive behavior.</p>
@@ -91,6 +127,7 @@
                     </article>
 
                     <article class="work-item" data-gsap="work-item">
+                        <div class="work-icon"><ion-icon name="brush-outline"></ion-icon></div>
                         <span class="work-number">05</span>
                         <h3 class="work-title">Concepta Website</h3>
                         <p class="work-description">Brand-forward marketing site with careful pacing and production-ready polish.</p>

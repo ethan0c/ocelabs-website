@@ -357,6 +357,65 @@ body {
     color: var(--text-dim);
 }
 
+.subpage .section-shell--subpage {
+    position: relative;
+}
+
+.subpage-hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.35rem;
+    padding: 1rem;
+    border-radius: calc(var(--radius) + 6px);
+    border: 1px solid color-mix(in srgb, var(--text) 16%, transparent);
+    background:
+        radial-gradient(120% 140% at 0 0, color-mix(in srgb, var(--accent) 16%, transparent), transparent 45%),
+        linear-gradient(140deg, color-mix(in srgb, var(--surface-2) 74%, transparent), color-mix(in srgb, var(--surface) 88%, transparent));
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 20%, transparent),
+        0 16px 30px color-mix(in srgb, #000 22%, transparent);
+}
+
+.section-header--subpage {
+    margin-bottom: 0;
+}
+
+.subpage-orbit {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+    min-width: 280px;
+}
+
+.subpage-orbit-link {
+    border: 1px solid color-mix(in srgb, var(--text) 22%, transparent);
+    border-radius: 999px;
+    padding: 0.45rem 0.55rem;
+    text-decoration: none;
+    color: var(--text);
+    background: color-mix(in srgb, var(--surface-2) 74%, transparent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.subpage-orbit-link ion-icon {
+    font-size: 0.86rem;
+}
+
+.subpage-orbit-link:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 74%, transparent);
+}
+
 .services-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -372,6 +431,31 @@ body {
     flex-direction: column;
     gap: 1rem;
     min-height: 340px;
+}
+
+.subpage .service-card {
+    position: relative;
+    border-radius: calc(var(--radius) + 2px);
+    border-color: color-mix(in srgb, var(--text) 20%, transparent);
+    background:
+        radial-gradient(120% 120% at 0 0, color-mix(in srgb, var(--accent) 14%, transparent), transparent 48%),
+        color-mix(in srgb, var(--surface) 88%, transparent);
+    box-shadow: 0 14px 28px color-mix(in srgb, #000 22%, transparent);
+}
+
+.service-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--text) 24%, transparent);
+    background: color-mix(in srgb, var(--surface-2) 84%, transparent);
+    display: grid;
+    place-items: center;
+    color: var(--text);
+}
+
+.service-icon ion-icon {
+    font-size: 1.05rem;
 }
 
 .service-head {
@@ -512,6 +596,35 @@ body {
     position: relative;
 }
 
+.subpage .work-item {
+    overflow: hidden;
+    border-color: color-mix(in srgb, var(--text) 20%, transparent);
+    background:
+        radial-gradient(120% 130% at 100% 0, color-mix(in srgb, var(--accent) 12%, transparent), transparent 52%),
+        color-mix(in srgb, var(--surface) 88%, transparent);
+    box-shadow: 0 14px 28px color-mix(in srgb, #000 22%, transparent);
+}
+
+.work-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--text) 24%, transparent);
+    background: color-mix(in srgb, var(--surface-2) 84%, transparent);
+    display: grid;
+    place-items: center;
+    color: var(--text);
+}
+
+.work-icon ion-icon {
+    font-size: 1rem;
+}
+
+.subpage .work-number {
+    margin-top: 0.8rem;
+    display: block;
+}
+
 .work-number {
     font-family: var(--font-display);
     font-size: 0.82rem;
@@ -586,6 +699,52 @@ body {
     border: 1px solid var(--line);
     border-radius: var(--radius);
     padding: 1.4rem;
+}
+
+.subpage .contact-info,
+.subpage .contact-form {
+    border-color: color-mix(in srgb, var(--text) 20%, transparent);
+    background:
+        radial-gradient(120% 130% at 0 0, color-mix(in srgb, var(--accent) 12%, transparent), transparent 54%),
+        color-mix(in srgb, var(--surface) 88%, transparent);
+    box-shadow: 0 14px 28px color-mix(in srgb, #000 22%, transparent);
+}
+
+.contact-detail-cards {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.55rem;
+}
+
+.contact-detail-card {
+    border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--surface-2) 78%, transparent);
+    padding: 0.7rem 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.contact-detail-card ion-icon {
+    font-size: 1rem;
+    color: var(--accent);
+}
+
+.contact-detail-card span {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.62rem;
+    color: var(--text-dim);
+}
+
+.contact-detail-card a,
+.contact-detail-card p {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.86rem;
+    margin: 0.2rem 0 0;
 }
 
 .contact-text {
@@ -820,6 +979,15 @@ body {
     .hero {
         padding-top: calc(var(--nav-height) + 1.8rem);
     }
+
+    .subpage-hero {
+        flex-direction: column;
+    }
+
+    .subpage-orbit {
+        width: 100%;
+        min-width: 0;
+    }
 }
 
 @media (max-width: 760px) {
@@ -881,6 +1049,24 @@ body {
     .checkbox-group {
         grid-template-columns: 1fr;
     }
+
+    .subpage-hero {
+        padding: 0.8rem;
+    }
+
+    .subpage-orbit {
+        grid-template-columns: 1fr;
+    }
+
+    .subpage-orbit-link {
+        justify-content: flex-start;
+    }
+
+    .service-icon,
+    .work-icon {
+        width: 38px;
+        height: 38px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -908,6 +1094,23 @@ body {
 .landing-page .nav-menu,
 .landing-page .nav-toggle {
     display: none;
+}
+
+.subpage .nav {
+    background: transparent;
+    border-bottom: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.subpage .nav-menu,
+.subpage .nav-toggle,
+.subpage .nav-overlay {
+    display: none;
+}
+
+.subpage .scene-menu-toggle--nav {
+    display: grid;
 }
 
 .landing-page .nav-logo {
