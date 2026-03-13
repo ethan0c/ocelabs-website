@@ -53,6 +53,7 @@ function initScreenIntroTransitions() {
     const line = intro.querySelector('.screen-intro-rule');
     const hasGsap = typeof gsap !== 'undefined';
     const introStartTime = performance.now();
+    const skipIntroOnLoad = sessionStorage.getItem('oce_skip_next_intro') === '1';
 
     const hideImmediately = () => {
         intro.style.pointerEvents = 'none';
@@ -64,6 +65,18 @@ function initScreenIntroTransitions() {
             intro.style.visibility = 'hidden';
         }
     };
+
+    if (skipIntroOnLoad) {
+        sessionStorage.removeItem('oce_skip_next_intro');
+        hideImmediately();
+
+        return {
+            runOut: (url) => {
+                sessionStorage.setItem('oce_skip_next_intro', '1');
+                window.location.href = url;
+            }
+        };
+    }
 
     if (hasGsap) {
         const scheduleDismiss = () => {
@@ -101,6 +114,7 @@ function initScreenIntroTransitions() {
     return {
         runOut: (url) => {
             if (!hasGsap) {
+                sessionStorage.setItem('oce_skip_next_intro', '1');
                 window.location.href = url;
                 return;
             }
@@ -108,7 +122,13 @@ function initScreenIntroTransitions() {
             intro.style.pointerEvents = 'auto';
             intro.setAttribute('aria-hidden', 'false');
 
-            gsap.timeline({ defaults: { ease: 'power2.out' }, onComplete: () => { window.location.href = url; } })
+            gsap.timeline({
+                defaults: { ease: 'power2.out' },
+                onComplete: () => {
+                    sessionStorage.setItem('oce_skip_next_intro', '1');
+                    window.location.href = url;
+                }
+            })
                 .set(intro, { autoAlpha: 1 })
                 .fromTo(line, { scaleX: 0, transformOrigin: '50% 50%' }, { scaleX: 1, duration: 0.2 })
                 .fromTo(wordmark, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.18 }, '-=0.1')
