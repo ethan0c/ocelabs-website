@@ -49,6 +49,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize theme toggle
     initThemeToggle();
+
+    // Initialize section parallax
+    initParallaxEffects();
 });
 
 // Scroll Animation Observer
@@ -130,6 +133,59 @@ function initThemeToggle() {
             document.documentElement.setAttribute('data-theme', newTheme);
         }
     });
+}
+
+// Lightweight parallax for section containers
+function initParallaxEffects() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion || window.innerWidth < 900) {
+        return;
+    }
+
+    const parallaxLayers = [
+        { element: document.querySelector('.hero-container'), speed: 0.16 },
+        { element: document.querySelector('.services .container'), speed: 0.08 },
+        { element: document.querySelector('.credibility .container'), speed: 0.1 },
+        { element: document.querySelector('.work .container'), speed: 0.12 },
+        { element: document.querySelector('.contact .container'), speed: 0.06 },
+    ].filter(layer => layer.element);
+
+    if (!parallaxLayers.length) {
+        return;
+    }
+
+    parallaxLayers.forEach(({ element }) => {
+        element.style.willChange = 'transform';
+    });
+
+    let ticking = false;
+
+    const updateParallax = () => {
+        const viewportCenter = window.innerHeight / 2;
+
+        parallaxLayers.forEach(({ element, speed }) => {
+            const rect = element.getBoundingClientRect();
+            const elementCenter = rect.top + rect.height / 2;
+            const distanceFromCenter = elementCenter - viewportCenter;
+            const shift = Math.max(-48, Math.min(48, -distanceFromCenter * speed * 0.2));
+
+            element.style.transform = `translate3d(0, ${shift.toFixed(2)}px, 0)`;
+        });
+
+        ticking = false;
+    };
+
+    const requestTick = () => {
+        if (!ticking) {
+            window.requestAnimationFrame(updateParallax);
+            ticking = true;
+        }
+    };
+
+    window.addEventListener('scroll', requestTick, { passive: true });
+    window.addEventListener('resize', requestTick);
+    updateParallax();
 }
 
 // Smooth Scrolling for Navigation Links

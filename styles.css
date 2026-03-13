@@ -71,7 +71,7 @@
     --color-accent-hover: #D14E2E;
     --color-accent-subtle: rgba(232, 93, 58, 0.08);
     --font-primary: 'Inter', sans-serif;
-    --font-display: 'Space Grotesk', sans-serif;
+    --font-display: 'Unbounded', sans-serif;
     --transition: all 0.3s ease;
     --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -227,7 +227,7 @@ body {
 }
 
 h1, h2, h3, .section-title, .hero-title, .service-title,
-.work-title, .logo-text, .nav-link, .btn, .service-icon,
+.work-title, .logo-text, .service-icon,
 .pricing-from, .estimate-price, .modal-header h3 {
     font-family: var(--font-display);
 }
@@ -363,6 +363,7 @@ h1, h2, h3, .section-title, .hero-title, .service-title,
 }
 
 .nav-link {
+    font-family: var(--font-primary);
     color: var(--color-black);
     text-decoration: none;
     font-weight: 500;
@@ -439,7 +440,7 @@ h1, h2, h3, .section-title, .hero-title, .service-title,
     line-height: 0.9;
     margin-bottom: 2rem;
     text-transform: uppercase;
-    letter-spacing: -0.04em;
+    letter-spacing: -0.02em;
 }
 
 .title-line {
@@ -510,7 +511,7 @@ h1, h2, h3, .section-title, .hero-title, .service-title,
     gap: 0.5rem;
     padding: 1rem 2.25rem;
     text-decoration: none;
-    font-family: var(--font-display);
+    font-family: var(--font-primary);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -565,7 +566,7 @@ section {
     font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: -1px;
+    letter-spacing: -0.01em;
     margin-bottom: 1rem;
     line-height: 1.1;
 }
@@ -658,7 +659,7 @@ section {
     font-weight: 600;
     margin-bottom: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.04em;
     line-height: 1.3;
 }
 
@@ -876,7 +877,7 @@ section {
     font-weight: 600;
     margin-bottom: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.04em;
     line-height: 1.3;
 }
 
