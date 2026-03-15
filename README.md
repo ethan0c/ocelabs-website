@@ -1,105 +1,94 @@
-# Oce Labs Website
+# OCE Labs Website
 
-A bold and minimalist website for Oce Labs - Digital Innovation & Development.
+A Next.js App Router site for OCE Labs with animated page transitions, GSAP scroll effects, services quote flow, and a Formspree-powered contact form.
 
-## Features
+## Stack
 
-- **Minimalist Design**: Clean black and white aesthetic
-- **Responsive Layout**: Works perfectly on all devices
-- **Contact Form**: Functional contact form for client inquiries
-- **Services Showcase**: Professional presentation of services
-- **Portfolio Section**: Links to art and development work
-- **Smooth Animations**: Subtle scroll-based animations
-- **Mobile Navigation**: Hamburger menu for mobile devices
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- GSAP + ScrollTrigger
+- react-icons
 
-## Structure
+## Routes
 
-```
+- `/` - Home
+- `/services` - Services + quote estimator modal
+- `/work` - Project portfolio
+- `/contact` - Contact form (supports query-prefill from services estimator)
+
+## Project Structure
+
+```txt
 oce-labs-website/
-├── index.html          # Main HTML file
-├── styles.css          # All CSS styles
-├── script.js           # JavaScript functionality
-└── README.md           # This file
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── contact/page.tsx
+│   ├── services/page.tsx
+│   └── work/page.tsx
+├── components/
+│   ├── Nav.tsx
+│   ├── ScreenIntro.tsx
+│   ├── PageAtmosphere.tsx
+│   ├── Footer.tsx
+│   ├── BodyClassSetter.tsx
+│   ├── GsapPageEffects.tsx
+│   ├── contact/ContactForm.tsx
+│   ├── home/HomeHeroTitle.tsx
+│   └── services/
+│       ├── ServiceCard.tsx
+│       ├── PriceEstimatorModal.tsx
+│       └── ServicesInteractive.tsx
+├── hooks/
+│   ├── useGsapAnimations.ts
+│   ├── useTheme.ts
+│   ├── useMobileMenu.ts
+│   └── useArcMenu.ts
+├── public/
+│   └── icon-logo.png
+├── package.json
+└── MIGRATION.md
 ```
 
-## Sections
+## Setup
 
-1. **Hero Section**: Bold introduction with call-to-action buttons
-2. **Services**: Four main service offerings
-3. **Work**: Portfolio showcase with external links
-4. **Contact**: Contact form and business information
-5. **Footer**: Copyright and branding
-
-## Customization
-
-### Adding Your Links
-
-In the **Work Section**, update these placeholder links:
-
-```html
-<!-- Digital Art Portfolio -->
-<a href="#" class="work-link" target="_blank" rel="noopener">
-  View Portfolio →
-</a>
-<a href="#" class="work-link" target="_blank" rel="noopener"> Instagram → </a>
-
-<!-- Development Projects -->
-<a href="#" class="work-link" target="_blank" rel="noopener"> GitHub → </a>
+```bash
+npm install
 ```
 
-Replace the `#` with your actual URLs:
+## Scripts
 
-- Your art portfolio website
-- Your Instagram profile
-- Your GitHub profile
-
-### Contact Information
-
-Update the email address in the contact section:
-
-```html
-<a href="mailto:hello@ocelabs.tech">hello@ocelabs.tech</a>
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
 ```
 
-### Services
+## Migration Status
 
-Modify the services in the HTML to match your specific offerings.
-
-## Deployment
-
-1. **For ocelabs.tech domain:**
-
-   - Upload all files to your web hosting provider
-   - Ensure `index.html` is in the root directory
-   - Point your domain to the hosting provider
-
-2. **For testing locally:**
-   - Open `index.html` in your web browser
-   - Or use a local server for development
-
-## Technologies Used
-
-- HTML5
-- CSS3 (with CSS Grid and Flexbox)
-- Vanilla JavaScript
-- Google Fonts (Inter)
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-- Mobile browsers
+- Phases 0-4: In progress separately
+- Phases 5-10: Implemented
+   - Screen intro with session gate (`sessionStorage`)
+   - Dynamic GSAP imports in client hooks/components
+   - ScrollTrigger setup and cleanup
+   - Home hero title choreography converted to React state flow
+   - Services estimator now routes to contact using URL query params
+   - Contact page pre-fills form from query params
+   - Notification flow converted to React state-driven UI
 
 ## Contact Form
 
-The contact form currently shows a success message when submitted. To make it functional:
+The contact form submits to Formspree endpoint `https://formspree.io/f/movldbbk` and performs basic client-side validation before submit.
 
-1. **Add backend processing** (PHP, Node.js, etc.)
-2. **Use a service** like Formspree, Netlify Forms, or EmailJS
-3. **Set up email forwarding** through your hosting provider
+## Notes
+
+- Theme is initialized early in `app/layout.tsx` to reduce theme flash on first paint.
+- Intro animation is shown once per browser session.
+- Build is currently passing.
+- If `npm run lint` fails, verify your ESLint configuration matches ESLint 9 flat-config requirements.
 
 ## License
 
-© 2025 Oce Labs. All rights reserved.
+Copyright (c) OCE Labs. All rights reserved.

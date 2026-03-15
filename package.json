@@ -1,0 +1,41 @@
+{
+  "name": "ocelabs-website",
+  "version": "1.0.0",
+  "description": "A bold and minimalist website for Oce Labs - Digital Innovation & Development.",
+  "main": "script.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethan0c/ocelabs-website.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ethan0c/ocelabs-website/issues"
+  },
+  "homepage": "https://github.com/ethan0c/ocelabs-website#readme",
+  "dependencies": {
+    "gsap": "^3.14.2",
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-icons": "^5.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.1.6",
+    "typescript": "^5.9.3"
+  }
+}
