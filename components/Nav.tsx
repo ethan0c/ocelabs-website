@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IoMoon, IoSunny, IoGrid, IoClose } from 'react-icons/io5';
 import { useTheme } from '@/hooks/useTheme';
 import { useMobileMenu } from '@/hooks/useMobileMenu';
@@ -21,6 +21,8 @@ export default function Nav() {
   const { theme, toggle: toggleTheme } = useTheme();
   const { isOpen: mobileOpen, close: closeMobile, toggle: toggleMobile } = useMobileMenu();
   const arcMenu = useArcMenu();
+  const [hideLogoOnScroll, setHideLogoOnScroll] = useState(false);
+  const lastScrollYRef = useRef(0);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -58,6 +60,48 @@ export default function Nav() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [closeMobile, arcMenu]);
 
+  // Hide logo when scrolling down, show when scrolling up
+  useEffect(() => {
+    let ticking = false;
+
+    const update = () => {
+      const currentY = window.scrollY;
+      const previousY = lastScrollYRef.current;
+      const delta = currentY - previousY;
+
+      if (currentY <= 8) {
+        setHideLogoOnScroll(false);
+      } else if (delta > 4) {
+        setHideLogoOnScroll(true);
+      } else if (delta < -4) {
+        setHideLogoOnScroll(false);
+      }
+
+      lastScrollYRef.current = currentY;
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (ticking) {
+        return;
+      }
+      ticking = true;
+      window.requestAnimationFrame(update);
+    };
+
+    lastScrollYRef.current = window.scrollY;
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    setHideLogoOnScroll(false);
+    lastScrollYRef.current = window.scrollY;
+  }, [pathname]);
+
   return (
     <>
       <nav className="nav" id="top-nav">
@@ -67,7 +111,7 @@ export default function Nav() {
           onClick={closeMobile}
         />
         <div className="nav-container">
-          <Link className="nav-logo" href="/">
+          <Link className={`nav-logo${hideLogoOnScroll ? ' is-hidden' : ''}`} href="/">
             <Image src="/icon-logo.png" alt="OCE Labs" width={32} height={32} className="logo-image" />
             <span className="logo-text">OCE LABS</span>
           </Link>

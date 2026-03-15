@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function ScreenIntro() {
   const introRef = useRef<HTMLDivElement | null>(null);
   const [isHidden, setIsHidden] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const intro = introRef.current;
@@ -21,72 +23,68 @@ export default function ScreenIntro() {
         return;
       }
       setIsHidden(true);
-      intro.style.pointerEvents = 'none';
       intro.setAttribute('aria-hidden', 'true');
       intro.style.opacity = '0';
       intro.style.visibility = 'hidden';
     };
 
-    if (typeof window !== 'undefined' && window.sessionStorage.getItem('introShown')) {
-      hideImmediately();
-    } else {
-      if (typeof window !== 'undefined') {
-        window.sessionStorage.setItem('introShown', '1');
+    setIsHidden(false);
+    intro.setAttribute('aria-hidden', 'false');
+    intro.style.opacity = '1';
+    intro.style.visibility = 'visible';
+
+    const introStartTime = performance.now();
+
+    void import('gsap').then((mod) => {
+      if (!mounted) {
+        return;
       }
 
-      const introStartTime = performance.now();
+      const gsap = mod.gsap || mod.default;
+      if (!gsap) {
+        window.setTimeout(hideImmediately, 1000);
+        return;
+      }
 
-      void import('gsap').then((mod) => {
-        if (!mounted) {
-          return;
-        }
+      const inner = intro.querySelector('.screen-intro-inner');
+      const logo = intro.querySelector('.screen-intro-logo');
+      const wordmark = intro.querySelector('.screen-intro-wordmark');
+      const caption = intro.querySelector('.screen-intro-caption');
+      const line = intro.querySelector('.screen-intro-rule');
 
-        const gsap = mod.gsap || mod.default;
-        if (!gsap) {
-          window.setTimeout(hideImmediately, 1000);
-          return;
-        }
+      const dismiss = () => {
+        const elapsed = performance.now() - introStartTime;
+        const remaining = Math.max(1000 - elapsed, 0);
+        const timeoutId = window.setTimeout(() => {
+          gsap.to(intro, {
+            autoAlpha: 0,
+            duration: 0.34,
+            onComplete: hideImmediately
+          });
+        }, remaining);
 
-        const inner = intro.querySelector('.screen-intro-inner');
-        const logo = intro.querySelector('.screen-intro-logo');
-        const wordmark = intro.querySelector('.screen-intro-wordmark');
-        const caption = intro.querySelector('.screen-intro-caption');
-        const line = intro.querySelector('.screen-intro-rule');
-
-        const dismiss = () => {
-          const elapsed = performance.now() - introStartTime;
-          const remaining = Math.max(1000 - elapsed, 0);
-          const timeoutId = window.setTimeout(() => {
-            gsap.to(intro, {
-              autoAlpha: 0,
-              duration: 0.34,
-              onComplete: hideImmediately
-            });
-          }, remaining);
-
-          teardownGsap = () => {
-            window.clearTimeout(timeoutId);
-          };
-        };
-
-        gsap.set(intro, { autoAlpha: 1 });
-        gsap.set(inner, { autoAlpha: 1, y: 0, scale: 1 });
-
-        const tl = gsap
-          .timeline({ defaults: { ease: 'power3.out' } })
-          .from(logo, { autoAlpha: 0, scale: 0.74, rotation: -14, duration: 0.4 })
-          .from(wordmark, { autoAlpha: 0, y: 9, duration: 0.25 }, '-=0.2')
-          .from(line, { scaleX: 0, transformOrigin: '50% 50%', duration: 0.26 }, '-=0.18')
-          .from(caption, { autoAlpha: 0, y: 6, duration: 0.22 }, '-=0.14')
-          .call(dismiss);
-
-        const previousTeardown = teardownGsap;
         teardownGsap = () => {
-          previousTeardown?.();
-          tl.kill();
+          window.clearTimeout(timeoutId);
         };
-      });
-    }
+      };
+
+      gsap.set(intro, { autoAlpha: 1 });
+      gsap.set(inner, { autoAlpha: 1, y: 0, scale: 1 });
+
+      const tl = gsap
+        .timeline({ defaults: { ease: 'power3.out' } })
+        .from(logo, { autoAlpha: 0, scale: 0.74, rotation: -14, duration: 0.4 })
+        .from(wordmark, { autoAlpha: 0, y: 9, duration: 0.25 }, '-=0.2')
+        .from(line, { scaleX: 0, transformOrigin: '50% 50%', duration: 0.26 }, '-=0.18')
+        .from(caption, { autoAlpha: 0, y: 6, duration: 0.22 }, '-=0.14')
+        .call(dismiss);
+
+      const previousTeardown = teardownGsap;
+      teardownGsap = () => {
+        previousTeardown?.();
+        tl.kill();
+      };
+    });
 
     const pageShowHandler = (event: PageTransitionEvent) => {
       if (event.persisted) {
@@ -101,7 +99,7 @@ export default function ScreenIntro() {
       removePageShow?.();
       teardownGsap?.();
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <div
@@ -109,7 +107,7 @@ export default function ScreenIntro() {
       id="screen-intro"
       aria-hidden={isHidden}
       ref={introRef}
-      style={isHidden ? { opacity: 0, visibility: 'hidden', pointerEvents: 'none' } : undefined}
+      style={isHidden ? { opacity: 0, visibility: 'hidden', pointerEvents: 'none' } : { pointerEvents: 'none' }}
     >
       <div className="screen-intro-inner">
         <img src="/icon-logo.png" alt="" className="screen-intro-logo" />
