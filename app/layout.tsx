@@ -6,6 +6,7 @@ import ScreenIntro from '@/components/ScreenIntro';
 import PageAtmosphere from '@/components/PageAtmosphere';
 import Footer from '@/components/Footer';
 import BodyClassSetter from '@/components/BodyClassSetter';
+import CustomCursor from '@/components/CustomCursor';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <BodyClassSetter />
+        <CustomCursor />
         <ScreenIntro />
         <PageAtmosphere />
         <Nav />

@@ -35,6 +35,7 @@ export function useGsapAnimations(page: GsapPage) {
       }
 
       const delayedCalls: Array<{ kill: () => void }> = [];
+      const disposers: Array<() => void> = [];
       const isLanding = page === 'home';
 
       const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
@@ -178,19 +179,97 @@ export function useGsapAnimations(page: GsapPage) {
         });
       });
 
-      gsap.utils.toArray<HTMLElement>('[data-gsap="service-card"]').forEach((card, index) => {
-        gsap.from(card, {
-          y: 50,
+      const serviceCards = gsap.utils.toArray<HTMLElement>('[data-service-card]');
+      if (serviceCards.length) {
+        gsap.set(serviceCards, { transformPerspective: 1200, transformStyle: 'preserve-3d' });
+
+        gsap.from(serviceCards, {
+          y: 72,
           opacity: 0,
-          duration: 0.65,
-          ease: 'power2.out',
-          delay: index * 0.04,
+          rotateX: 10,
+          duration: 0.85,
+          stagger: 0.12,
+          ease: 'power3.out',
           scrollTrigger: {
-            trigger: card,
-            start: 'top 86%'
+            trigger: '.services-grid--experimental',
+            start: 'top 82%'
           }
         });
-      });
+
+        serviceCards.forEach((card) => {
+          const layers = gsap.utils.toArray<HTMLElement>(card.querySelectorAll('.service-layer'));
+          const ambient = card.querySelector<HTMLElement>('.service-card-ambient');
+          const ring = card.querySelector<HTMLElement>('.service-card-ring');
+
+          gsap.from(layers, {
+            y: 24,
+            opacity: 0,
+            duration: 0.55,
+            stagger: 0.04,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 84%'
+            }
+          });
+
+          if (ring) {
+            delayedCalls.push(
+              gsap.to(ring, {
+                rotate: 360,
+                duration: 14,
+                ease: 'none',
+                repeat: -1
+              })
+            );
+          }
+
+          if (page !== 'services' || !window.matchMedia('(pointer: fine)').matches) {
+            return;
+          }
+
+          const rotateYTo = gsap.quickTo(card, 'rotationY', { duration: 0.35, ease: 'power2.out' });
+          const rotateXTo = gsap.quickTo(card, 'rotationX', { duration: 0.35, ease: 'power2.out' });
+          const yTo = gsap.quickTo(card, 'y', { duration: 0.35, ease: 'power2.out' });
+          const ambientXTo = ambient
+            ? gsap.quickTo(ambient, 'xPercent', { duration: 0.4, ease: 'power2.out' })
+            : null;
+          const ambientYTo = ambient
+            ? gsap.quickTo(ambient, 'yPercent', { duration: 0.4, ease: 'power2.out' })
+            : null;
+
+          const onMove = (event: MouseEvent) => {
+            const bounds = card.getBoundingClientRect();
+            const x = (event.clientX - bounds.left) / bounds.width;
+            const y = (event.clientY - bounds.top) / bounds.height;
+            const tiltY = (x - 0.5) * 11;
+            const tiltX = (0.5 - y) * 10;
+
+            rotateYTo(tiltY);
+            rotateXTo(tiltX);
+            yTo(-6);
+            ambientXTo?.((x - 0.5) * 20);
+            ambientYTo?.((y - 0.5) * 20);
+          };
+
+          const onLeave = () => {
+            rotateYTo(0);
+            rotateXTo(0);
+            yTo(0);
+            ambientXTo?.(0);
+            ambientYTo?.(0);
+          };
+
+          card.addEventListener('mousemove', onMove);
+          card.addEventListener('mouseleave', onLeave);
+
+          disposers.push(() => {
+            card.removeEventListener('mousemove', onMove);
+            card.removeEventListener('mouseleave', onLeave);
+            onLeave();
+          });
+        });
+      }
 
       gsap.utils.toArray<HTMLElement>('[data-gsap="work-item"]').forEach((item, index) => {
         gsap.from(item, {
@@ -264,6 +343,7 @@ export function useGsapAnimations(page: GsapPage) {
       );
 
       cleanup = () => {
+        disposers.forEach((dispose) => dispose());
         delayedCalls.forEach((call) => call.kill());
         ScrollTrigger.getAll().forEach((trigger: { kill: () => void }) => trigger.kill());
       };
