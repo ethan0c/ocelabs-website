@@ -3,3 +3,5 @@ node_modules
 dist
 .next
 MIGRATION.md
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo

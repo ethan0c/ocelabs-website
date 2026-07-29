@@ -121,6 +121,13 @@ a {
   font-weight: 500;
   letter-spacing: 0.16em;
   white-space: nowrap;
+  /* The glyph sits optically low against caps, so nudge it up a hair. */
+  display: inline-flex;
+  align-items: center;
+}
+
+.wordmark svg {
+  margin-top: -0.05em;
 }
 
 .nav-right {

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://ocelabs.tech'),
   title: 'OCE Labs',
   description: 'A studio building websites, apps, and brand systems.',
-  icons: { icon: '/icon-logo.png', shortcut: '/icon-logo.png' },
+  /* Favicon comes from app/icon.svg — it adapts to the OS theme. */
   openGraph: {
     title: 'OCE Labs',
     description: 'A studio building websites, apps, and brand systems.',

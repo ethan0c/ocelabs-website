@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 24" fill="none">
+  <g stroke="currentColor" stroke-width="1.5">
+    <path d="M20.6 8.4A10 10 0 1 0 20.6 15.6"/>
+    <path d="M14 12h8"/>
+  </g>
+  <text x="35" y="12" fill="currentColor" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" letter-spacing="2.08" dominant-baseline="central">OCE LABS</text>
+</svg>

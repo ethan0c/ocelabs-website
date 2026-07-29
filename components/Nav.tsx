@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@/hooks/useTheme';
+import Logo from './Logo';
 
 const links = [
   { href: '/work', label: 'Work' },
@@ -25,8 +26,8 @@ export default function Nav() {
   return (
     <nav className="nav" data-scrolled={scrolled}>
       <div className="shell nav-inner">
-        <Link href="/" className="wordmark">
-          OCE LABS
+        <Link href="/" className="wordmark" aria-label="OCE LABS — home">
+          <Logo size={14} />
         </Link>
 
         <div className="nav-right">
