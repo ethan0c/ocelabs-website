@@ -28,7 +28,7 @@ const projects: Project[] = [
   {
     name: 'Concepta',
     desc: 'A brand-forward marketing site.',
-    href: 'https://concepta-five.vercel.app/',
+    href: 'https://www.conceptainnovation.com/',
     shot: 'concepta.png',
   },
   {
