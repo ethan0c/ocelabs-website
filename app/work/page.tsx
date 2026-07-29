@@ -1,118 +1,97 @@
-import Link from 'next/link';
-import GsapPageEffects from '../../components/GsapPageEffects';
+import fs from 'node:fs';
+import path from 'node:path';
+import type { Metadata } from 'next';
+import Image from 'next/image';
 
-const projects = [
+export const metadata: Metadata = {
+  title: 'Work — OCE Labs',
+  description: 'Selected projects from OCE Labs.',
+};
+
+type Project = {
+  name: string;
+  desc: string;
+  href: string;
+  /** File in /public/work. Rendered only if it actually exists. */
+  shot: string;
+};
+
+const projects: Project[] = [
   {
-    number: '01',
-    title: 'Personal Brand Portfolio',
-    description: 'A React Next.js portfolio with expressive motion and clear storytelling.',
-    tags: ['React', 'Next.js', 'Motion'],
-    href: 'https://chibudomonyejesi.com',
-    embedHref: 'https://chibudomonyejesi.com'
-  },
-  {
-    number: '02',
-    title: 'Digital Art & Design Work',
-    description: 'Illustration and visual design work that extends product identity across channels.',
-    tags: ['Illustration', 'UI Design', 'Branding'],
-    href: 'https://instagram.com/ethan.lma'
-  },
-  {
-    number: '03',
-    title: 'Helthy - AI Fitness Platform',
-    description: 'An AI-powered fitness and nutrition product with smart guidance and tracking.',
-    tags: ['AI', 'React Native', 'Full Stack'],
+    name: 'Helthy',
+    desc: 'An AI fitness and nutrition platform with tracking and guidance.',
     href: 'https://helthy.app',
-    embedHref: 'https://helthy.app'
+    shot: 'helthy.png',
   },
   {
-    number: '04',
-    title: 'Temegs Website',
-    description: 'A clean business website centered on clarity, speed, and responsive behavior.',
-    tags: ['Web Development', 'Responsive', 'Frontend'],
-    href: 'https://temegs.vercel.app',
-    embedHref: 'https://temegs.vercel.app'
-  },
-  {
-    number: '05',
-    title: 'Concepta Website',
-    description: 'Brand-forward marketing site with careful pacing and production-ready polish.',
-    tags: ['Brand Website', 'UI Direction', 'Performance'],
+    name: 'Concepta',
+    desc: 'A brand-forward marketing site.',
     href: 'https://concepta-five.vercel.app/',
-    embedHref: 'https://concepta-five.vercel.app/'
-  }
+    shot: 'concepta.png',
+  },
+  {
+    name: 'Temegs',
+    desc: 'A business website built for clarity and speed.',
+    href: 'https://temegs.vercel.app',
+    shot: 'temegs.png',
+  },
+  {
+    name: 'Personal Portfolio',
+    desc: 'A Next.js portfolio with expressive motion.',
+    href: 'https://chibudomonyejesi.com',
+    shot: 'portfolio.png',
+  },
+  {
+    name: 'Digital Art & Design',
+    desc: 'Illustration and visual design work.',
+    href: 'https://instagram.com/ethan.lma',
+    shot: 'art.png',
+  },
 ];
+
+function hasShot(file: string) {
+  return fs.existsSync(path.join(process.cwd(), 'public', 'work', file));
+}
 
 export default function WorkPage() {
   return (
     <>
-      <main>
-        <section className="work section-shell section-shell--subpage" style={{ paddingTop: 'calc(var(--nav-height) + 2.4rem)' }}>
-          <div className="container">
-            <header className="section-header" data-gsap="reveal-header">
-              <p className="section-kicker">Selected Work</p>
-              <h2 className="section-title">
-                <span className="section-title-line section-title-line--muted">PROJECTS WITH A</span>
-                <span className="section-title-line">SHARP POINT</span>
-                <span className="section-title-line section-title-line--accent">OF VIEW</span>
-              </h2>
-              <p className="section-subtitle">Brand experiences, product builds, and growth systems shipped with intent.</p>
-            </header>
+      <header className="shell page-head">
+        <p className="eyebrow rise rise-1">Work</p>
+        <h1 className="h1 rise rise-2">Selected projects.</h1>
+      </header>
 
-            <div className="work-grid">
-              {projects.map((project) => (
-                <article key={project.number} className="work-item" data-gsap="work-item">
-                  <div className="work-preview" aria-hidden="true">
-                    {project.embedHref ? (
-                      <iframe
-                        className="work-preview-frame"
-                        title={`${project.title} demo preview`}
-                        src={project.embedHref}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="work-preview-fallback">
-                        <p>External demo only</p>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="work-item-body">
-                    <span className="work-number">{project.number}</span>
-                    <h3 className="work-title">{project.title}</h3>
-                    <p className="work-description">{project.description}</p>
-                    <div className="work-meta">
-                      {project.tags.map((tag) => (
-                        <span key={tag} className="work-tag">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="work-actions">
-                    <a href={project.href} className="work-link" target="_blank" rel="noopener noreferrer">
-                      Live Demo
-                    </a>
-                    <a href={project.href} className="work-link work-link--ghost" target="_blank" rel="noopener noreferrer">
-                      Open Fullscreen
-                    </a>
-                  </div>
-                </article>
-              ))}
+      <section className="shell work-list">
+        {projects.map(({ name, desc, href, shot }) => (
+          <a
+            key={name}
+            className="work-item"
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className={`work-shot${hasShot(shot) ? '' : ' work-shot--empty'}`}>
+              {hasShot(shot) ? (
+                <Image
+                  src={`/work/${shot}`}
+                  alt={`${name} screenshot`}
+                  width={1200}
+                  height={750}
+                  sizes="(max-width: 68rem) 100vw, 64rem"
+                />
+              ) : (
+                <span>{name}</span>
+              )}
             </div>
 
-            <div className="work-cta" data-gsap="reveal-header">
-              <p>Want to see your project here?</p>
-              <Link href="/contact" className="btn btn-primary">
-                Let&apos;s Build Something
-              </Link>
+            <div className="work-head">
+              <h2 className="work-name">{name}</h2>
+              <span className="work-go">Visit &rarr;</span>
             </div>
-          </div>
-        </section>
-      </main>
-
-      <GsapPageEffects page="work" />
+            <p className="work-desc">{desc}</p>
+          </a>
+        ))}
+      </section>
     </>
   );
 }

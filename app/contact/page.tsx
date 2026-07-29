@@ -1,38 +1,25 @@
-import { Suspense } from 'react';
-import GsapPageEffects from '../../components/GsapPageEffects';
-import ContactForm from '../../components/contact/ContactForm';
-import ContactAmbientCard from '../../components/contact/ContactAmbientCard';
+import type { Metadata } from 'next';
+import ContactForm from '@/components/ContactForm';
+
+export const metadata: Metadata = {
+  title: 'Contact — OCE Labs',
+  description: 'Start a project with OCE Labs.',
+};
 
 export default function ContactPage() {
   return (
     <>
-      <main>
-        <section className="contact section-shell section-shell--subpage" id="contact" style={{ paddingTop: 'calc(var(--nav-height) + 2.4rem)' }}>
-          <div className="container">
-            <header className="section-header" data-gsap="reveal-header">
-              <p className="section-kicker">Let&apos;s Talk</p>
-              <h2 className="section-title">
-                <span className="section-title-line">READY TO BUILD</span>
-                <span className="section-title-line section-title-line--accent">SOMETHING</span>
-                <span className="section-title-line section-title-line--muted">SERIOUS?</span>
-              </h2>
-              <p className="section-subtitle">
-                Tell us where you are, where you want to go, and we will map the fastest route.
-              </p>
-            </header>
+      <header className="shell page-head">
+        <p className="eyebrow rise rise-1">Contact</p>
+        <h1 className="h1 rise rise-2">Tell us what you&apos;re building.</h1>
+        <p className="lede rise rise-3">
+          A sentence or two is enough to start. We reply within a day.
+        </p>
+      </header>
 
-            <div className="contact-content">
-              <ContactAmbientCard />
-
-              <Suspense fallback={null}>
-                <ContactForm />
-              </Suspense>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <GsapPageEffects page="contact" />
+      <section className="shell contact-wrap">
+        <ContactForm />
+      </section>
     </>
   );
 }

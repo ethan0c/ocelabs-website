@@ -1,34 +1,48 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
+
+type Theme = 'dark' | 'light';
+
+/**
+ * The theme lives on <html data-theme>, written by the inline script in
+ * layout.tsx before first paint. React subscribes to it rather than owning it,
+ * which keeps the server render and the pre-paint value in agreement.
+ */
+function subscribe(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  });
+  return () => observer.disconnect();
+}
+
+function getSnapshot(): Theme {
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+}
 
 export function useTheme() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  // Matches the server-rendered data-theme on <html>.
+  const theme = useSyncExternalStore(subscribe, getSnapshot, () => 'dark' as Theme);
 
+  // Follow the system preference until the visitor picks a theme themselves.
   useEffect(() => {
-    // Read actual value after mount (anti-flicker script already set it)
-    const current = document.documentElement.getAttribute('data-theme') as 'dark' | 'light';
-    setTheme(current ?? 'dark');
-
-    // Keep in sync with system preference changes (only when no saved preference)
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
+    const onChange = (e: MediaQueryListEvent) => {
       if (!localStorage.getItem('theme')) {
-        const next = e.matches ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        setTheme(next);
+        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
       }
     };
-    mq.addEventListener('change', handleChange);
-    return () => mq.removeEventListener('change', handleChange);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  const toggle = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
+  const toggle = useCallback(() => {
+    const next: Theme = getSnapshot() === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
-    setTheme(next);
-  };
+  }, []);
 
   return { theme, toggle };
 }

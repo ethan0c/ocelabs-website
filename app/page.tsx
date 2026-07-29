@@ -1,42 +1,57 @@
-import GsapPageEffects from '../components/GsapPageEffects';
-import HomeHeroTitle from '../components/home/HomeHeroTitle';
+import Link from 'next/link';
+
+const capabilities = [
+  {
+    num: '01',
+    name: 'Web',
+    desc: 'Marketing sites, web apps, and platforms.',
+  },
+  {
+    num: '02',
+    name: 'Mobile',
+    desc: 'iOS and Android, built cross-platform.',
+  },
+  {
+    num: '03',
+    name: 'Design',
+    desc: 'Identity, interface systems, and art direction.',
+  },
+];
 
 export default function HomePage() {
   return (
     <>
-      <main className="landing-main">
-        <section className="hero hero--scene">
-          <div className="caps-orbit" aria-hidden="true">
-            <span className="orbit-label orbit-label--tl">PRODUCT STRATEGY</span>
-            <span className="orbit-label orbit-label--tr">CREATIVE ENGINEERING</span>
-            <span className="orbit-label orbit-label--bl">MOTION SYSTEMS</span>
-            <span className="orbit-label orbit-label--br">FAST ITERATION</span>
-            <span className="orbit-label orbit-label--ml">BRAND EDGE</span>
-            <span className="orbit-label orbit-label--mr">WEB + APP BUILDS</span>
-          </div>
+      <section className="shell hero">
+        <h1 className="h1 hero-title rise rise-1">
+          We build websites, apps, and the brands around them.
+        </h1>
+        <p className="lede rise rise-2">
+          We work in what&apos;s left after the excess is gone. Every element earns its
+          place or it goes — because clarity is not what you add, it&apos;s what you
+          refuse to. Restraint is the whole discipline.
+        </p>
+        <div className="hero-links rise rise-3">
+          <Link href="/work" className="ulink">
+            See the work
+          </Link>
+          <Link href="/contact" className="ulink ulink--muted">
+            Start a project
+          </Link>
+        </div>
+      </section>
 
-          <div className="container hero-center" data-gsap="hero-copy">
-            <div className="hero-copy hero-copy--center">
-              <p className="hero-eyebrow">Creative Engineering Studio</p>
-              <HomeHeroTitle />
-              <p className="hero-subtitle">
-                OCE Labs turns ideas into high-performance products with a strong visual voice, deep frontend
-                craft, and motion that feels alive.
-              </p>
+      <section className="shell capabilities">
+        <h2 className="sr-only">What we do</h2>
+        {capabilities.map(({ num, name, desc }) => (
+          <div key={num} className="cap-row">
+            <span className="cap-num">{num}</span>
+            <div>
+              <p className="cap-name">{name}</p>
+              <p className="cap-desc">{desc}</p>
             </div>
-
-            <div className="figure-layer" data-gsap="hero-figures" aria-hidden="true">
-              <div className="shape shape--ring" />
-              <div className="shape shape--cube" />
-              <div className="shape shape--diamond" />
-              <div className="shape shape--orb" />
-              <div className="shape shape--grid" />
-            </div>
           </div>
-        </section>
-      </main>
-
-      <GsapPageEffects page="home" />
+        ))}
+      </section>
     </>
   );
 }
