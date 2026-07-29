@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import Reveal from '@/components/Reveal';
 import WorkPreview from '@/components/WorkPreview';
 
@@ -38,6 +39,11 @@ const projects: Project[] = [
   },
 ];
 
+/** Bare host as the caption — more informative than a repeated "Visit →". */
+function domainOf(href: string) {
+  return new URL(href).hostname.replace(/^www\./, '');
+}
+
 function hasAsset(file: string) {
   return fs.existsSync(path.join(process.cwd(), 'public', 'work', file));
 }
@@ -59,9 +65,9 @@ export default function WorkPage() {
         <h1 className="h1 rise rise-2">Selected projects.</h1>
       </header>
 
-      <section className="shell work-list">
+      <section className="shell work-grid">
         {projects.map(({ name, desc, href, shot }, i) => (
-          <Reveal key={name}>
+          <Reveal key={name} className="work-cell">
             <a
               className="work-item"
               href={href}
@@ -73,8 +79,10 @@ export default function WorkPage() {
                   name={name}
                   shot={shot}
                   clip={clipFor(shot)}
-                  // Only the first shot is above the fold; the rest load lazily.
-                  priority={i === 0}
+                  // Two-up from 52rem, full width below — matches .work-grid.
+                  sizes="(max-width: 52rem) 100vw, 32rem"
+                  // The top row is above the fold; later rows load lazily.
+                  priority={i < 2}
                 />
               ) : (
                 <div className="work-shot work-shot--empty">
@@ -83,13 +91,23 @@ export default function WorkPage() {
               )}
 
               <div className="work-head">
+                <span className="work-num">{String(i + 1).padStart(2, '0')}</span>
                 <h2 className="work-name">{name}</h2>
-                <span className="work-go">Visit &rarr;</span>
               </div>
               <p className="work-desc">{desc}</p>
+              <span className="work-domain">{domainOf(href)}</span>
             </a>
           </Reveal>
         ))}
+
+        {/* Fills the odd cell left by three projects in a 2-up grid, and puts a
+            next step where the eye already lands after the last item. */}
+        <Reveal className="work-cell work-cell--cta">
+          <p className="work-cta-lede">Have something in mind?</p>
+          <Link href="/contact" className="ulink">
+            Start a project
+          </Link>
+        </Reveal>
       </section>
     </>
   );

@@ -17,7 +17,8 @@
   /* 6.4:1 on --bg. Was #8a8a8a (5.7:1) — both pass AA, this reads easier at 15px. */
   --dim: #949494;
   --line: rgba(237, 237, 237, 0.14);
-  --line-strong: rgba(237, 237, 237, 0.3);
+  /* 3:1 on --bg — see the light-theme note below. */
+  --line-strong: rgba(237, 237, 237, 0.38);
 
   --font: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
@@ -29,9 +30,13 @@
 [data-theme='light'] {
   --bg: #fbfbfa;
   --text: #131313;
-  --dim: #6f6f6f;
+  /* 5.9:1 on --bg. Was #6f6f6f (4.85:1) — cleared AA only barely, and this
+     colour carries every description, caption, and domain line on the site. */
+  --dim: #6a6a6a;
   --line: rgba(19, 19, 19, 0.14);
-  --line-strong: rgba(19, 19, 19, 0.32);
+  /* 3:1 on --bg: this is the boundary of an interactive control (form field
+     underlines), which WCAG 1.4.11 holds to the non-text UI threshold. */
+  --line-strong: rgba(19, 19, 19, 0.48);
 }
 
 html {
@@ -420,20 +425,18 @@ a {
 
 /* ─── Work ──────────────────────────────────────────────────── */
 
-.work-list {
+/* Two-up grid. The old stack gave every project identical full-width weight,
+   which read as a table with pictures rather than a portfolio. */
+.work-grid {
   padding-bottom: 6rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* Row gap carries the separation the old hairline borders provided. */
+  gap: 4rem 2.5rem;
 }
 
 .work-item {
   display: block;
-  padding-block: 2.25rem;
-  border-top: 1px solid var(--line);
-}
-
-/* Each item is wrapped by <Reveal>, so the last row is the wrapper's last child. */
-.work-list > *:last-child .work-item,
-.work-item:last-child {
-  border-bottom: 1px solid var(--line);
 }
 
 .work-shot {
@@ -476,9 +479,10 @@ a {
   opacity: 1;
 }
 
-/* Quiet cue that there is motion to be had. */
-.work-shot:has(.work-clip)::after,
-.work-shot[data-playing]::after {
+/* Quiet cue that there is motion to be had.
+   Keyed off data-has-clip, not :has(.work-clip) — the <video> only mounts after
+   the first hover, so :has() alone would leave the dot missing until then. */
+.work-shot[data-has-clip='true']::after {
   content: '';
   position: absolute;
   right: 0.9rem;
@@ -486,8 +490,12 @@ a {
   width: 0.4rem;
   height: 0.4rem;
   border-radius: 50%;
-  background: var(--text);
-  opacity: 0.55;
+  /* Fixed white on a dark scrim rather than var(--text): the dot sits over
+     screenshot pixels, not the page background, so a theme-following colour
+     disappeared against dark shots and washed out on light ones. */
+  background: #fff;
+  box-shadow: 0 0 0 0.28rem rgba(0, 0, 0, 0.35);
+  opacity: 0.85;
   transition: opacity 0.3s ease;
 }
 
@@ -514,35 +522,72 @@ a {
   text-transform: uppercase;
 }
 
+/* Index number sits in a fixed column so names align across cells, echoing
+   the .cap-row treatment on the home page. */
 .work-head {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  gap: 0.75rem;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 1.5rem;
+}
+
+.work-num {
+  font-size: 0.6875rem;
+  color: var(--dim);
+  letter-spacing: 0.1em;
 }
 
 .work-name {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   letter-spacing: -0.015em;
 }
 
-.work-go {
-  font-size: 0.8125rem;
-  color: var(--dim);
-  white-space: nowrap;
-  transition: color 0.25s ease, transform 0.35s cubic-bezier(0.2, 0, 0.2, 1);
-}
-
-.work-item:hover .work-go {
-  color: var(--text);
-  transform: translateX(3px);
+.work-desc,
+.work-domain {
+  /* Align with the name, clearing the index column. */
+  margin-left: 2.25rem;
 }
 
 .work-desc {
   color: var(--dim);
   font-size: 0.9375rem;
-  margin-top: 0.4rem;
-  max-width: 44ch;
+  margin-top: 0.3rem;
+  max-width: 38ch;
+}
+
+/* Replaces a per-row "Visit →" — the domain says where you're going. */
+.work-domain {
+  display: inline-block;
+  margin-top: 0.7rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--dim);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.1rem;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.work-item:hover .work-domain {
+  color: var(--text);
+  border-bottom-color: var(--line-strong);
+}
+
+/* The CTA occupying the grid's odd cell. Sized to its own content and pinned to
+   the bottom of the row, so it sits level with the neighbouring caption instead
+   of stretching the full shot height and opening a void mid-page. */
+.work-cell--cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+  align-self: end;
+  padding-bottom: 0.35rem;
+}
+
+.work-cta-lede {
+  font-size: 1.125rem;
+  letter-spacing: -0.015em;
+  max-width: 18ch;
 }
 
 /* ─── Contact ───────────────────────────────────────────────── */
@@ -753,12 +798,28 @@ a {
 
 /* Hint the compositor only on elements that actually animate on interaction. */
 .work-shot img,
-.ulink::after,
-.work-go {
+.ulink::after {
   will-change: transform;
 }
 
 /* ─── Responsive ────────────────────────────────────────────── */
+
+/* Two 16:10 shots side by side get too small to read before the main 40rem
+   breakpoint, so the grid collapses on its own terms. */
+@media (max-width: 52rem) {
+  .work-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  /* With one column there is no odd cell to fill, so the CTA becomes a normal
+     row and needs its own separation instead of bottom-alignment. */
+  .work-cell--cta {
+    justify-content: flex-start;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+}
 
 @media (max-width: 40rem) {
   :root {
@@ -783,11 +844,6 @@ a {
     padding-block: 3.5rem;
   }
 
-  .work-head {
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
   .footer-inner {
     flex-direction: column;
     align-items: flex-start;
@@ -797,8 +853,7 @@ a {
 
 /* Hover effects are meaningless on touch and cause sticky states. */
 @media (hover: none) {
-  .work-item:hover .work-shot img,
-  .work-item:hover .work-go {
+  .work-item:hover .work-shot img {
     transform: none;
   }
 }
