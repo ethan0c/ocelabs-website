@@ -14,7 +14,8 @@
 :root {
   --bg: #0c0c0c;
   --text: #ededed;
-  --dim: #8a8a8a;
+  /* 6.4:1 on --bg. Was #8a8a8a (5.7:1) — both pass AA, this reads easier at 15px. */
+  --dim: #949494;
   --line: rgba(237, 237, 237, 0.14);
   --line-strong: rgba(237, 237, 237, 0.3);
 
@@ -118,8 +119,8 @@ a {
 
 .wordmark {
   font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  /* Only weight 400 is loaded — wide tracking carries the mark instead. */
+  letter-spacing: 0.2em;
   white-space: nowrap;
   /* The glyph sits optically low against caps, so nudge it up a hair. */
   display: inline-flex;
@@ -169,6 +170,109 @@ a {
 
 .theme-btn:hover {
   color: var(--text);
+}
+
+/* The glyph swaps on toggle; a short spin-in keeps it from feeling like a jump. */
+.theme-icon {
+  animation: icon-in 0.45s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+@keyframes icon-in {
+  from {
+    opacity: 0;
+    transform: rotate(-75deg) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ─── Mobile menu ───────────────────────────────────────────── */
+
+/* Hidden on desktop; the inline nav-links serve that width. */
+.menu-btn {
+  display: none;
+  position: relative;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.menu-bar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.05rem;
+  height: 1px;
+  background: currentColor;
+  /* Transform-only animation so the bars never trigger layout. */
+  transition: transform 0.42s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+
+.menu-bar:nth-child(1) {
+  transform: translate(-50%, -50%) translateY(-3px);
+}
+
+.menu-bar:nth-child(2) {
+  transform: translate(-50%, -50%) translateY(3px);
+}
+
+.menu-bar:nth-child(1)[data-open='true'] {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.menu-bar:nth-child(2)[data-open='true'] {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.sheet {
+  position: fixed;
+  inset: var(--nav-h) 0 0;
+  z-index: 40;
+  background: var(--bg);
+  animation: sheet-in 0.45s cubic-bezier(0.2, 0, 0.2, 1) both;
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.sheet-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 2.5rem;
+}
+
+.sheet-link {
+  font-size: clamp(2rem, 11vw, 3rem);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  padding-block: 0.35rem;
+}
+
+.sheet-link--dim {
+  font-size: 0.9375rem;
+  letter-spacing: 0;
+  color: var(--dim);
+  margin-top: 2rem;
+}
+
+.sheet-link[aria-current='page'] {
+  color: var(--dim);
 }
 
 /* ─── Type ──────────────────────────────────────────────────── */
@@ -326,6 +430,8 @@ a {
   border-top: 1px solid var(--line);
 }
 
+/* Each item is wrapped by <Reveal>, so the last row is the wrapper's last child. */
+.work-list > *:last-child .work-item,
 .work-item:last-child {
   border-bottom: 1px solid var(--line);
 }
@@ -350,6 +456,49 @@ a {
 
 .work-item:hover .work-shot img {
   transform: scale(1.02);
+}
+
+/* Loop sits over the still and fades in once it is actually playing, so a
+   slow-loading video never shows a black frame. */
+.work-clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.work-shot[data-playing='true'] .work-clip {
+  opacity: 1;
+}
+
+/* Quiet cue that there is motion to be had. */
+.work-shot:has(.work-clip)::after,
+.work-shot[data-playing]::after {
+  content: '';
+  position: absolute;
+  right: 0.9rem;
+  bottom: 0.9rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--text);
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+
+.work-shot[data-playing='true']::after {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-clip {
+    display: none;
+  }
 }
 
 /* Placeholder shown until a real screenshot exists. */
@@ -542,6 +691,11 @@ a {
 
 /* ─── Entrance ──────────────────────────────────────────────── */
 
+/*
+ * Entrances are driven by <Reveal> (GSAP) rather than CSS keyframes, so that
+ * scroll position — not a fixed delay — decides when something animates.
+ * These classes remain for content that is always above the fold.
+ */
 @keyframes rise {
   from {
     opacity: 0;
@@ -561,6 +715,49 @@ a {
 .rise-2 { animation-delay: 0.12s; }
 .rise-3 { animation-delay: 0.19s; }
 
+/* ─── Page transitions ──────────────────────────────────────── */
+
+/*
+ * A short cross-fade on route change. Kept under 250ms — long page
+ * transitions read as latency, not polish.
+ */
+::view-transition-old(root) {
+  animation: vt-out 0.18s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-in 0.28s cubic-bezier(0, 0, 0.2, 1) both;
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* The nav is persistent chrome — it should not fade with the page body. */
+.nav {
+  view-transition-name: nav;
+}
+
+::view-transition-group(nav) {
+  animation: none;
+}
+
+/* Hint the compositor only on elements that actually animate on interaction. */
+.work-shot img,
+.ulink::after,
+.work-go {
+  will-change: transform;
+}
+
 /* ─── Responsive ────────────────────────────────────────────── */
 
 @media (max-width: 40rem) {
@@ -569,9 +766,17 @@ a {
     --nav-h: 4.25rem;
   }
 
-  .nav-right,
+  .nav-right {
+    gap: 0.75rem;
+  }
+
+  /* Inline links give way to the sheet. */
   .nav-links {
-    gap: 1.25rem;
+    display: none;
+  }
+
+  .menu-btn {
+    display: block;
   }
 
   .hero {
@@ -590,6 +795,14 @@ a {
   }
 }
 
+/* Hover effects are meaningless on touch and cause sticky states. */
+@media (hover: none) {
+  .work-item:hover .work-shot img,
+  .work-item:hover .work-go {
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -598,5 +811,12 @@ a {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+    will-change: auto !important;
+  }
+
+  /* Skip the route cross-fade entirely rather than run it at 0.01ms. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
   }
 }

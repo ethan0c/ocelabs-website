@@ -1,13 +1,20 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Geist } from 'next/font/google';
 import './globals.css';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
+import SmoothScroll from '@/components/SmoothScroll';
 
-const inter = Inter({
+/*
+ * One typeface, one weight. Geist is a grotesque with tighter apertures than
+ * the usual default sans, so it reads as a deliberate choice at display sizes
+ * while staying neutral in body copy. The wordmark leans on letter-spacing
+ * rather than a second weight, which keeps this to a single font file.
+ */
+const geist = Geist({
   subsets: ['latin'],
   variable: '--font-sans',
-  weight: ['400', '500'],
+  weight: ['400'],
   display: 'swap',
 });
 
@@ -25,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="dark" className={inter.variable}>
+    <html lang="en" data-theme="dark" className={geist.variable}>
       <head>
         {/* Resolve theme before first paint so there is no flash. */}
         <script
@@ -35,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <SmoothScroll />
         <Nav />
         <main>{children}</main>
         <Footer />

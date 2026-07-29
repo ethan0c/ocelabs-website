@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { Metadata } from 'next';
-import Image from 'next/image';
+import Reveal from '@/components/Reveal';
+import WorkPreview from '@/components/WorkPreview';
 
 export const metadata: Metadata = {
   title: 'Work — OCE Labs',
@@ -30,27 +31,24 @@ const projects: Project[] = [
     shot: 'concepta.png',
   },
   {
-    name: 'Temegs',
-    desc: 'A business website built for clarity and speed.',
-    href: 'https://temegs.vercel.app',
-    shot: 'temegs.png',
-  },
-  {
     name: 'Personal Portfolio',
     desc: 'A Next.js portfolio with expressive motion.',
     href: 'https://chibudomonyejesi.com',
     shot: 'portfolio.png',
   },
-  {
-    name: 'Digital Art & Design',
-    desc: 'Illustration and visual design work.',
-    href: 'https://instagram.com/ethan.lma',
-    shot: 'art.png',
-  },
 ];
 
-function hasShot(file: string) {
+function hasAsset(file: string) {
   return fs.existsSync(path.join(process.cwd(), 'public', 'work', file));
+}
+
+/**
+ * A project gets a hover preview if a same-named .mp4 sits next to its shot.
+ * Dropping `name.mp4` into /public/work is all it takes to enable one.
+ */
+function clipFor(shot: string) {
+  const clip = shot.replace(/\.[^.]+$/, '.mp4');
+  return hasAsset(clip) ? clip : undefined;
 }
 
 export default function WorkPage() {
@@ -62,34 +60,35 @@ export default function WorkPage() {
       </header>
 
       <section className="shell work-list">
-        {projects.map(({ name, desc, href, shot }) => (
-          <a
-            key={name}
-            className="work-item"
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <div className={`work-shot${hasShot(shot) ? '' : ' work-shot--empty'}`}>
-              {hasShot(shot) ? (
-                <Image
-                  src={`/work/${shot}`}
-                  alt={`${name} screenshot`}
-                  width={1200}
-                  height={750}
-                  sizes="(max-width: 68rem) 100vw, 64rem"
+        {projects.map(({ name, desc, href, shot }, i) => (
+          <Reveal key={name}>
+            <a
+              className="work-item"
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {hasAsset(shot) ? (
+                <WorkPreview
+                  name={name}
+                  shot={shot}
+                  clip={clipFor(shot)}
+                  // Only the first shot is above the fold; the rest load lazily.
+                  priority={i === 0}
                 />
               ) : (
-                <span>{name}</span>
+                <div className="work-shot work-shot--empty">
+                  <span>{name}</span>
+                </div>
               )}
-            </div>
 
-            <div className="work-head">
-              <h2 className="work-name">{name}</h2>
-              <span className="work-go">Visit &rarr;</span>
-            </div>
-            <p className="work-desc">{desc}</p>
-          </a>
+              <div className="work-head">
+                <h2 className="work-name">{name}</h2>
+                <span className="work-go">Visit &rarr;</span>
+              </div>
+              <p className="work-desc">{desc}</p>
+            </a>
+          </Reveal>
         ))}
       </section>
     </>

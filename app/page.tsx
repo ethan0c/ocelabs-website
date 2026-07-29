@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Reveal from '@/components/Reveal';
 
 const capabilities = [
   {
@@ -42,15 +43,17 @@ export default function HomePage() {
 
       <section className="shell capabilities">
         <h2 className="sr-only">What we do</h2>
-        {capabilities.map(({ num, name, desc }) => (
-          <div key={num} className="cap-row">
-            <span className="cap-num">{num}</span>
-            <div>
-              <p className="cap-name">{name}</p>
-              <p className="cap-desc">{desc}</p>
+        <Reveal stagger>
+          {capabilities.map(({ num, name, desc }) => (
+            <div key={num} className="cap-row">
+              <span className="cap-num">{num}</span>
+              <div>
+                <p className="cap-name">{name}</p>
+                <p className="cap-desc">{desc}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </Reveal>
       </section>
     </>
   );
