@@ -22,6 +22,26 @@
 
   --font: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
+  /*
+   * Brushed metal. Opaque by design — no backdrop-filter, nothing to refract.
+   * The effect is a banded achromatic sweep across the *edge* of a shape: two
+   * bright bands where a milled surface catches light, dark between. Anything
+   * warm or saturated here reads as gold or oil, so every stop stays neutral.
+   *
+   * Angle is fixed at 105deg site-wide, so every metal element behaves like it
+   * sits under one light source rather than each catching its own.
+   */
+  --metal: linear-gradient(
+    105deg,
+    #6f6f6f 0%,
+    #d8d8d8 18%,
+    #8a8a8a 34%,
+    #f2f2f2 50%,
+    #8a8a8a 66%,
+    #cfcfcf 82%,
+    #6f6f6f 100%
+  );
+
   --page: 68rem;
   --gutter: 1.75rem;
   --nav-h: 5rem;
@@ -37,6 +57,20 @@
   /* 3:1 on --bg: this is the boundary of an interactive control (form field
      underlines), which WCAG 1.4.11 holds to the non-text UI threshold. */
   --line-strong: rgba(19, 19, 19, 0.48);
+
+  /* Darker range on a near-white page: the dark-theme sweep tops out brighter
+     than --bg, so it would read as a hole rather than a milled edge. Same
+     banding, same 105deg, inverted value range — dark metal, not chrome. */
+  --metal: linear-gradient(
+    105deg,
+    #8e8e8e 0%,
+    #3a3a3a 18%,
+    #767676 34%,
+    #1f1f1f 50%,
+    #767676 66%,
+    #454545 82%,
+    #8e8e8e 100%
+  );
 }
 
 html {
@@ -134,6 +168,41 @@ a {
 
 .wordmark svg {
   margin-top: -0.05em;
+}
+
+/*
+ * SVG gradient stops for the glyph. Kept in CSS rather than on the element so
+ * the two themes can diverge, matching the --metal ramp band for band.
+ */
+.logo-metal .ms-0 { stop-color: #6f6f6f; }
+.logo-metal .ms-1 { stop-color: #d8d8d8; }
+.logo-metal .ms-2 { stop-color: #8a8a8a; }
+.logo-metal .ms-3 { stop-color: #f2f2f2; }
+.logo-metal .ms-4 { stop-color: #cfcfcf; }
+
+[data-theme='light'] .logo-metal .ms-0 { stop-color: #8e8e8e; }
+[data-theme='light'] .logo-metal .ms-1 { stop-color: #3a3a3a; }
+[data-theme='light'] .logo-metal .ms-2 { stop-color: #767676; }
+[data-theme='light'] .logo-metal .ms-3 { stop-color: #1f1f1f; }
+[data-theme='light'] .logo-metal .ms-4 { stop-color: #454545; }
+
+/*
+ * Milled wordmark. Applied to the lettering span only — the glyph beside it
+ * carries its own SVG gradient, since background-clip cannot reach into an
+ * <svg>. Both reference the same 105deg sweep, so they read as one part.
+ */
+.wordmark-text {
+  background: var(--metal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* WebKit honours text-fill-color over color, so both must be cleared. */
+  -webkit-text-fill-color: transparent;
+  /* Fallback for engines that ignore background-clip: text — without this the
+     mark would render fully invisible rather than merely flat. */
+  @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+    color: var(--text);
+  }
 }
 
 .nav-right {
@@ -374,10 +443,30 @@ a {
   transform-origin: right;
 }
 
-/* Capability list on home — plain text, no cards. */
+/*
+ * Capability list on home — plain text, no cards.
+ *
+ * This is the one structural rule on the page, so it gets the milled edge
+ * while the row dividers below stay plain hairlines. A border cannot carry a
+ * gradient, hence the pseudo-element. Reserved for section boundaries only:
+ * putting it on every rule would make it texture instead of hierarchy.
+ */
 .capabilities {
-  border-top: 1px solid var(--line);
+  position: relative;
   padding-block: 3.5rem;
+}
+
+.capabilities::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: var(--metal);
+  /* Fades at both ends so the rule reads as milled stock, not a full-bleed
+     band with hard cut edges against the gutter. */
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
 }
 
 .cap-row {
@@ -706,9 +795,21 @@ a {
 
 /* ─── Footer ────────────────────────────────────────────────── */
 
+/* The page's other true section boundary, so it takes the milled edge too. */
 .footer {
-  border-top: 1px solid var(--line);
+  position: relative;
   padding-block: 2.25rem;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: var(--metal);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
 }
 
 .footer-inner {
@@ -855,6 +956,30 @@ a {
 @media (hover: none) {
   .work-item:hover .work-shot img {
     transform: none;
+  }
+}
+
+/*
+ * The metal ramp spans mid greys, so its darkest bands sit near 3:1 against the
+ * page — fine as brand texture at rest, not enough when someone has asked for
+ * more contrast. Drop back to flat --text and plain hairlines.
+ */
+@media (prefers-contrast: more) {
+  .wordmark-text {
+    background: none;
+    color: var(--text);
+    -webkit-text-fill-color: var(--text);
+  }
+
+  .logo-metal .ms {
+    stop-color: currentColor;
+  }
+
+  .capabilities::before,
+  .footer::before {
+    background: var(--line-strong);
+    mask-image: none;
+    -webkit-mask-image: none;
   }
 }
 
