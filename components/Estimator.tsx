@@ -10,7 +10,15 @@ type Kind = 'website' | 'brand' | 'webapp' | 'mobile';
 
 const PACKAGES: Record<
   Kind,
-  { label: string; base: number; pages: number; extraPage: number; blurb: string }
+  {
+    label: string;
+    base: number;
+    pages: number;
+    extraPage: number;
+    blurb: string;
+    /** Calendar weeks from kickoff, low and high. */
+    weeks: [number, number];
+  }
 > = {
   website: {
     label: 'Website Package',
@@ -18,6 +26,7 @@ const PACKAGES: Record<
     pages: 5,
     extraPage: 350,
     blurb: 'Custom site, up to five pages, full setup.',
+    weeks: [4, 6],
   },
   brand: {
     label: 'Brand Website Package',
@@ -25,6 +34,7 @@ const PACKAGES: Record<
     pages: 10,
     extraPage: 450,
     blurb: 'Art direction, motion, video, up to ten pages.',
+    weeks: [6, 10],
   },
   webapp: {
     label: 'Web App with Dashboard',
@@ -32,6 +42,7 @@ const PACKAGES: Record<
     pages: 10,
     extraPage: 450,
     blurb: 'Accounts, CMS, dashboard, integrations.',
+    weeks: [10, 16],
   },
   mobile: {
     label: 'Mobile App',
@@ -39,8 +50,15 @@ const PACKAGES: Record<
     pages: 0,
     extraPage: 0,
     blurb: 'iOS and Android from one codebase, plus marketing site.',
+    weeks: [16, 26],
   },
 };
+
+/** Each additional site or app adds this many weeks to both ends. */
+const WEEKS_PER_EXTRA_PROJECT = 2;
+
+/** Days after kickoff by which missing assets must arrive or launch slips. */
+const CONTENT_DEADLINE_DAYS = 7;
 
 type Addon = {
   id: string;
@@ -114,9 +132,9 @@ const DISCOUNTS = [
 const DISCOUNT_CAP = 50;
 
 const RUSH = [
-  { id: 'none', label: 'Standard timeline', pct: 0 },
-  { id: 'fast', label: 'Under 3 weeks', pct: 25 },
-  { id: 'urgent', label: 'Under 10 days', pct: 50 },
+  { id: 'none', label: 'Standard timeline', pct: 0, weeks: null as [number, number] | null },
+  { id: 'fast', label: 'Under 3 weeks', pct: 25, weeks: [2, 3] as [number, number] },
+  { id: 'urgent', label: 'Under 10 days', pct: 50, weeks: [1, 2] as [number, number] },
 ];
 
 const RETAINERS = [
@@ -137,6 +155,12 @@ const usd = new Intl.NumberFormat('en-US', {
 });
 
 type Line = { label: string; amount: number };
+
+function weeksLabel([lo, hi]: [number, number]) {
+  // Past three months, weeks stop meaning much; say months.
+  if (lo >= 13) return `${Math.round(lo / 4.33)} to ${Math.round(hi / 4.33)} months`;
+  return `${lo} to ${hi} weeks`;
+}
 
 export default function Estimator() {
   const [kind, setKind] = useState<Kind>('website');
@@ -186,8 +210,15 @@ export default function Estimator() {
 
     const subtotal = lines.reduce((s, l) => s + l.amount, 0);
 
-    const rushPct = RUSH.find((r) => r.id === rush)?.pct ?? 0;
+    const rushOpt = RUSH.find((r) => r.id === rush) ?? RUSH[0];
+    const rushPct = rushOpt.pct;
     const rushAmt = Math.round(subtotal * (rushPct / 100));
+
+    // Rush overrides the package timeline; otherwise extra projects extend it.
+    const weeks: [number, number] = rushOpt.weeks ?? [
+      pkg.weeks[0] + extraProjects * WEEKS_PER_EXTRA_PROJECT,
+      pkg.weeks[1] + extraProjects * WEEKS_PER_EXTRA_PROJECT,
+    ];
 
     const bulkPct = BULK.filter((b) => projects >= b.min).map((b) => b.pct).pop() ?? 0;
     const chosen = DISCOUNTS.filter((d) => discounts[d.id]);
@@ -220,6 +251,7 @@ export default function Estimator() {
       // once the questionnaire surfaces scope the call didn't.
       low: Math.round(total / 100) * 100,
       high: Math.round((total * 1.15) / 100) * 100,
+      weeks,
     };
   }, [pkg, pages, visible, qty, kind, projects, rush, discounts, customPct, retainer]);
 
@@ -240,6 +272,10 @@ export default function Estimator() {
       `Quote range: ${usd.format(est.low)} to ${usd.format(est.high)}`,
       `Deposit (${DEPOSIT_PCT}%): ${usd.format(est.deposit)}`,
       ...(est.monthly ? [`Retainer: ${usd.format(est.monthly)} per month`] : []),
+      '',
+      `Timeline: ${weeksLabel(est.weeks)} from kickoff`,
+      `Kickoff: deposit paid, questionnaire returned, logo and brand files, existing copy shared`,
+      `Content deadline: ${CONTENT_DEADLINE_DAYS} days after kickoff; anything later moves launch by the same number of days`,
       ...(notes.trim() ? ['', 'Notes:', notes.trim()] : []),
     ];
     return rows.join('\n');
@@ -389,6 +425,9 @@ export default function Estimator() {
               />
               <span className="est-row-main">
                 <span className="est-row-label">{r.label}</span>
+                <span className="est-row-note">
+                  {r.weeks ? weeksLabel(r.weeks) : weeksLabel(pkg.weeks)} from kickoff
+                </span>
               </span>
               <span className="est-row-price">{r.pct ? `+${r.pct}%` : '—'}</span>
             </label>
@@ -540,6 +579,14 @@ export default function Estimator() {
               <dd>{usd.format(est.monthly)} per month</dd>
             </div>
           )}
+          <div>
+            <dt>Timeline</dt>
+            <dd>{weeksLabel(est.weeks)} from kickoff</dd>
+          </div>
+          <div>
+            <dt>Content deadline</dt>
+            <dd>{CONTENT_DEADLINE_DAYS} days after kickoff</dd>
+          </div>
         </dl>
 
         <button type="button" className="send" onClick={copy}>

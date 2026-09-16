@@ -51,6 +51,20 @@ Practical
 16. When do you need the site live? Is there a budget range you are working within?
 
 
+Before we start
+
+The project begins, and the timeline starts counting, on the kickoff day. Kickoff happens when all four of these are in:
+
+• The deposit is paid
+• This questionnaire is returned
+• Your logo, brand files, and any photography you want used are shared with us
+• Any existing copy you want kept is shared with us
+
+You do not need finished copy to start. We write a first draft of every page from your questionnaire answers, and you edit it. If you would rather we handle the writing completely, choose the Copywriting option.
+
+Anything still missing one week after kickoff moves the launch date by the same number of days. If an asset is still missing at launch, the site goes live with a placeholder and we swap it in when it arrives.
+
+
 
 PART 2: HOW WE WORK
 
@@ -91,17 +105,19 @@ Always up. The hosting network has no single machine that can fail. Each deploym
 
 PART 3: PACKAGES AND PRICING
 
-Every package includes design, development, hosting setup, your domain connected, a contact form, analytics, and full search setup. The difference between packages is scope. The ranges below are estimates. After the questionnaire we send a fixed quote, and the price does not change unless the scope does.
+Every package includes design, development, hosting setup, your domain connected, a contact form, analytics, and full search setup. The difference between packages is scope. The ranges below are estimates. After the questionnaire we send a fixed quote and a launch date, and neither changes unless the scope does. Timelines count from kickoff, once the items under "Before we start" are in.
 
 
 Website Package
 $3,000 to $6,000
+4 to 6 weeks from kickoff
 
 A focused, custom-designed website of up to five pages. Right for a consultancy, a professional practice, a contractor, or any business that needs a credible, fast, findable home on the web without a long project.
 
 What is included:
 • Custom design from scratch, no template
 • Up to five pages, such as Home, About, Services, Work, and Contact
+• First-draft copy for every page, written from your questionnaire, for you to edit
 • Mobile, tablet, and desktop layouts
 • Contact form delivered to your inbox
 • Analytics so you can see who visits and from where
@@ -114,6 +130,7 @@ Example project: Concepta Innovation, an IT and cybersecurity services firm. Ser
 
 Brand Website Package
 $6,000 to $12,000
+6 to 10 weeks from kickoff
 
 A website where the design itself carries the message. Right for creative studios, artists, agencies, hospitality, fashion, and consumer brands where the first impression is the product.
 
@@ -130,6 +147,7 @@ Example project: Ada Palm, a New York marketing consultancy for brands, artists,
 
 Web App with Dashboard
 $12,000 to $25,000
+10 to 16 weeks from kickoff
 
 A website that does something beyond presenting information. Right for businesses that need customer accounts, content that changes often, tools their team uses daily, or several sites that share one system.
 
@@ -147,6 +165,7 @@ Example projects: a firm with three regional offices, each with its own site, se
 
 Mobile App
 $25,000 and up
+4 to 6 months from kickoff
 
 A native mobile application for iOS and Android, built from one codebase so both platforms launch together. Right for founders and companies building a product, not a brochure.
 
