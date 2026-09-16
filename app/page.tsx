@@ -59,6 +59,12 @@ export default function HomePage() {
             </div>
           ))}
         </Reveal>
+        <Reveal>
+          <p className="cap-note">
+            Every project ships complete: designed, built, hosted on your domain, with
+            forms, analytics, and search set up.
+          </p>
+        </Reveal>
       </section>
     </>
   );
