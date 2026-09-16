@@ -20,28 +20,28 @@ type Project = {
 
 const projects: Project[] = [
   {
-    name: 'Helthy',
-    desc: 'An AI fitness and nutrition platform with tracking and guidance.',
-    href: 'https://helthy.app',
-    shot: 'helthy.png',
-  },
-  {
-    name: 'Concepta',
-    desc: 'A brand-forward marketing site.',
-    href: 'https://www.conceptainnovation.com/',
-    shot: 'concepta.png',
-  },
-  {
     name: 'Ada Palm',
     desc: 'A New York marketing consultancy site built around a full-bleed showreel.',
     href: 'https://adapalm-private.vercel.app',
     shot: 'adapalm.png',
   },
   {
+    name: 'Helthy',
+    desc: 'An AI fitness and nutrition platform with tracking and guidance.',
+    href: 'https://helthy.app',
+    shot: 'helthy.png',
+  },
+  {
     name: 'Personal Portfolio',
     desc: 'A Next.js portfolio with expressive motion.',
     href: 'https://chibudomonyejesi.com',
     shot: 'portfolio.png',
+  },
+  {
+    name: 'Concepta',
+    desc: 'A brand-forward marketing site.',
+    href: 'https://www.conceptainnovation.com/',
+    shot: 'concepta.png',
   },
 ];
 
