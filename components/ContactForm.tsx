@@ -4,11 +4,16 @@ import { FormEvent, useState } from 'react';
 
 const ENDPOINT = 'https://formspree.io/f/xeaojwdr';
 
+/* Ranges start at the floor stated on the page. "Not sure" stays first so an
+   undecided visitor isn't pushed into a number before the first conversation. */
+const BUDGETS = ['Not sure yet', '$3k–6k', '$6k–12k', '$12k–25k', '$25k+'];
+
 type Note = { kind: 'error' | 'ok'; text: string } | null;
 
 export default function ContactForm() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [budget, setBudget] = useState(BUDGETS[0]);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [note, setNote] = useState<Note>(null);
@@ -31,6 +36,7 @@ export default function ContactForm() {
       const body = new FormData();
       body.append('email', email);
       body.append('message', message);
+      body.append('budget', budget);
 
       const res = await fetch(ENDPOINT, {
         method: 'POST',
@@ -91,6 +97,24 @@ export default function ContactForm() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
+      </div>
+
+      <div className="field">
+        <label htmlFor="budget">Budget</label>
+        <span className="select-wrap">
+          <select
+            id="budget"
+            name="budget"
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+          >
+            {BUDGETS.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
+          </select>
+        </span>
       </div>
 
       <button type="submit" className="send" disabled={sending}>

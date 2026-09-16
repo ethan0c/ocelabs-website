@@ -706,7 +706,8 @@ a {
 }
 
 .field input,
-.field textarea {
+.field textarea,
+.field select {
   width: 100%;
   background: none;
   border: 0;
@@ -726,9 +727,44 @@ a {
 }
 
 .field input:focus,
-.field textarea:focus {
+.field textarea:focus,
+.field select:focus {
   outline: none;
   border-bottom-color: var(--text);
+}
+
+/* Native select, stripped to the same underline as the inputs. The chevron is
+   a rotated border square so it takes currentColor in both themes. */
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 1.5rem;
+}
+
+.select-wrap {
+  position: relative;
+  display: block;
+  color: var(--dim);
+}
+
+.select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+/* Popup list follows the theme rather than the OS. */
+.field select option {
+  background: var(--bg);
+  color: var(--text);
 }
 
 .field input::placeholder,

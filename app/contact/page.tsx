@@ -13,7 +13,8 @@ export default function ContactPage() {
         <p className="eyebrow rise rise-1">Contact</p>
         <h1 className="h1 rise rise-2">Tell us what you&apos;re building.</h1>
         <p className="lede rise rise-3">
-          A sentence or two is enough to start. We reply within a day.
+          A sentence or two is enough to start. Projects begin at $3k, and we
+          reply within a day.
         </p>
       </header>
 
