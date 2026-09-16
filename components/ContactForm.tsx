@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 
-const ENDPOINT = 'https://formspree.io/f/movldbbk';
+const ENDPOINT = 'https://formspree.io/f/xeaojwdr';
 
 type Note = { kind: 'error' | 'ok'; text: string } | null;
 
