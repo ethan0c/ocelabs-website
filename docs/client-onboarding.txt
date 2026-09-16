@@ -1,0 +1,187 @@
+OCE LABS
+Project Questionnaire and How We Work
+
+
+PART 1: PROJECT QUESTIONNAIRE
+
+Short answers are fine. Skip anything that does not apply. Send it back by email or paste your answers into the contact form.
+
+
+About you
+
+1. What does your business do, in one or two sentences?
+
+2. Who is the site for? Describe your ideal visitor: who they are, what they need, and how they usually find businesses like yours.
+
+3. What should a visitor do after reading the site? For example: email you, book a call, buy something, download the app, follow you on social media.
+
+
+The site
+
+4. Do you have an existing site? If so, what works about it and what does not?
+
+5. Which pages do you need? Typical choices are Home, About, Services or Work, Pricing, and Contact. List anything else you have in mind.
+
+6. Is the written content ready, or do you need help writing it?
+
+7. Do you have a logo, brand colours, fonts, or photography we should use? If not, we can create them.
+
+8. Share two or three websites you like, and say what you like about each one. They do not have to be in your industry.
+
+
+Search
+
+9. What would someone type into Google to find you? List a few phrases.
+
+10. Do you serve a specific city, region, or country?
+
+11. Do you already have a Google Business Profile, existing search rankings, or a newsletter list we should protect during the move?
+
+
+Practical
+
+12. Do you own a domain name? Which one, and where is it registered?
+
+13. Do you need anything beyond pages? For example: a contact form, appointment booking, a newsletter, online payments, a customer login, or a blog.
+
+14. Who gives final approval on the project?
+
+15. After launch, who will update the content, and roughly how often?
+
+16. When do you need the site live? Is there a budget range you are working within?
+
+
+
+PART 2: HOW WE WORK
+
+
+Search and AI: built in, not bolted on
+
+Most search optimisation is fixing a site after it was built wrong. We build it right the first time.
+
+Every page is delivered as complete, readable HTML before any script runs. Google, Bing, and AI assistants such as ChatGPT and Claude read the same clean page a person does. Nothing important is hidden behind loading screens or generated only in the browser.
+
+Each page has one clear title, one honest description, and headings that say what each section is about in plain language. That is what search engines rank and what AI models quote when they answer a question about your industry. We add structured data so your business name, location, hours, and services are machine-readable. We add a sitemap so every page is found, and a preview image so your links look right when shared on social media or in messages.
+
+We think of this as being legible: to people first, and to machines as a consequence. There are no tricks, and nothing that needs to be redone when the next algorithm change arrives.
+
+
+Our tools, and why we do not use monthly-fee platforms
+
+We build with Next.js, the most widely used framework for modern websites, and host on Vercel, the company that maintains it. The code is written by us, specifically for you, and stored in a private repository that you can be given access to at any time.
+
+Platforms like Squarespace, Wix, and Webflow charge a monthly fee for as long as your site exists. In exchange you get templates that look like everyone else's, pages that load slower than they should, limited control over search settings, and a site you cannot take with you if you ever leave.
+
+Our approach costs more up front and almost nothing after. There is no platform subscription. Hosting at typical traffic is free or a few dollars a month. The domain name is the one fixed annual cost, and it is registered in your name. You own the site outright, including the code.
+
+
+Hosting and security
+
+Fast everywhere. Pages are generated ahead of time and served from a global network of servers, so a visitor in Lagos and a visitor in New York both receive the page in well under a second.
+
+Secure by default. Every site runs over HTTPS with a certificate that renews itself automatically. Browsers are instructed never to load the site insecurely.
+
+No server to break into. There is no database or admin login sitting on the open internet. Contact forms are handled by a dedicated form service, so your inbox receives messages without the site ever storing them.
+
+Nothing to patch. Because there is no plugin system, there are no plugin updates to forget and no vulnerabilities to inherit from someone else's code.
+
+Always up. The hosting network has no single machine that can fail. Each deployment goes live in one step or not at all, and any previous version of the site can be restored in seconds.
+
+
+
+PART 3: PACKAGES AND PRICING
+
+Every package includes design, development, hosting setup, your domain connected, a contact form, analytics, and full search setup. The difference between packages is scope. The ranges below are estimates. After the questionnaire we send a fixed quote, and the price does not change unless the scope does.
+
+
+Website Package
+$3,000 to $6,000
+
+A focused, custom-designed website of up to five pages. Right for a consultancy, a professional practice, a contractor, or any business that needs a credible, fast, findable home on the web without a long project.
+
+What is included:
+• Custom design from scratch, no template
+• Up to five pages, such as Home, About, Services, Work, and Contact
+• Mobile, tablet, and desktop layouts
+• Contact form delivered to your inbox
+• Analytics so you can see who visits and from where
+• Search setup: titles, descriptions, structured data, sitemap, and Google Search Console
+• Social preview images so shared links look professional
+• Domain connected with HTTPS
+
+Example project: Concepta Innovation, an IT and cybersecurity services firm. Service pages, partner logos, a "who we serve" section, and a lead form, built to rank for its Microsoft partnership and regulated-industry keywords.
+
+
+Brand Website Package
+$6,000 to $12,000
+
+A website where the design itself carries the message. Right for creative studios, artists, agencies, hospitality, fashion, and consumer brands where the first impression is the product.
+
+What is included:
+• Everything in the Website Package
+• Art direction across typography, colour, and imagery
+• Motion design: page transitions, scroll effects, and custom interactions
+• Video and image galleries optimised so they load fast
+• Up to ten pages, including case studies, a portfolio, or an events page
+• Light and dark themes if the brand calls for it
+
+Example project: Ada Palm, a New York marketing consultancy for brands, artists, and athletes. A full-bleed showreel, a custom animated loader, and copy that resolves on screen as the reel plays, migrated from Squarespace onto a site the client owns.
+
+
+Web App with Dashboard
+$12,000 to $25,000
+
+A website that does something beyond presenting information. Right for businesses that need customer accounts, content that changes often, tools their team uses daily, or several sites that share one system.
+
+What is included:
+• Everything in the Brand Website Package
+• A content management system so your team publishes without us
+• User accounts with secure login
+• A dashboard for you, your team, or your customers
+• Booking, payments, subscriptions, newsletters, or member-only areas
+• Multiple sites, brands, or locations on one build, each with its own search presence
+• Integrations with the tools you already use, such as a CRM, email platform, or calendar
+
+Example projects: a firm with three regional offices, each with its own site, search rankings, and lead routing to the right team. A membership site where customers log in to view orders and documents. An internal dashboard where staff manage listings that publish to the public site.
+
+
+Mobile App
+$25,000 and up
+
+A native mobile application for iOS and Android, built from one codebase so both platforms launch together. Right for founders and companies building a product, not a brochure.
+
+What is included:
+• iOS and Android apps submitted to the App Store and Google Play
+• User accounts, profiles, and data storage
+• Push notifications
+• Payments or subscriptions if the product needs them
+• A backend and admin dashboard to manage users and content
+• A marketing website for the app, included
+• Analytics and crash reporting so you know how the app performs
+
+Example project: Helthy, an AI fitness and nutrition app. Meal and workout tracking, AI guidance, App Store and Google Play listings, and a marketing site that drives downloads.
+
+
+Monthly Retainer
+From $300 per month
+
+For clients who want the site or app looked after without thinking about it. Cancel any time.
+
+What is included:
+• Content and image updates as you need them
+• Monitoring, security updates, and dependency updates
+• A search performance review each quarter with recommendations
+• Priority response, usually the same day
+
+
+
+PART 4: WHAT YOU GET AT HANDOVER
+
+• The live site on your domain, with HTTPS, redirects, and analytics configured
+• Access to the code repository and hosting account, both in your name or shared with you
+• A sitemap, robots file, and structured data submitted to Google Search Console
+• A short written guide to updating content
+• Thirty days of fixes for anything we missed. After that, the optional monthly retainer covers updates, maintenance, and keeping the site's tools running, so you never have to touch it yourself.
+
+
+Questions? contact@ocelabs.xyz

@@ -1053,3 +1053,248 @@ a {
     animation: none !important;
   }
 }
+
+/* ─── Pricing (internal) ────────────────────────────────────── */
+
+.pin-form {
+  max-width: 14rem;
+  margin-top: 2.5rem;
+}
+
+.est-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.est-lock {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  margin-top: 0.4rem;
+}
+
+.est {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: 4rem;
+  padding-bottom: 6rem;
+  align-items: start;
+}
+
+.est-block {
+  border: 0;
+  padding: 0;
+  margin: 0 0 3rem;
+  min-width: 0;
+}
+
+.est-legend {
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 0.75rem;
+  padding: 0;
+}
+
+.est-row {
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: baseline;
+  padding-block: 0.8rem;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.est-row--input {
+  grid-template-columns: minmax(0, 1fr) auto;
+  cursor: default;
+}
+
+.est-row input[type='checkbox'],
+.est-row input[type='radio'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin: 0;
+  align-self: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: none;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.est-row input[type='radio'] {
+  border-radius: 50%;
+}
+
+.est-row input:checked {
+  background: var(--text);
+  border-color: var(--text);
+}
+
+.est-row input:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.est-row input:focus-visible {
+  outline: 1px solid var(--text);
+  outline-offset: 2px;
+}
+
+.est-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.est-row-label {
+  font-size: 0.9375rem;
+  color: var(--dim);
+  transition: color 0.2s ease;
+}
+
+.est-row[data-on] .est-row-label {
+  color: var(--text);
+}
+
+.est-row[data-included] {
+  cursor: default;
+}
+
+.est-row-note {
+  font-size: 0.8125rem;
+  color: var(--dim);
+  opacity: 0.85;
+}
+
+.est-row-price {
+  font-size: 0.8125rem;
+  color: var(--dim);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.est-num {
+  width: 4.5rem;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9375rem;
+  padding: 0.25rem 0;
+  text-align: right;
+  border-radius: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.est-num:focus {
+  outline: none;
+  border-bottom-color: var(--text);
+}
+
+.est-pct {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  color: var(--dim);
+  font-size: 0.9375rem;
+}
+
+.est-pct .est-num {
+  width: 3rem;
+}
+
+.est-summary {
+  position: sticky;
+  top: calc(var(--nav-h) + 1.5rem);
+  padding-top: 0.25rem;
+}
+
+.est-lines {
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0 0;
+}
+
+.est-lines li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-block: 0.55rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.9375rem;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.est-lines li > span:first-child {
+  min-width: 0;
+}
+
+.est-lines li > span:last-child {
+  white-space: nowrap;
+}
+
+.est-lines .est-sub {
+  color: var(--text);
+}
+
+.est-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.est-meta {
+  margin: 1.5rem 0 2rem;
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.est-meta div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.est-meta dt {
+  color: var(--dim);
+}
+
+.est-meta dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 56rem) {
+  .est {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  /* Summary drops below the form; sticking it would cover the inputs. */
+  .est-summary {
+    position: static;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+}
