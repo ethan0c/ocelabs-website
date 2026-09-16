@@ -102,7 +102,7 @@ export default function ContactForm() {
       </p>
 
       <p className="contact-direct">
-        Or email <a href="mailto:contact@ocelabs.tech">contact@ocelabs.tech</a>
+        Or email <a href="mailto:contact@ocelabs.xyz">contact@ocelabs.xyz</a>
       </p>
     </form>
   );

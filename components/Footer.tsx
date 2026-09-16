@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="shell footer-inner">
         <p>&copy; {new Date().getFullYear()} OCE Labs</p>
         <div className="footer-links">
-          <a href="mailto:contact@ocelabs.tech">contact@ocelabs.tech</a>
+          <a href="mailto:contact@ocelabs.xyz">contact@ocelabs.xyz</a>
         </div>
       </div>
     </footer>
