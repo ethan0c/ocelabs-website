@@ -32,6 +32,12 @@ const projects: Project[] = [
     shot: 'concepta.png',
   },
   {
+    name: 'Ada Palm',
+    desc: 'A New York marketing consultancy site built around a full-bleed showreel.',
+    href: 'https://adapalm-private.vercel.app',
+    shot: 'adapalm.png',
+  },
+  {
     name: 'Personal Portfolio',
     desc: 'A Next.js portfolio with expressive motion.',
     href: 'https://chibudomonyejesi.com',
@@ -80,7 +86,7 @@ export default function WorkPage() {
                   shot={shot}
                   clip={clipFor(shot)}
                   // Two-up from 52rem, full width below — matches .work-grid.
-                  sizes="(max-width: 52rem) 100vw, 32rem"
+                  sizes="(max-width: 52rem) 100vw, 50vw"
                   // The top row is above the fold; later rows load lazily.
                   priority={i < 2}
                 />
@@ -100,8 +106,8 @@ export default function WorkPage() {
           </Reveal>
         ))}
 
-        {/* Fills the odd cell left by three projects in a 2-up grid, and puts a
-            next step where the eye already lands after the last item. */}
+        {/* Sits after the last project (filling the odd cell when the count is
+            odd) and puts a next step where the eye already lands. */}
         <Reveal className="work-cell work-cell--cta">
           <p className="work-cta-lede">Have something in mind?</p>
           <Link href="/contact" className="ulink">

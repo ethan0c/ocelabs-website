@@ -21,11 +21,11 @@ const geist = Geist({
 export const metadata: Metadata = {
   metadataBase: new URL('https://ocelabs.tech'),
   title: 'OCE Labs',
-  description: 'A studio building websites, apps, and brand systems.',
+  description: 'A studio building fast, search-ready websites, apps, and brand systems.',
   /* Favicon comes from app/icon.svg — it adapts to the OS theme. */
   openGraph: {
     title: 'OCE Labs',
-    description: 'A studio building websites, apps, and brand systems.',
+    description: 'A studio building fast, search-ready websites, apps, and brand systems.',
     type: 'website',
   },
 };

@@ -17,6 +17,11 @@ const capabilities = [
     name: 'Design',
     desc: 'Identity, interface systems, and art direction.',
   },
+  {
+    num: '04',
+    name: 'SEO',
+    desc: 'Search-ready builds, for one site or a whole portfolio of them.',
+  },
 ];
 
 export default function HomePage() {

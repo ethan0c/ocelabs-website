@@ -42,7 +42,10 @@
     #6f6f6f 100%
   );
 
-  --page: 68rem;
+  /* No width cap: content runs edge to edge and only the gutter holds it off
+     the viewport. Reading measures are set per element (lede, cap-desc, etc.),
+     so wide screens get wide grids, not wide paragraphs. */
+  --page: none;
   --gutter: 1.75rem;
   --nav-h: 5rem;
 }
@@ -684,6 +687,9 @@ a {
 .contact-wrap {
   padding-bottom: 6rem;
   max-width: 32rem;
+  /* .shell centres by default; with no page cap that would float the form
+     mid-viewport, away from the left-set heading above it. */
+  margin-inline: 0;
 }
 
 .field {
