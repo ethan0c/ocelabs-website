@@ -159,8 +159,8 @@ export default function Nav() {
                 {label}
               </Link>
             ))}
-            <a className="sheet-link sheet-link--dim" href="mailto:contact@ocelabs.xyz">
-              contact@ocelabs.xyz
+            <a className="sheet-link sheet-link--dim" href="mailto:hello@ocelabs.xyz">
+              hello@ocelabs.xyz
             </a>
           </div>
         </div>
