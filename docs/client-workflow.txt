@@ -1,0 +1,324 @@
+OCE LABS
+Client Workflow: From Contact Form to Handover
+
+Internal. Not sent to clients. The emails in Part 3 are the client-facing pieces.
+
+
+PART 1: THE TOOLS
+
+Four tools, three of them new. Nothing here needs a paid plan to start.
+
+Inbox (have it)
+hello@ocelabs.xyz. Every client email goes from this address, never a personal one. Save the Part 3 emails as templates or snippets in the mail client so each one is a paste and a two-minute edit.
+
+Stripe (have it)
+Use Stripe Invoicing for every invoice. It sends a branded invoice by email with a pay link, produces a PDF and a receipt, sends its own overdue reminders, and pays out to Relay. No separate invoicing tool is needed. One-time setup:
+• Branding: logo, brand colour, public business name OCE Labs, support email hello@ocelabs.xyz
+• Statement descriptor: OCE LABS, so the charge is recognisable on the client's statement
+• Turn on ACH bank payment for invoices. Card fees are a percentage of the invoice; ACH is a fraction of a percent with a low cap. On a $6,000 invoice that is roughly $175 against $5. Check the current Stripe pricing page for exact numbers.
+• Invoice footer: the legal name line (see Part 4) and "Questions? hello@ocelabs.xyz"
+• Invoice numbering prefix: OCE
+• The monthly retainer is a Stripe subscription, not a repeated manual invoice
+
+Scheduling (new): Cal.com, free plan
+Connect it to the calendar on the business inbox. Create two event types:
+• Intro call, 30 minutes, video. Booking form asks: business name, current site if any, and what they want out of the call.
+• Project review, 45 minutes, for existing clients only. Not listed publicly.
+Settings: 24 hours minimum notice, 15 minutes buffer either side, a fixed window of bookable hours, automatic confirmation and reminder emails. Calendly's free plan does the same job if preferred; pick one and do not change it.
+
+E-signature (new): any free tier
+The proposal is signed before any money moves. SignWell, Documenso, and Dropbox Sign all have a free tier that covers a few documents a month, which is more than enough. Check the current limits before choosing.
+
+Pipeline tracker
+One table in Notion or Google Sheets. One row per lead. Columns: Name, Company, Email, Source, Package, Quote, Stage, Next action, Next action date. Stages match Part 2: New, Call booked, Recap sent, Proposal sent, Signed, Kickoff, Building, Review, Launched, Closed lost. Look at it every Monday and every Friday. If "Next action date" is in the past, that is the job for the day.
+
+
+PART 2: THE STAGES
+
+Each stage has one trigger, one thing we send, and one thing we wait for.
+
+
+Stage 1: Inquiry
+Trigger: the contact form lands in the inbox.
+We do: reply within one business day with Email A (scheduling link). Add the row to the tracker.
+A personal reply that mentions what they wrote reads as more professional than an autoresponder, and it takes two minutes from the template.
+No booking after 3 business days: send Email A2 (nudge). No reply 7 days after that: mark Closed lost. No third email.
+
+
+Stage 2: Intro call
+Trigger: they book.
+Before the call (10 minutes): read their message again, open their current site, look at two competitors, and have a likely package in mind.
+On the call (30 minutes):
+• 5 min: who we are, how the call will go
+• 15 min: their business, who the site is for, what a visitor should do, what is wrong with what they have now, deadline, who approves
+• 5 min: the likely package and its price range, said out loud. Never leave a first call without a range on the table; it filters out mismatches before we spend time on a proposal.
+• 5 min: the next steps, in order, with dates
+Do not quote a fixed price on the call.
+
+
+Stage 3: Recap
+Trigger: the call ends.
+We do: send Email B the same day, with the questionnaire (client-onboarding doc) attached.
+We wait for: the questionnaire. Nudge once after 5 business days.
+
+
+Stage 4: Proposal
+Trigger: the questionnaire comes back.
+We do, within 2 business days:
+• Build the quote in the /pricing estimator and copy the summary
+• Paste it into the proposal template (Part 4) and export to PDF
+• Send it for e-signature, with Email C
+The proposal is valid for 14 days. Nudge at day 5 and day 12. After day 14 the price and the start date are no longer held.
+
+
+Stage 5: Signature and deposit
+Trigger: the signed proposal comes back.
+We do, the same day: send the deposit invoice from Stripe, and Email D.
+This is when the deposit is collected: after signature, before any work. The signed proposal says what is being bought; the deposit buys the slot in the schedule. No design work, no mockups, and no "quick look" before it clears.
+Payment structure:
+• Website and Brand Website: 50% deposit, 50% before launch
+• Web App: 40% deposit, 30% when the design is approved, 30% before launch
+• Mobile App: 30% deposit, then equal milestone payments agreed in the proposal, final payment before store submission
+Deposit invoices are due on receipt. All other invoices are due in 7 days.
+
+
+Stage 6: Kickoff
+Trigger: all four items are in: deposit cleared, questionnaire returned, brand files shared, existing copy shared.
+We do: send Email E, which confirms the kickoff date, the launch date, and the content deadline (kickoff plus 7 days). The timeline starts counting here, not before.
+Create the client's shared folder, the private repository, and the staging link.
+
+
+Stage 7: Build
+Every Friday, send Email F: done this week, next week, what we need from you. Send it even when the answer is "nothing needed". The weekly email is the single thing that makes a small studio look like a well-run one.
+Two review points, each with two rounds of revisions included:
+• Design review: direction and the key pages, before development
+• Staging review: the full site on a private link, before launch
+Feedback is collected in one email or one document per round, from the one approver named in the questionnaire.
+Anything outside the signed scope gets a change order before work starts: one paragraph describing it, a price, and the effect on the launch date. The client replies "approved" in writing. It is added to the final invoice.
+
+
+Stage 8: Launch
+Trigger: the client approves the staging site in writing.
+We do: send the final invoice with Email G. The site goes live when it is paid. Domain, repository access, and hosting transfer all happen after the final payment, never before.
+
+
+Stage 9: Handover
+Trigger: the site is live.
+We do: send Email H with everything listed under "What you get at handover" in the client doc. The 30 days of fixes start on this date. Put the day-30 date in the tracker.
+
+
+Stage 10: Day 30
+We do: send Email I. Check in, offer the retainer, and ask for a testimonial and a referral. Add the project to /work if the client agrees.
+
+
+PART 3: THE EMAILS
+
+Replace anything in [brackets]. Keep them short; every one of these fits on a phone screen.
+
+
+Email A: Reply to an inquiry
+Subject: Re: your project, a time to talk
+
+Hi [Name],
+
+Thanks for getting in touch about [one specific thing from their message].
+
+The best next step is a 30-minute call so we can understand what you need and tell you honestly whether we are the right fit. You can pick a time here:
+
+[Cal.com link]
+
+If none of those times work, reply with two or three that do and we will make one happen.
+
+[Your name]
+OCE Labs
+hello@ocelabs.xyz
+
+
+Email A2: Nudge, 3 business days later
+Subject: Re: your project, a time to talk
+
+Hi [Name],
+
+Following up in case this got buried. The link to book a call is below. If the timing has changed on your side, no problem; just let us know and we will close the loop.
+
+[Cal.com link]
+
+[Your name]
+
+
+Email B: Call recap, same day
+Subject: OCE Labs: recap and next steps
+
+Hi [Name],
+
+Good to speak with you today. Here is what we heard, so you can correct anything we got wrong:
+
+• [Their business and who the site is for]
+• [The main problem with what they have now]
+• [What a visitor should do on the new site]
+• [Deadline, and who approves]
+
+Based on that, we would recommend the [Package], which typically runs [range] and takes [weeks] from kickoff.
+
+Next steps:
+1. You fill in the attached questionnaire. Short answers are fine.
+2. Within two business days of getting it back, we send a fixed quote, a launch date, and a short agreement to sign.
+3. Once that is signed and the deposit is paid, we start.
+
+The attached document also explains how we work and what you get at the end.
+
+[Your name]
+
+
+Email C: Proposal
+Subject: OCE Labs: proposal for [Company]
+
+Hi [Name],
+
+Thank you for the questionnaire. Your proposal is attached and has also been sent to you for signature by [e-sign tool].
+
+In short:
+• Scope: [one line]
+• Fixed price: [total]
+• Timeline: [weeks] from kickoff, which puts launch around [date] if we start by [date]
+• Payment: [50% deposit, 50% before launch]
+
+The price and the start date are held for 14 days. If anything looks off or you want to adjust the scope, reply here or book a call: [Cal.com link]
+
+[Your name]
+
+
+Email D: Signed, deposit invoice
+Subject: OCE Labs: welcome, and what happens next
+
+Hi [Name],
+
+Thank you for signing. We are glad to be working with you.
+
+You will get a separate email from Stripe with the deposit invoice for [amount]. You can pay by bank transfer or card from the link in it.
+
+The project starts on the day these four things are in:
+• The deposit
+• The questionnaire (done)
+• Your logo, brand files, and any photography you want used
+• Any existing copy you want kept
+
+You can send files by replying here or adding them to this folder: [link]
+
+As soon as the last one arrives we will confirm your kickoff and launch dates.
+
+[Your name]
+
+
+Email E: Kickoff confirmation
+Subject: OCE Labs: [Company] has kicked off
+
+Hi [Name],
+
+Everything is in, so your project officially started today, [date].
+
+• Launch date: [date]
+• Content deadline: [kickoff plus 7 days]. Anything that arrives after this moves the launch by the same number of days.
+• Design review: around [date]
+• Staging review: around [date]
+
+You will hear from us every Friday with what was done, what is next, and anything we need from you.
+
+[Your name]
+
+
+Email F: Friday update
+Subject: OCE Labs: [Company] update, week [n]
+
+Hi [Name],
+
+Done this week:
+• [item]
+
+Next week:
+• [item]
+
+Needed from you:
+• [item and the date it is needed by, or "Nothing this week"]
+
+On track for [launch date].
+
+[Your name]
+
+
+Email G: Final invoice
+Subject: OCE Labs: [Company] is ready to launch
+
+Hi [Name],
+
+Thank you for approving the site. The final invoice for [amount] is on its way from Stripe. [If change orders: It includes the approved additions: item, amount.]
+
+As soon as it is paid we will connect your domain and go live, usually the same day. Tell us if there is a particular day or time you want the launch to happen.
+
+[Your name]
+
+
+Email H: Handover
+Subject: OCE Labs: [Company] is live
+
+Hi [Name],
+
+[Domain] is live. Here is everything that is now yours:
+
+• The live site, with HTTPS, redirects, and analytics: [analytics link]
+• The code repository: [link, access granted to email]
+• The hosting account: [link, access granted to email]
+• Google Search Console, with the sitemap submitted: [link]
+• A short guide to updating content: attached
+
+For the next 30 days, until [date], we fix anything we missed at no charge. Just reply to this email.
+
+[Your name]
+
+
+Email I: Day 30
+Subject: OCE Labs: one month in
+
+Hi [Name],
+
+It has been a month since [domain] went live. [One real observation from analytics or Search Console.]
+
+The 30 days of included fixes end today. If you would like us to keep looking after the site, including updates, monitoring, and a search review each quarter, the monthly retainer starts at $300 and can be cancelled any time. Reply and we will set it up.
+
+Two small asks, only if you are happy with the work:
+• Two or three sentences we could quote on our site
+• An introduction to anyone you know who needs a site built
+
+Thank you for trusting us with this.
+
+[Your name]
+
+
+PART 4: THE PROPOSAL AND THE PAPERWORK
+
+The proposal is one PDF, two to three pages, and it is also the contract. Sections:
+
+1. Parties. [Legal name], doing business as OCE Labs, and the client's legal business name.
+2. Scope. The package, the pages, the add-ons, pasted from the estimator summary. Then a line: "Anything not listed here is outside the scope and is quoted separately."
+3. Price and payment schedule. The fixed total, each payment, and what triggers it.
+4. Timeline. Weeks from kickoff, what kickoff requires, and the content deadline rule.
+5. Revisions. Two rounds at each of the two review points. One named approver.
+6. Changes. Written change order, approved before work starts.
+7. Ownership. The client owns the site and the code once the final invoice is paid. We may show the work in our portfolio unless they ask us not to.
+8. Cancellation. Either side can stop with written notice. The deposit is non-refundable once work has started. Work completed beyond the deposit is billed.
+9. Late payment. Work pauses if an invoice is more than 7 days overdue, and the launch date moves by the length of the pause.
+10. After launch. 30 days of fixes. The retainer is optional and separate.
+11. Validity. 14 days from the date sent.
+12. Signatures.
+
+Have a lawyer read the template once. It is a one-time cost and it covers every project after.
+
+Sole proprietor details
+• Contracts and invoices name the legal person: "[Legal name], doing business as OCE Labs". The brand goes on everything; the legal name goes in the Parties section and the invoice footer.
+• Confirm the DBA (trade name) is registered with the state or county. Banks and larger clients can ask for it.
+• US business clients may ask for a W-9 before paying. Keep a completed one ready as a PDF. Using an EIN instead of a Social Security number on it is free to set up with the IRS.
+• Whether web design is subject to sales tax depends on the state. Check once, and turn on Stripe Tax if it applies.
+• Every dollar goes Stripe to Relay. Nothing is paid to a personal account or by a personal payment app.
+
+Files per client
+One shared folder per client: 01 Questionnaire, 02 Proposal (signed), 03 Brand files, 04 Copy, 05 Handover. The same structure every time, so anything can be found in a year.
