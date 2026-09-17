@@ -221,7 +221,8 @@ a {
 
 .nav-link {
   font-size: 0.8125rem;
-  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   color: var(--dim);
   padding-block: 0.25rem;
   transition: color 0.25s ease;
@@ -337,12 +338,14 @@ a {
 .sheet-link {
   font-size: clamp(2rem, 11vw, 3rem);
   line-height: 1.25;
-  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
   padding-block: 0.35rem;
 }
 
 .sheet-link--dim {
   font-size: 0.9375rem;
+  text-transform: none;
   letter-spacing: 0;
   color: var(--dim);
   margin-top: 2rem;
