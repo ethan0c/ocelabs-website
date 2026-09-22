@@ -11,11 +11,6 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     '/pricing/proposal/pdf': ['./public/fonts/*.ttf'],
   },
-  experimental: {
-    // Cross-fades route changes via the native View Transitions API.
-    // Browsers without support just navigate instantly — no fallback needed.
-    viewTransition: true,
-  },
 };
 
 export default nextConfig;
