@@ -37,10 +37,10 @@ export default function HomePage() {
             domain.
           </p>
           <div className="hero-links rise rise-3">
-            <Link href="/contact" className="pill pill--primary">
+            <Link href="/contact" className="block block--primary">
               Start a project <span className="arrow" aria-hidden="true">&rarr;</span>
             </Link>
-            <Link href="/work" className="pill">
+            <Link href="/work" className="block">
               See the work
             </Link>
           </div>

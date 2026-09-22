@@ -117,7 +117,7 @@ export default function ContactForm() {
         </span>
       </div>
 
-      <button type="submit" className="pill pill--primary" disabled={sending}>
+      <button type="submit" className="block block--primary" disabled={sending}>
         {sending ? 'Sending' : 'Send'} <span className="arrow" aria-hidden="true">&rarr;</span>
       </button>
 
