@@ -2,39 +2,61 @@ import Link from 'next/link';
 import Reveal from '@/components/Reveal';
 import WorkPreview from '@/components/WorkPreview';
 
-const capabilities = [
+/*
+ * The page is structured as the offer: one studio does the whole chain, in
+ * order, and keeps it running. Each step is a real deliverable, not a value.
+ */
+const steps = [
   {
     num: '01',
-    name: 'Web',
-    desc: 'Marketing sites, web apps, and platforms.',
+    name: 'Domain and hosting',
+    desc: 'Registered in your name, connected, HTTPS, redirects. Nothing parked on ours.',
   },
   {
     num: '02',
-    name: 'Mobile',
-    desc: 'iOS and Android, built cross-platform.',
+    name: 'Design',
+    desc: 'Identity, interface, and art direction. Two review rounds, one approver.',
   },
   {
     num: '03',
-    name: 'Design',
-    desc: 'Identity, interface systems, and art direction.',
+    name: 'Build',
+    desc: 'Websites, web apps, iOS and Android from one codebase.',
   },
   {
     num: '04',
-    name: 'SEO',
-    desc: 'Search-ready builds, for one site or a whole portfolio of them.',
+    name: 'Setup',
+    desc: 'Contact forms, booking, analytics, business email, and whatever else the site needs to work on day one.',
+  },
+  {
+    num: '05',
+    name: 'Search',
+    desc: 'Search-ready build, sitemap and Search Console submitted, local SEO and content plan when it fits.',
+  },
+  {
+    num: '06',
+    name: 'Launch',
+    desc: 'A date in writing at kickoff. Staging review, then live on your domain, usually the same day.',
+  },
+  {
+    num: '07',
+    name: 'Upkeep',
+    desc: 'Thirty days of fixes included. After that, a monthly retainer for updates, monitoring, and a search review each quarter.',
   },
 ];
+
+const makes = ['Websites', 'Web apps', 'Mobile apps', 'Brand systems'];
 
 export default function HomePage() {
   return (
     <>
       <section className="shell hero">
         <div className="hero-copy">
-          <h1 className="h1 hero-title rise rise-1">Websites and apps that ship complete.</h1>
+          <h1 className="h1 hero-title rise rise-1">
+            The whole thing, not just the website.
+          </h1>
           <p className="lede rise rise-2">
-            A two-person studio. Fixed prices from $3k, a launch date in writing, and
-            everything set up &mdash; hosting, forms, analytics, search &mdash; live on your
-            domain.
+            Domain, design, build, hosting, forms, search, and the upkeep after. One
+            two-person studio, one fixed price from $3k, and a launch date in writing.
           </p>
           <div className="hero-links rise rise-3">
             <Link href="/contact" className="block block--primary">
@@ -67,18 +89,39 @@ export default function HomePage() {
         </Link>
       </section>
 
-      <section className="shell capabilities">
-        <h2 className="sr-only">What we do</h2>
+      <section className="shell steps">
+        <Reveal className="sec-head">
+          <p className="eyebrow">What every project includes</p>
+          <h2 className="h2">From the domain to the search results.</h2>
+          <p className="sec-lede">
+            Most studios hand you a design and a folder of files. We hand you a running
+            site: registered, hosted, wired up, indexed, and looked after.
+          </p>
+        </Reveal>
         <Reveal stagger>
-          {capabilities.map(({ num, name, desc }) => (
+          {steps.map(({ num, name, desc }) => (
             <div key={num} className="cap-row">
               <span className="cap-num">{num}</span>
               <div>
-                <p className="cap-name">{name}</p>
+                <h3 className="cap-name">{name}</h3>
                 <p className="cap-desc">{desc}</p>
               </div>
             </div>
           ))}
+        </Reveal>
+      </section>
+
+      <section className="shell capabilities">
+        <Reveal className="makes">
+          <div className="sec-head sec-head--tight">
+            <p className="eyebrow">What we make</p>
+            <h2 className="h2">Four things, done properly.</h2>
+          </div>
+          <ul className="makes-list">
+            {makes.map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
         </Reveal>
         <Reveal>
           <p className="cap-note">

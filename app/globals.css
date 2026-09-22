@@ -501,6 +501,82 @@ a {
  * gradient, hence the pseudo-element. Reserved for section boundaries only:
  * putting it on every rule would make it texture instead of hierarchy.
  */
+/* Section head: eyebrow, h2, optional lede. Left-set, capped measure. */
+.sec-head {
+  margin-bottom: 2.5rem;
+}
+
+.sec-head .h2 {
+  margin-top: 0.9rem;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+.sec-head--tight {
+  margin-bottom: 0;
+}
+
+.sec-lede {
+  margin-top: 1rem;
+  color: var(--dim);
+  max-width: 34rem;
+  text-wrap: pretty;
+}
+
+/* The chain of deliverables. Same hairline rows as before, with a rule on top. */
+.steps {
+  position: relative;
+  padding-block: 4.5rem 3.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.steps .cap-row {
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: 0;
+  padding-block: 1.35rem;
+}
+
+.steps .cap-name {
+  font-weight: 400;
+  font-size: 1.125rem;
+}
+
+.steps .cap-desc {
+  max-width: 44rem;
+  text-wrap: pretty;
+}
+
+/* What we make: head on the left, the four nouns as a hairline list on the right. */
+.makes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+.makes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.makes-list li {
+  padding-block: 0.9rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 1.125rem;
+}
+
+.makes-list li:first-child {
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 56rem) {
+  .makes {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
 .capabilities {
   position: relative;
   padding-block: 3.5rem;
@@ -551,8 +627,7 @@ a {
 /* One line after the list that says the list is the whole job, not the
    parts. Indented to the text column so it reads as a footnote to the rows. */
 .cap-note {
-  margin-top: 2.25rem;
-  padding-left: 2.75rem;
+  margin-top: 3rem;
   color: var(--dim);
   font-size: 0.9375rem;
   max-width: 40ch;
