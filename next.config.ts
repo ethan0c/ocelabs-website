@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   // path, which the bundler cannot trace. On Vercel that would leave the
   // serverless function without the fonts, so include them explicitly.
   outputFileTracingIncludes: {
-    '/pricing/proposal/pdf': ['./public/fonts/*.ttf'],
+    '/**': ['./public/fonts/*.ttf'],
   },
 };
 

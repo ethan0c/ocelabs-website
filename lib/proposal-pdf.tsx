@@ -8,8 +8,24 @@ import {
   Svg,
   Text,
   View,
+  renderToBuffer,
 } from '@react-pdf/renderer';
 import { STUDIO_EMAIL, type Block, type Proposal } from '@/lib/proposal';
+
+/**
+ * The e-signature record appended as the last page once a proposal is
+ * signed: who, when, from where, and the hash of the document they saw.
+ */
+export type Signature = {
+  signerName: string;
+  signerEmail: string;
+  signedAt: Date;
+  ip: string;
+  userAgent: string;
+  docHash: string;
+  /** Who accepts on the studio's side. */
+  studioSigner: string;
+};
 
 /*
  * The proposal as a PDF, rendered on the server so the file is the same
@@ -121,6 +137,11 @@ const s = StyleSheet.create({
   signCol: { flex: 1 },
   signLine: { height: 34, borderBottomWidth: 0.75, borderBottomColor: LINE_STRONG, marginBottom: 6 },
   signMeta: { color: DIM, fontSize: 8.5 },
+  cert: { marginTop: 18, paddingTop: 14, borderTopWidth: 0.75, borderTopColor: LINE },
+  certRow: { flexDirection: 'row', gap: 12, paddingVertical: 4, borderBottomWidth: 0.75, borderBottomColor: LINE },
+  certKey: { width: 110, color: DIM, fontSize: 8.5 },
+  certVal: { flex: 1, fontSize: 8.5 },
+  signed: { fontSize: 13, marginBottom: 2 },
 });
 
 /** The aperture mark, as on the site: ring open at 3 o'clock with one tick. */
@@ -154,7 +175,7 @@ function BlockView({ b }: { b: Block }) {
   );
 }
 
-export default function ProposalPdf({ pr }: { pr: Proposal }) {
+export default function ProposalPdf({ pr, sig }: { pr: Proposal; sig?: Signature }) {
   return (
     <Document
       title={`OCE Labs proposal for ${pr.client}`}
@@ -201,17 +222,40 @@ export default function ProposalPdf({ pr }: { pr: Proposal }) {
           <Text style={s.h2}>{pr.sections.length + 1}. Signatures</Text>
           <View style={s.sign}>
             <View style={s.signCol}>
-              <View style={s.signLine} />
+              {sig ? <Text style={s.signed}>{sig.studioSigner}</Text> : <View style={s.signLine} />}
               <Text>{pr.studio}</Text>
-              <Text style={s.signMeta}>Name, title, date</Text>
+              <Text style={s.signMeta}>
+                {sig ? `Accepted electronically, ${stamp(sig.signedAt)}` : 'Name, title, date'}
+              </Text>
             </View>
             <View style={s.signCol}>
-              <View style={s.signLine} />
+              {sig ? <Text style={s.signed}>{sig.signerName}</Text> : <View style={s.signLine} />}
               <Text>{pr.client}</Text>
-              <Text style={s.signMeta}>Name, title, date</Text>
+              <Text style={s.signMeta}>
+                {sig ? `Signed electronically, ${stamp(sig.signedAt)}` : 'Name, title, date'}
+              </Text>
             </View>
           </View>
         </View>
+
+        {sig && (
+          <View style={s.cert} wrap={false}>
+            <Text style={s.h2}>Electronic signature record</Text>
+            {[
+              ['Signer', `${sig.signerName} <${sig.signerEmail}>`],
+              ['Signed at', `${stamp(sig.signedAt)} (UTC)`],
+              ['IP address', sig.ip],
+              ['Browser', sig.userAgent],
+              ['Document hash', `SHA-256 ${sig.docHash}`],
+              ['Method', 'Typed name and express consent on the proposal page, after reading the full agreement. Both parties received a copy by email.'],
+            ].map(([k, v]) => (
+              <View key={k} style={s.certRow}>
+                <Text style={s.certKey}>{k}</Text>
+                <Text style={s.certVal}>{v}</Text>
+              </View>
+            ))}
+          </View>
+        )}
       </Page>
     </Document>
   );
@@ -224,4 +268,13 @@ function Fact({ label, value }: { label: string; value: string }) {
       <Text style={s.factValue}>{value}</Text>
     </View>
   );
+}
+
+function stamp(d: Date) {
+  return d.toISOString().replace('T', ' ').slice(0, 16);
+}
+
+/** The PDF bytes. Deterministic for a given proposal, so its hash is stable. */
+export async function renderProposalPdf(pr: Proposal, sig?: Signature): Promise<Buffer> {
+  return renderToBuffer(<ProposalPdf pr={pr} sig={sig} />);
 }
