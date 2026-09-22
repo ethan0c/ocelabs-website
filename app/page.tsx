@@ -55,8 +55,8 @@ export default function HomePage() {
             The whole thing, not just the website.
           </h1>
           <p className="lede rise rise-2">
-            Domain, design, build, hosting, forms, search, and the upkeep after. One
-            two-person studio, one fixed price from $3k, and a launch date in writing.
+            Domain, design, build, hosting, forms, search, and the upkeep after. One studio
+            from the first call to the first visitor, and a running site at the end of it.
           </p>
           <div className="hero-links rise rise-3">
             <Link href="/contact" className="block block--primary">
