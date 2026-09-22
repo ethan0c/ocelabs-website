@@ -10,6 +10,8 @@ export const dynamic = 'force-dynamic';
  */
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** The old form endpoint, kept as the fallback until the database is live. */
+const FORMSPREE = 'https://formspree.io/f/xeaojwdr';
 
 // Per-instance, resets on cold start: enough to blunt a script, not a defence.
 const recent = new Map<string, number[]>();
@@ -36,7 +38,21 @@ export async function POST(req: Request) {
   if (!EMAIL.test(email)) return Response.json({ error: 'Please enter a valid email address.' }, { status: 400 });
   if (!message) return Response.json({ error: 'Please add a message.' }, { status: 400 });
 
-  const lead = await createLead({ name: name || null, email, message, budget: budget || null });
+  let lead;
+  try {
+    lead = await createLead({ name: name || null, email, message, budget: budget || null });
+  } catch (e) {
+    // No database yet (or it is down): forward to Formspree so nothing is lost.
+    console.error('inquiry: database unavailable, forwarding to Formspree', e);
+    const fallback = await fetch(FORMSPREE, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: form,
+    });
+    return fallback.ok
+      ? Response.json({ ok: true })
+      : Response.json({ error: 'Something went wrong. Try emailing us directly.' }, { status: 502 });
+  }
 
   const auto = process.env.AUTO_EMAIL_A !== 'false';
   if (auto) {
