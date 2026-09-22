@@ -27,6 +27,7 @@ export const metadata: Metadata = {
     title: 'OCE Labs',
     description: 'A studio building fast, search-ready websites, apps, and brand systems.',
     type: 'website',
+    images: [{ url: '/brand/oce-og.png', width: 1200, height: 630, alt: 'OCE Labs' }],
   },
 };
 
