@@ -880,6 +880,7 @@ a {
 
 .footer-links {
   display: flex;
+  align-items: center;
   gap: 1.5rem;
 }
 
@@ -889,6 +890,18 @@ a {
 
 .footer-links a:hover {
   color: var(--text);
+}
+
+/* Sits at the end of the footer row, quieter than the text links. */
+.footer-internal {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.55;
+  transition: opacity 0.25s ease, color 0.25s ease;
+}
+
+.footer-internal:hover {
+  opacity: 1;
 }
 
 /* ─── Entrance ──────────────────────────────────────────────── */
