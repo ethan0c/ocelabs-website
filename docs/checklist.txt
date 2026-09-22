@@ -9,7 +9,7 @@ PART 1: ONE-TIME SETUP
 
 Done
 [x] Contact form → Formspree → inbox
-[x] Site on Railway
+[x] Site on Vercel
 [x] Stripe account
 [x] hello@ocelabs.xyz exists
 [x] /pricing estimator → proposal PDF → Stripe drafts (in the repo)
@@ -27,7 +27,7 @@ Inbox and domain
 [ ] Save Emails A to I from client-workflow.txt as Gmail templates
 [ ] Set the profile photo to public/brand/oce-icon.png
 
-Railway environment
+Vercel environment variables
 [ ] PRICING_PIN set to something that is not the code default
 [ ] PRICING_SECRET set
 [ ] STRIPE_SECRET_KEY = restricted key, Customers: write + Invoices: write (test key until the first real client)

@@ -31,7 +31,7 @@ export default function PrivacyPage() {
         <p>
           We run no analytics and set no tracking cookies. The site remembers your light or dark
           theme choice in your browser&rsquo;s local storage; that value never leaves your device.
-          Our host, Railway, keeps standard server logs (IP address, pages requested, time) for a
+          Our host, Vercel, keeps standard server logs (IP address, pages requested, time) for a
           short period for security and uptime.
         </p>
 

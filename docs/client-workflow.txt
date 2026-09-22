@@ -19,8 +19,8 @@ Use Stripe Invoicing for every invoice. It sends a branded invoice by email with
 • Invoice footer: the legal name line (see Part 4) and "Questions? hello@ocelabs.xyz"
 • Invoice numbering prefix: OCE
 • The monthly retainer is a Stripe subscription, not a repeated manual invoice
-• Put a restricted API key (Invoices: write, Customers: write) in Railway as STRIPE_SECRET_KEY. The /pricing estimator uses it to draft each payment of a quote as an invoice. Drafts only: every invoice is still read over and sent from the Stripe dashboard.
-• Put the legal name in Railway as OCE_LEGAL_NAME. It appears in the Parties section and the footer of every proposal.
+• Put a restricted API key (Invoices: write, Customers: write) in Vercel as STRIPE_SECRET_KEY. The /pricing estimator uses it to draft each payment of a quote as an invoice. Drafts only: every invoice is still read over and sent from the Stripe dashboard.
+• Put the legal name in Vercel as OCE_LEGAL_NAME. It appears in the Parties section and the footer of every proposal.
 
 Scheduling (new): Cal.com, free plan
 Connect it to the calendar on the business inbox. Create two event types:
