@@ -640,7 +640,8 @@ a {
   padding-block: 4.5rem 3rem;
 }
 
-.page-head .h1 {
+/* Only when an eyebrow precedes it; the public pages open on the h1 itself. */
+.page-head .eyebrow + .h1 {
   margin-top: 0.9rem;
 }
 

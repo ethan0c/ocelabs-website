@@ -67,8 +67,7 @@ export default function WorkPage() {
   return (
     <>
       <header className="shell page-head">
-        <p className="eyebrow rise rise-1">Work</p>
-        <h1 className="h1 rise rise-2">Selected projects.</h1>
+        <h1 className="h1 rise rise-1">Selected projects.</h1>
       </header>
 
       <section className="shell work-grid">
