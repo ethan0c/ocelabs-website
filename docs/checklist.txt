@@ -10,32 +10,30 @@ PART 1: ONE-TIME SETUP
 Done
 [x] Contact form → Formspree → inbox
 [x] Site on Vercel
-[x] Stripe account
-[x] hello@ocelabs.xyz exists
+[x] Stripe account, branding, statement descriptor
+[x] Google Workspace: hello@ocelabs.xyz mailbox, anti-spam, branding
+[x] DNS: MX → smtp.google.com, old Porkbun forwarders removed
+[x] DNS: SPF v=spf1 include:_spf.google.com ~all
+[x] DNS: Google DKIM at google._domainkey (2048-bit); old Porkbun DKIM removed
+[x] Vercel env: PRICING_PIN, PRICING_SECRET, STRIPE_SECRET_KEY, OCE_LEGAL_NAME
 [x] /pricing estimator → proposal PDF → Stripe drafts (in the repo)
 [x] Brand PNG set in public/brand (icon, mark, lockups, social card)
 
-Inbox and domain
-[ ] Google Workspace Starter approved (payments review, up to 48 h)
-[ ] Create the user as hello@ocelabs.xyz, not a personal name with an alias
-[ ] Porkbun DNS: MX → smtp.google.com (priority 1); remove fwd1/fwd2.porkbun.com
-[ ] Porkbun DNS: SPF → v=spf1 include:_spf.google.com ~all
-[ ] Porkbun DNS: add google._domainkey DKIM (2048-bit) from Admin → Apps → Gmail → Authenticate email
-[ ] Porkbun DNS: delete default._domainkey once Google's DKIM passes
-[ ] DMARC: keep p=quarantine; point rua= at an address you read
-[ ] Send a test to a Gmail and an Outlook address; "Show original" shows SPF, DKIM, DMARC all PASS
+Inbox and domain, remaining
+[ ] DMARC: delete the _dmarc TXT and re-add it on one line: v=DMARC1; p=quarantine; rua=mailto:hello@ocelabs.xyz; fo=1
+    (the current record has embedded line breaks and the old ruf= address)
+[ ] Send a test from hello@ to a Gmail and an Outlook address; "Show original" shows SPF, DKIM, DMARC all PASS
+[ ] Second person: Gmail → Settings → Accounts → Grant access to your account (delegate), so both reply from hello@ without a second seat
 [ ] Save Emails A to I from client-workflow.txt as Gmail templates
 [ ] Set the profile photo to public/brand/oce-icon.png
 
-Vercel environment variables
-[ ] PRICING_PIN set to something that is not the code default
-[ ] PRICING_SECRET set
-[ ] STRIPE_SECRET_KEY = restricted key, Customers: write + Invoices: write (test key until the first real client)
-[ ] OCE_LEGAL_NAME = your legal name (it prints as "<name>, doing business as OCE Labs")
+Deploy
+[ ] git push (Vercel deploys main)
+[ ] Smoke test on the live site: /pricing → PIN → Download proposal PDF → Draft in Stripe on the Deposit line
+[ ] STRIPE_SECRET_KEY: confirm it is a restricted key (Customers + Invoices write). Use a test key until the first real client
+[ ] Later: replace the shared PIN with Google sign-in allow-listed to both of you
 
-Stripe
-[ ] Branding: logo (oce-icon.png), public name OCE Labs, support email hello@ocelabs.xyz
-[ ] Statement descriptor: OCE LABS
+Stripe, remaining
 [ ] ACH bank payments enabled for invoices
 [ ] Invoice footer: legal name line and "Questions? hello@ocelabs.xyz"
 [ ] Invoice prefix: OCE
@@ -43,8 +41,8 @@ Stripe
 [ ] Stripe Tax decision made for your state
 [ ] One test run: Draft in Stripe with a test key, send to yourself, pay with 4242 4242 4242 4242
 
-Scheduling (needs the Workspace calendar)
-[ ] Cal.com free account connected to the hello@ calendar
+Scheduling
+[ ] Cal.com free account connected to the hello@ calendar (free plan is one user; the booking owner takes intro calls, or Teams plan for both)
 [ ] Event: Intro call, 30 min, video, public. Form: business name, current site, what they want from the call
 [ ] Event: Project review, 45 min, hidden
 [ ] 24 h notice, 15 min buffers, fixed bookable window, confirmations and reminders on
