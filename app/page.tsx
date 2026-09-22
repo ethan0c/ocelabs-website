@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Reveal from '@/components/Reveal';
+import WorkPreview from '@/components/WorkPreview';
 
 const capabilities = [
   {
@@ -28,22 +29,42 @@ export default function HomePage() {
   return (
     <>
       <section className="shell hero">
-        <h1 className="h1 hero-title rise rise-1">
-          We build websites, apps, and the brands around them.
-        </h1>
-        <p className="lede rise rise-2">
-          We work in what&apos;s left after the excess is gone. Every element earns its
-          place or it goes — because clarity is not what you add, it&apos;s what you
-          refuse to. Restraint is the whole discipline.
-        </p>
-        <div className="hero-links rise rise-3">
-          <Link href="/work" className="ulink">
-            See the work
-          </Link>
-          <Link href="/contact" className="ulink ulink--muted">
-            Start a project
-          </Link>
+        <div className="hero-copy">
+          <h1 className="h1 hero-title rise rise-1">Websites and apps that ship complete.</h1>
+          <p className="lede rise rise-2">
+            A two-person studio. Fixed prices from $3k, a launch date in writing, and
+            everything set up &mdash; hosting, forms, analytics, search &mdash; live on your
+            domain.
+          </p>
+          <div className="hero-links rise rise-3">
+            <Link href="/contact" className="btn btn--primary">
+              Start a project
+            </Link>
+            <Link href="/work" className="ulink ulink--muted">
+              See the work
+            </Link>
+          </div>
+          <p className="hero-proof rise rise-3">
+            Recent work for Ada Palm, Helthy, and Concepta. Most sites launch in four to six
+            weeks.
+          </p>
         </div>
+
+        {/* One real project above the fold, so the hero shows rather than tells.
+            Hover plays the clip; touch gets the still. */}
+        <Link href="/work" className="hero-preview rise rise-3" aria-label="See the work">
+          <WorkPreview
+            name="Ada Palm"
+            shot="adapalm.png"
+            clip="adapalm.mp4"
+            priority
+            sizes="(max-width: 56rem) 100vw, 48vw"
+          />
+          <span className="hero-preview-cap">
+            <span>Ada Palm</span>
+            <span>Marketing consultancy, New York</span>
+          </span>
+        </Link>
       </section>
 
       <section className="shell capabilities">
@@ -61,8 +82,8 @@ export default function HomePage() {
         </Reveal>
         <Reveal>
           <p className="cap-note">
-            Every project ships complete: designed, built, hosted on your domain, with
-            forms, analytics, and search set up.
+            We work in what&apos;s left after the excess is gone. Every element earns its
+            place or it goes &mdash; clarity is what you refuse to add.
           </p>
         </Reveal>
       </section>

@@ -160,10 +160,13 @@ a {
 }
 
 .wordmark {
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   /* Only weight 400 is loaded — wide tracking carries the mark instead. */
   letter-spacing: 0.2em;
   white-space: nowrap;
+  /* Flat, full-contrast: at nav size the metal sweep only reads as grey, so
+     the mark was the quietest thing on the page. Metal stays for large uses. */
+  color: var(--text);
   /* The glyph sits optically low against caps, so nudge it up a hair. */
   display: inline-flex;
   align-items: center;
@@ -390,21 +393,62 @@ a {
 
 .hero {
   min-height: calc(100svh - var(--nav-h));
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-block: 5rem 4rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 4rem;
+  align-items: center;
+  padding-block: 4rem;
 }
 
 .hero-title {
   margin-bottom: 1.75rem;
-  max-width: 20ch;
+  max-width: 14ch;
 }
 
 .hero-links {
   display: flex;
+  align-items: center;
   gap: 1.75rem;
-  margin-top: 2.75rem;
+  margin-top: 2.5rem;
+}
+
+.hero-proof {
+  margin-top: 2.25rem;
+  font-size: 0.875rem;
+  color: var(--dim);
+  max-width: 34rem;
+  text-wrap: pretty;
+}
+
+/* Reuses .work-shot for the frame; the caption mirrors the Work page rows. */
+.hero-preview {
+  display: block;
+  min-width: 0;
+}
+
+.hero-preview .work-shot {
+  margin-bottom: 0.9rem;
+}
+
+.hero-preview-cap {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.8125rem;
+  color: var(--dim);
+}
+
+.hero-preview-cap span:first-child {
+  color: var(--text);
+}
+
+@media (max-width: 56rem) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    min-height: 0;
+    padding-block: 4.5rem 3.5rem;
+  }
 }
 
 /* Underline that draws in on hover. */
@@ -1011,7 +1055,7 @@ a {
   }
 
   .hero {
-    padding-block: 3.5rem;
+    padding-block: 3rem 3rem;
   }
 
   .footer-inner {
