@@ -8,6 +8,8 @@ PART 1: THE TOOLS
 
 Four tools, three of them new. Nothing here needs a paid plan to start.
 
+Most of this document now runs by itself. The studio at /studio (sign in with Google) holds every lead, sends the emails from hello@, creates and sends the invoices, and drafts the ones that need a human sentence. Each stage below says what is automatic and what still needs a person. The wording of the emails is in lib/emails.ts; the rules are in lib/studio.ts.
+
 Inbox (have it)
 hello@ocelabs.xyz. Every client email goes from this address, never a personal one. Save the Part 3 emails as templates or snippets in the mail client so each one is a paste and a two-minute edit.
 
@@ -32,6 +34,7 @@ E-signature (new): any free tier
 The proposal is signed before any money moves. SignWell, Documenso, and Dropbox Sign all have a free tier that covers a few documents a month, which is more than enough. Check the current limits before choosing.
 
 Pipeline tracker
+Now the studio: /studio. Every lead, its stage, its next action and date, its quote, proposals, payments, and a log of everything sent. The Notion/Sheets table is no longer needed. The rest of this section describes the columns it replaced.
 One table in Notion or Google Sheets. One row per lead. Columns: Name, Company, Email, Source, Package, Quote, Stage, Next action, Next action date. "Quote" is the /pricing link: the estimator keeps the whole quote in its URL, so paste that and the form, the proposal, and the invoices all come back from it. Stages match Part 2: New, Call booked, Recap sent, Proposal sent, Signed, Kickoff, Building, Review, Launched, Closed lost. Look at it every Monday and every Friday. If "Next action date" is in the past, that is the job for the day.
 
 
@@ -42,9 +45,10 @@ Each stage has one trigger, one thing we send, and one thing we wait for.
 
 Stage 1: Inquiry
 Trigger: the contact form lands in the inbox.
-We do: reply within one business day with Email A (scheduling link). Add the row to the tracker.
+Automatic: the lead is created in the studio, Email A goes out from hello@ with the booking link (the topic line is taken from their message), and the inbox gets a ping with a link to the lead. Set AUTO_EMAIL_A=false to send A by hand instead.
+We do: nothing, unless the message needs a personal reply, in which case reply in the thread.
 A personal reply that mentions what they wrote reads as more professional than an autoresponder, and it takes two minutes from the template.
-No booking after 3 business days: send Email A2 (nudge). No reply 7 days after that: mark Closed lost. No third email.
+Automatic: no booking after 3 business days sends Email A2; no reply 7 days after that closes the lead as lost. A Cal.com booking moves the lead to Call booked by itself.
 
 
 Stage 2: Intro call
@@ -60,22 +64,21 @@ Do not quote a fixed price on the call.
 
 Stage 3: Recap
 Trigger: the call ends.
-We do: send Email B the same day, with the questionnaire (client-onboarding doc) attached.
-We wait for: the questionnaire. Nudge once after 5 business days.
+We do: on the lead page, fill the four recap bullets and the package, range and timeline said on the call, and press Send recap. Email B goes out with a link to the questionnaire page (/q/<token>) instead of an attachment.
+Automatic: the questionnaire answers land on the lead. No answers after 5 business days sends one nudge.
 
 
 Stage 4: Proposal
 Trigger: the questionnaire comes back.
 We do, within 2 business days:
-• Build the quote in the /pricing estimator. Fill in the client's legal business name and email; both go on the paperwork.
-• Press "Open proposal". It renders the Part 4 agreement from the quote: scope, fixed price, payment schedule, timeline, terms. Press "Download PDF".
-• Upload the PDF to the e-sign tool and send it, with Email C. Paste the estimator link into the tracker's Quote column.
-The proposal is valid for 14 days. Nudge at day 5 and day 12. After day 14 the price and the start date are no longer held.
+• Open the estimator from the lead page, build the quote from the questionnaire answers, press Save to lead.
+• Press Send proposal. Email C goes out with a link to /p/<token>, where the client reads the agreement, downloads the PDF, and signs it by typing their name and ticking consent. No separate e-sign tool.
+Automatic: nudges at day 5 and day 12; at day 14 the proposal expires and the lead's next action says so.
 
 
 Stage 5: Signature and deposit
 Trigger: the signed proposal comes back.
-We do, the same day: open the quote from the tracker, press "Draft in Stripe" on the Deposit line, check the draft in the dashboard and send it. Then Email D. The later payments are drafted the same way when their trigger arrives; the amounts match the signed proposal because they come from the same quote.
+Automatic, the moment they sign: the signed PDF (with the e-signature record as its last page) is emailed to them with Email D, the deposit invoice is created and sent from Stripe, and the payment schedule from the quote is recorded on the lead.
 This is when the deposit is collected: after signature, before any work. The signed proposal says what is being bought; the deposit buys the slot in the schedule. No design work, no mockups, and no "quick look" before it clears.
 Payment structure:
 • Website and Brand Website: 50% deposit, 50% before launch
@@ -85,32 +88,33 @@ Deposit invoices are due on receipt. All other invoices are due in 7 days.
 
 
 Stage 6: Kickoff
-Trigger: all four items are in: deposit cleared, questionnaire returned, brand files shared, existing copy shared.
-We do: send Email E, which confirms the kickoff date, the launch date, and the content deadline (kickoff plus 7 days). The timeline starts counting here, not before.
-Create the client's shared folder, the private repository, and the staging link.
+Trigger: all four items are in: deposit cleared (Stripe tells the studio), questionnaire returned (automatic), brand files shared and existing copy shared (two buttons on the lead page when they arrive).
+Automatic: the moment the fourth item is in, Email E goes out with the kickoff date, the launch date (the high end of the package timeline), the content deadline, and the two review dates.
+We do: create the client's shared folder, the private repository, and the staging link.
 
 
 Stage 7: Build
-Every Friday, send Email F: done this week, next week, what we need from you. Send it even when the answer is "nothing needed". The weekly email is the single thing that makes a small studio look like a well-run one.
+Every Friday, Email F is drafted into Gmail with the week number and the launch date filled in. Add the three lists and send it. Send it even when the answer is "nothing needed". The weekly email is the single thing that makes a small studio look like a well-run one.
 Two review points, each with two rounds of revisions included:
 • Design review: direction and the key pages, before development
 • Staging review: the full site on a private link, before launch
 Feedback is collected in one email or one document per round, from the one approver named in the questionnaire.
-Anything outside the signed scope gets a change order before work starts: one paragraph describing it, a price, and the effect on the launch date. The client replies "approved" in writing. It is added to the final invoice.
+Anything outside the signed scope gets a change order before work starts: one paragraph describing it, a price, and the effect on the launch date. The client replies "approved" in writing. Enter it on the lead page when approving staging; it is added to the final invoice.
+Web App projects: press Design approved on the lead page when the design review is signed off; the 30% invoice goes out.
 
 
 Stage 8: Launch
 Trigger: the client approves the staging site in writing.
-We do: send the final invoice with Email G. The site goes live when it is paid. Domain, repository access, and hosting transfer all happen after the final payment, never before.
+We do: press Staging approved on the lead page, with any change orders. The final invoice (plus any unsent milestones) is sent from Stripe and Email G goes out. The site goes live when it is paid. Domain, repository access, and hosting transfer all happen after the final payment, never before.
 
 
 Stage 9: Handover
 Trigger: the site is live.
-We do: send Email H with everything listed under "What you get at handover" in the client doc. The 30 days of fixes start on this date. Put the day-30 date in the tracker.
+We do: press Live on the lead page with the domain and the handover links. Email H goes out; the 30 days of fixes start on this date and the day-30 date is set.
 
 
 Stage 10: Day 30
-We do: send Email I. Check in, offer the retainer, and ask for a testimonial and a referral. Add the project to /work if the client agrees.
+Automatic: Email I is drafted into Gmail on the day. Add the one real observation from analytics and send it. Then press Close, won. Add the project to /work if the client agrees.
 
 
 PART 3: THE EMAILS

@@ -1,6 +1,6 @@
 # OCE Labs Website
 
-A Next.js App Router site for OCE Labs with animated page transitions, GSAP scroll effects, services quote flow, and a Formspree-powered contact form.
+A Next.js App Router site for OCE Labs, with the studio's client workflow (leads, proposals, e-signature, invoices, follow-ups) built in.
 
 ## Stack
 
@@ -81,16 +81,29 @@ npm run lint
 
 ## Contact Form
 
-The contact form submits to Formspree endpoint `https://formspree.io/f/xeaojwdr` and performs basic client-side validation before submit.
+The contact form posts to `/api/inquiry`, which creates the lead in the studio and replies from hello@. Honeypot field plus a per-IP limit; no third-party form service.
 
-## Internal: quote → proposal → invoices
+## Studio: the client workflow, automated
 
-`/pricing` (PIN-gated) is the estimator. The whole quote lives in its `?q=` URL, so a link is a saved quote. From it:
+`/studio` (Google sign-in, allow-listed) is the tracker and the control panel. The workflow in `docs/client-workflow.txt` runs like this:
 
-- `/pricing/proposal?q=…` previews the agreement (docs/client-workflow.txt, Part 4) from the same quote; `/pricing/proposal/pdf?q=…` renders it as a PDF with `@react-pdf/renderer` (wording in `lib/proposal.ts`, layout in `app/pricing/proposal/pdf/ProposalPdf.tsx`). Send that PDF for signature.
-- "Draft in Stripe" on each payment line creates a draft invoice for that stage via the Stripe API. Drafts are reviewed and sent from the dashboard; nothing is sent automatically.
+| Step | What happens | Where |
+|---|---|---|
+| Inquiry | Contact form → lead row, Email A auto-reply from hello@, ping to the inbox | `app/api/inquiry` |
+| Booking | Cal.com webhook → stage "Call booked" | `app/api/webhooks/cal` |
+| Recap | Button on the lead: Email B with a questionnaire link (`/q/<token>`) | lead page |
+| Questionnaire | Client fills the web form → answers on the lead, next action set | `app/q/[token]` |
+| Quote | Estimator opened from the lead saves to it | `/pricing?lead=` |
+| Proposal | Button: Email C with `/p/<token>`; client reads, downloads, signs in place | `app/p/[token]` |
+| Signature | Signed PDF (with e-signature record) emailed with Email D; deposit invoice sent from Stripe | `lib/studio.ts` signProposal |
+| Deposit paid | Stripe webhook → when all four kickoff items are in, Email E with computed dates | `app/api/webhooks/stripe` |
+| Build | Fridays: Email F drafted into Gmail; buttons for design/staging approval send the next invoices + Email G | daily cron, lead page |
+| Launch | Button: Email H; day 30: Email I drafted | lead page, daily cron |
+| Nudges | A2, questionnaire, proposal day 5/12, expiry day 14, closed-lost after silence | `app/api/cron/daily` |
 
-The price book and the arithmetic are in `lib/pricing.ts`; the estimator, the proposal and the invoice action all read from it. Environment variables are listed in `.env.example`.
+Code map: `lib/db/schema.ts` (tables), `lib/studio.ts` (every transition), `lib/emails.ts` (the nine emails), `lib/gmail.ts`, `lib/stripe.ts`, `lib/auth.ts`, `lib/pricing.ts` (price book), `lib/proposal.ts` + `lib/proposal-pdf.tsx` (the agreement).
+
+Setup: fill `.env.example`, run `npm run db:push` once against the Neon database, then Studio → Settings → Connect Gmail. Settings lists the webhook URLs for Stripe and Cal.com.
 
 ## Notes
 

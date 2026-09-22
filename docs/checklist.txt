@@ -28,10 +28,19 @@ Inbox and domain, remaining
 [ ] Set the profile photo to public/brand/oce-icon.png
 
 Deploy
+[ ] Vercel → Storage → add Neon (Postgres); DATABASE_URL is injected
+[ ] Locally: pull DATABASE_URL into .env, run `npm run db:push` once to create the tables
+[ ] Google Cloud: OAuth client (Web) with redirect URIs <site>/api/auth/callback and <site>/api/gmail/callback; enable the Gmail API
+[ ] Vercel env: everything in .env.example (SITE_URL, AUTH_SECRET, GOOGLE_CLIENT_ID/SECRET, STUDIO_ALLOWED_EMAILS, STUDIO_SIGNER, CRON_SECRET, CAL_LINK, STRIPE_WEBHOOK_SECRET, CALCOM_WEBHOOK_SECRET)
 [ ] git push (Vercel deploys main)
-[ ] Smoke test on the live site: /pricing → PIN → Download proposal PDF → Draft in Stripe on the Deposit line
-[ ] STRIPE_SECRET_KEY: confirm it is a restricted key (Customers + Invoices write). Use a test key until the first real client
-[ ] Later: replace the shared PIN with Google sign-in allow-listed to both of you
+[ ] /studio → sign in with Google → Settings → Connect Gmail, choosing hello@
+[ ] Stripe → Developers → Webhooks → <site>/api/webhooks/stripe, event invoice.paid; paste the signing secret into STRIPE_WEBHOOK_SECRET
+[ ] Cal.com → Settings → Developer → Webhooks → <site>/api/webhooks/cal, BOOKING_CREATED, secret = CALCOM_WEBHOOK_SECRET
+[ ] Smoke test: submit the contact form with your own email → lead appears, Email A arrives from hello@
+[ ] Smoke test: on that lead, send the recap → fill the questionnaire → build a quote → send the proposal → sign it → Email D with signed PDF and the Stripe test invoice arrive
+[ ] Pay the test invoice with 4242 4242 4242 4242 → the lead shows "Deposit paid"; mark brand files and copy → Email E arrives
+[ ] STRIPE_SECRET_KEY: restricted key (Customers + Invoices write). Test key until the first real client
+[ ] Remove PRICING_PIN / PRICING_SECRET from Vercel (no longer used)
 
 Stripe, remaining
 [ ] ACH bank payments enabled for invoices
@@ -46,16 +55,14 @@ Scheduling
 [ ] Event: Intro call, 30 min, video, public. Form: business name, current site, what they want from the call
 [ ] Event: Project review, 45 min, hidden
 [ ] 24 h notice, 15 min buffers, fixed bookable window, confirmations and reminders on
-[ ] Paste the Intro call link into Emails A, A2, C
+[ ] Put the Intro call link in CAL_LINK (Emails A, A2, C use it)
 
 E-signature
-[ ] SignWell or Documenso free account on hello@
-[ ] One test: upload a proposal PDF, sign it yourself, confirm the signed copy comes back by email
+[x] Built in: clients sign at /p/<token>; no separate tool
 
 Pipeline tracker
-[ ] Notion or Sheets table: Name, Company, Email, Source, Package, Quote (the /pricing link), Stage, Next action, Next action date
-[ ] Stages: New, Call booked, Recap sent, Proposal sent, Signed, Kickoff, Building, Review, Launched, Closed lost
-[ ] Monday and Friday calendar reminder: open the tracker, do anything with a past Next action date
+[x] Built in: /studio is the tracker
+[ ] Monday and Friday habit: open /studio, do anything marked due
 
 Paperwork
 [ ] DBA registered
