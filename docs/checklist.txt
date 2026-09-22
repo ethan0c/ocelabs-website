@@ -1,0 +1,132 @@
+OCE LABS
+Checklist: One-Time Setup and Per-Project Flow
+
+Internal. The short version of client-workflow.txt: what to press, in order.
+Tick the setup list once. Copy the project list into the tracker row for every lead.
+
+
+PART 1: ONE-TIME SETUP
+
+Done
+[x] Contact form → Formspree → inbox
+[x] Site on Railway
+[x] Stripe account
+[x] hello@ocelabs.xyz exists
+[x] /pricing estimator → proposal PDF → Stripe drafts (in the repo)
+[x] Brand PNG set in public/brand (icon, mark, lockups, social card)
+
+Inbox and domain
+[ ] Google Workspace Starter approved (payments review, up to 48 h)
+[ ] Create the user as hello@ocelabs.xyz, not a personal name with an alias
+[ ] Porkbun DNS: MX → smtp.google.com (priority 1); remove fwd1/fwd2.porkbun.com
+[ ] Porkbun DNS: SPF → v=spf1 include:_spf.google.com ~all
+[ ] Porkbun DNS: add google._domainkey DKIM (2048-bit) from Admin → Apps → Gmail → Authenticate email
+[ ] Porkbun DNS: delete default._domainkey once Google's DKIM passes
+[ ] DMARC: keep p=quarantine; point rua= at an address you read
+[ ] Send a test to a Gmail and an Outlook address; "Show original" shows SPF, DKIM, DMARC all PASS
+[ ] Save Emails A to I from client-workflow.txt as Gmail templates
+[ ] Set the profile photo to public/brand/oce-icon.png
+
+Railway environment
+[ ] PRICING_PIN set to something that is not the code default
+[ ] PRICING_SECRET set
+[ ] STRIPE_SECRET_KEY = restricted key, Customers: write + Invoices: write (test key until the first real client)
+[ ] OCE_LEGAL_NAME = your legal name (it prints as "<name>, doing business as OCE Labs")
+
+Stripe
+[ ] Branding: logo (oce-icon.png), public name OCE Labs, support email hello@ocelabs.xyz
+[ ] Statement descriptor: OCE LABS
+[ ] ACH bank payments enabled for invoices
+[ ] Invoice footer: legal name line and "Questions? hello@ocelabs.xyz"
+[ ] Invoice prefix: OCE
+[ ] Payouts to Relay
+[ ] Stripe Tax decision made for your state
+[ ] One test run: Draft in Stripe with a test key, send to yourself, pay with 4242 4242 4242 4242
+
+Scheduling (needs the Workspace calendar)
+[ ] Cal.com free account connected to the hello@ calendar
+[ ] Event: Intro call, 30 min, video, public. Form: business name, current site, what they want from the call
+[ ] Event: Project review, 45 min, hidden
+[ ] 24 h notice, 15 min buffers, fixed bookable window, confirmations and reminders on
+[ ] Paste the Intro call link into Emails A, A2, C
+
+E-signature
+[ ] SignWell or Documenso free account on hello@
+[ ] One test: upload a proposal PDF, sign it yourself, confirm the signed copy comes back by email
+
+Pipeline tracker
+[ ] Notion or Sheets table: Name, Company, Email, Source, Package, Quote (the /pricing link), Stage, Next action, Next action date
+[ ] Stages: New, Call booked, Recap sent, Proposal sent, Signed, Kickoff, Building, Review, Launched, Closed lost
+[ ] Monday and Friday calendar reminder: open the tracker, do anything with a past Next action date
+
+Paperwork
+[ ] DBA registered
+[ ] W-9 PDF ready, with an EIN
+[ ] Lawyer read the proposal template once (lib/proposal.ts is the wording)
+[ ] Shared-folder template: 01 Questionnaire, 02 Proposal (signed), 03 Brand files, 04 Copy, 05 Handover
+
+
+PART 2: PER PROJECT
+
+Copy this block into the tracker row. Every line is one action and one button.
+
+Inquiry
+[ ] Reply within 1 business day with Email A and the Cal.com link
+[ ] Add the tracker row; Stage: New; Next action: "Nudge" in 3 business days
+[ ] No booking after 3 days: Email A2. No reply 7 days later: Closed lost
+
+Intro call
+[ ] 10 min before: reread their message, open their site, look at two competitors, pick a likely package
+[ ] On the call: say the package and its range out loud. No fixed price
+[ ] Stage: Call booked
+
+Recap
+[ ] Same day: Email B with the questionnaire (client-onboarding doc) attached
+[ ] Stage: Recap sent; Next action: nudge in 5 business days
+
+Proposal (within 2 business days of the questionnaire)
+[ ] /pricing: build the quote from the questionnaire answers
+[ ] Fill in Client (legal business name) and Client email
+[ ] Press "Download proposal PDF"
+[ ] Upload the PDF to the e-sign tool, send for signature
+[ ] Email C with the same PDF attached
+[ ] Paste the /pricing link into the tracker's Quote column
+[ ] Stage: Proposal sent; Next action: nudge day 5, again day 12; expires day 14
+
+Signature and deposit (same day the signed copy arrives)
+[ ] Open the quote from the tracker's Quote link
+[ ] Press "Draft in Stripe" on the Deposit line
+[ ] Open in Stripe, read it over, press Send
+[ ] Email D
+[ ] Create the client's shared folder; put the signed proposal in 02
+[ ] Stage: Signed; Next action: chase the four kickoff items
+
+Kickoff (when all four are in: deposit cleared, questionnaire, brand files, copy)
+[ ] Email E with kickoff date, launch date, content deadline (kickoff + 7 days), review dates
+[ ] Private repository, staging link
+[ ] Stage: Kickoff → Building
+
+Build
+[ ] Every Friday: Email F (done, next, needed from you), even if nothing is needed
+[ ] Design review: one round of feedback per email, two rounds included
+[ ]   Web App only: press "Draft in Stripe" on the Design approved line when they approve; send it
+[ ] Staging review: same
+[ ] Any extra: written change order, "approved" in writing, added to the final invoice
+[ ] Stage: Review when staging goes out
+
+Launch (client approves staging in writing)
+[ ] Press "Draft in Stripe" on the Balance line; add approved change orders as extra lines; send
+[ ] Email G
+[ ] Paid → connect domain, go live
+[ ] Stage: Launched
+
+Handover (site is live)
+[ ] Email H: live URL, repository access, hosting access, Search Console, content guide
+[ ] Put the handover files in 05
+[ ] Tracker: Next action date = today + 30
+
+Day 30
+[ ] Email I: one observation from analytics, offer the retainer, ask for a testimonial and a referral
+[ ] Retainer yes → Stripe subscription, not a manual invoice
+[ ] Add the project to /work if they agree
+[ ] Stage: Closed (won)

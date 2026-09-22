@@ -46,7 +46,8 @@ oce-labs-website/
 │   ├── useMobileMenu.ts
 │   └── useArcMenu.ts
 ├── public/
-│   └── icon-logo.png
+│   ├── brand/           # PNG logo set: app icon, mark, lockups, OG card
+│   └── fonts/           # Geist TTFs for the PDF
 ├── package.json
 └── MIGRATION.md
 ```
@@ -80,7 +81,16 @@ npm run lint
 
 ## Contact Form
 
-The contact form submits to Formspree endpoint `https://formspree.io/f/movldbbk` and performs basic client-side validation before submit.
+The contact form submits to Formspree endpoint `https://formspree.io/f/xeaojwdr` and performs basic client-side validation before submit.
+
+## Internal: quote → proposal → invoices
+
+`/pricing` (PIN-gated) is the estimator. The whole quote lives in its `?q=` URL, so a link is a saved quote. From it:
+
+- `/pricing/proposal?q=…` previews the agreement (docs/client-workflow.txt, Part 4) from the same quote; `/pricing/proposal/pdf?q=…` renders it as a PDF with `@react-pdf/renderer` (wording in `lib/proposal.ts`, layout in `app/pricing/proposal/pdf/ProposalPdf.tsx`). Send that PDF for signature.
+- "Draft in Stripe" on each payment line creates a draft invoice for that stage via the Stripe API. Drafts are reviewed and sent from the dashboard; nothing is sent automatically.
+
+The price book and the arithmetic are in `lib/pricing.ts`; the estimator, the proposal and the invoice action all read from it. Environment variables are listed in `.env.example`.
 
 ## Notes
 

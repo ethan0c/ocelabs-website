@@ -4,6 +4,7 @@ import Estimator from '@/components/Estimator';
 import PinForm from '@/components/PinForm';
 import { COOKIE, isValid } from './auth';
 import { lock } from './actions';
+import { decodeInput } from '@/lib/pricing';
 
 export const metadata: Metadata = {
   title: 'Pricing — OCE Labs',
@@ -13,9 +14,14 @@ export const metadata: Metadata = {
 // Reads a cookie, so this page is rendered per request rather than at build.
 export const dynamic = 'force-dynamic';
 
-export default async function PricingPage() {
+type Props = { searchParams: Promise<{ q?: string }> };
+
+export default async function PricingPage({ searchParams }: Props) {
   const jar = await cookies();
   const open = isValid(jar.get(COOKIE)?.value);
+  // A quote in the URL (from a bookmark, the tracker, or the proposal page's
+  // "Edit" link) reopens the form exactly as it was.
+  const initial = decodeInput((await searchParams).q);
 
   if (!open) {
     return (
@@ -37,7 +43,7 @@ export default async function PricingPage() {
           <h1 className="h1 rise rise-2">Estimate.</h1>
           <p className="lede rise rise-3">
             Work through the questionnaire answers top to bottom. The summary updates
-            as you go and copies as plain text for a quote email.
+            as you go, opens as a proposal to sign, and drafts each payment in Stripe.
           </p>
         </div>
         <form action={lock}>
@@ -48,7 +54,7 @@ export default async function PricingPage() {
       </header>
 
       <section className="shell">
-        <Estimator />
+        <Estimator initial={initial} />
       </section>
     </>
   );

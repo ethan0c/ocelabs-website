@@ -11,8 +11,10 @@ import { createHash } from 'node:crypto';
  * without touching code. Changing the secret signs everyone out.
  */
 export const COOKIE = 'pricing_ok';
-export const PIN = process.env.PRICING_PIN ?? '2305';
-const SECRET = process.env.PRICING_SECRET ?? 'ocelabs-pricing-v1';
+// `||`, not `??`: a blank line in .env must fall back too, or an empty PIN
+// would let an empty form through.
+export const PIN = process.env.PRICING_PIN || '2305';
+const SECRET = process.env.PRICING_SECRET || 'ocelabs-pricing-v1';
 
 export function token() {
   return createHash('sha256').update(`${PIN}:${SECRET}`).digest('hex');

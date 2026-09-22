@@ -19,6 +19,8 @@ Use Stripe Invoicing for every invoice. It sends a branded invoice by email with
 • Invoice footer: the legal name line (see Part 4) and "Questions? hello@ocelabs.xyz"
 • Invoice numbering prefix: OCE
 • The monthly retainer is a Stripe subscription, not a repeated manual invoice
+• Put a restricted API key (Invoices: write, Customers: write) in Railway as STRIPE_SECRET_KEY. The /pricing estimator uses it to draft each payment of a quote as an invoice. Drafts only: every invoice is still read over and sent from the Stripe dashboard.
+• Put the legal name in Railway as OCE_LEGAL_NAME. It appears in the Parties section and the footer of every proposal.
 
 Scheduling (new): Cal.com, free plan
 Connect it to the calendar on the business inbox. Create two event types:
@@ -30,7 +32,7 @@ E-signature (new): any free tier
 The proposal is signed before any money moves. SignWell, Documenso, and Dropbox Sign all have a free tier that covers a few documents a month, which is more than enough. Check the current limits before choosing.
 
 Pipeline tracker
-One table in Notion or Google Sheets. One row per lead. Columns: Name, Company, Email, Source, Package, Quote, Stage, Next action, Next action date. Stages match Part 2: New, Call booked, Recap sent, Proposal sent, Signed, Kickoff, Building, Review, Launched, Closed lost. Look at it every Monday and every Friday. If "Next action date" is in the past, that is the job for the day.
+One table in Notion or Google Sheets. One row per lead. Columns: Name, Company, Email, Source, Package, Quote, Stage, Next action, Next action date. "Quote" is the /pricing link: the estimator keeps the whole quote in its URL, so paste that and the form, the proposal, and the invoices all come back from it. Stages match Part 2: New, Call booked, Recap sent, Proposal sent, Signed, Kickoff, Building, Review, Launched, Closed lost. Look at it every Monday and every Friday. If "Next action date" is in the past, that is the job for the day.
 
 
 PART 2: THE STAGES
@@ -65,15 +67,15 @@ We wait for: the questionnaire. Nudge once after 5 business days.
 Stage 4: Proposal
 Trigger: the questionnaire comes back.
 We do, within 2 business days:
-• Build the quote in the /pricing estimator and copy the summary
-• Paste it into the proposal template (Part 4) and export to PDF
-• Send it for e-signature, with Email C
+• Build the quote in the /pricing estimator. Fill in the client's legal business name and email; both go on the paperwork.
+• Press "Open proposal". It renders the Part 4 agreement from the quote: scope, fixed price, payment schedule, timeline, terms. Press "Download PDF".
+• Upload the PDF to the e-sign tool and send it, with Email C. Paste the estimator link into the tracker's Quote column.
 The proposal is valid for 14 days. Nudge at day 5 and day 12. After day 14 the price and the start date are no longer held.
 
 
 Stage 5: Signature and deposit
 Trigger: the signed proposal comes back.
-We do, the same day: send the deposit invoice from Stripe, and Email D.
+We do, the same day: open the quote from the tracker, press "Draft in Stripe" on the Deposit line, check the draft in the dashboard and send it. Then Email D. The later payments are drafted the same way when their trigger arrives; the amounts match the signed proposal because they come from the same quote.
 This is when the deposit is collected: after signature, before any work. The signed proposal says what is being bought; the deposit buys the slot in the schedule. No design work, no mockups, and no "quick look" before it clears.
 Payment structure:
 • Website and Brand Website: 50% deposit, 50% before launch
@@ -296,7 +298,7 @@ Thank you for trusting us with this.
 
 PART 4: THE PROPOSAL AND THE PAPERWORK
 
-The proposal is one PDF, two to three pages, and it is also the contract. Sections:
+The proposal is one PDF, two to three pages, and it is also the contract. It is generated at /pricing/proposal from the estimator's quote, so the numbers cannot drift from the calculation; edit the wording in app/pricing/proposal/page.tsx. Sections:
 
 1. Parties. [Legal name], doing business as OCE Labs, and the client's legal business name.
 2. Scope. The package, the pages, the add-ons, pasted from the estimator summary. Then a line: "Anything not listed here is outside the scope and is quoted separately."
