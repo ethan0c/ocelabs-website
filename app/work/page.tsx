@@ -110,8 +110,8 @@ export default function WorkPage() {
             odd) and puts a next step where the eye already lands. */}
         <Reveal className="work-cell work-cell--cta">
           <p className="work-cta-lede">Have something in mind?</p>
-          <Link href="/contact" className="ulink">
-            Start a project
+          <Link href="/contact" className="pill pill--primary">
+            Start a project <span className="arrow" aria-hidden="true">&rarr;</span>
           </Link>
         </Reveal>
       </section>

@@ -117,8 +117,8 @@ export default function ContactForm() {
         </span>
       </div>
 
-      <button type="submit" className="send" disabled={sending}>
-        {sending ? 'Sending' : 'Send'} <span aria-hidden="true">&rarr;</span>
+      <button type="submit" className="pill pill--primary" disabled={sending}>
+        {sending ? 'Sending' : 'Send'} <span className="arrow" aria-hidden="true">&rarr;</span>
       </button>
 
       <p className="form-note" data-kind={note?.kind} role="status" aria-live="polite">

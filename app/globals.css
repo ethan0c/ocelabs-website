@@ -223,9 +223,9 @@ a {
 }
 
 .nav-link {
-  font-size: 0.8125rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  /* Sentence case: tracked caps are the label voice (eyebrows, field labels)
+     and the wordmark; navigation reads as a different thing beside them. */
+  font-size: 0.9375rem;
   color: var(--dim);
   padding-block: 0.25rem;
   transition: color 0.25s ease;
@@ -408,7 +408,7 @@ a {
 .hero-links {
   display: flex;
   align-items: center;
-  gap: 1.75rem;
+  gap: 0.75rem;
   margin-top: 2.5rem;
 }
 
@@ -858,6 +858,56 @@ a {
 .send:disabled {
   opacity: 0.45;
   cursor: default;
+}
+
+/*
+ * Public-page buttons. A pill with generous side padding and an arrow that
+ * eases out on hover. The primary is filled; the secondary is the hairline.
+ * The square .btn stays for the internal tools, which never share a page.
+ */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.4rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+}
+
+.pill:hover:not(:disabled) {
+  border-color: var(--text);
+}
+
+.pill--primary {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.pill--primary:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.pill:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.pill .arrow {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.pill:hover:not(:disabled) .arrow {
+  transform: translateX(0.2rem);
 }
 
 .form-note {
