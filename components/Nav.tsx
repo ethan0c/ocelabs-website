@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { useTheme } from '@/hooks/useTheme';
 import Logo from './Logo';
+import ProfileButton from './ProfileButton';
 
 const links = [
   { href: '/work', label: 'Work' },
@@ -93,6 +94,8 @@ export default function Nav() {
                 </Link>
               ))}
             </div>
+
+            <ProfileButton />
 
             <button
               type="button"

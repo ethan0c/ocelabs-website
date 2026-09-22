@@ -253,6 +253,34 @@ a {
   color: var(--text);
 }
 
+/* Profile: same footprint as the theme button; a ring when signed in. */
+.profile-btn {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--dim);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.profile-btn:hover {
+  color: var(--text);
+}
+
+.profile-btn[data-in] {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  font-size: 0.6875rem;
+  letter-spacing: 0;
+  color: var(--text);
+}
+
+.profile-btn[data-in]:hover {
+  border-color: var(--text);
+}
+
 /* The glyph swaps on toggle; a short spin-in keeps it from feeling like a jump. */
 .theme-icon {
   animation: icon-in 0.45s cubic-bezier(0.2, 0, 0.2, 1);
