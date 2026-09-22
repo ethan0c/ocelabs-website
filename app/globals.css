@@ -830,6 +830,15 @@ a {
   margin-bottom: 2rem;
 }
 
+/* Honeypot: off-screen, not display:none, so bots still see a field. */
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .field label {
   display: block;
   font-size: 0.6875rem;
@@ -1608,6 +1617,58 @@ a {
   margin-bottom: 0.8rem;
 }
 
+/* ─── Questionnaire (public, from the recap email) ─────────── */
+
+.q-wrap {
+  max-width: 40rem;
+  margin-inline: 0;
+  padding-bottom: 3rem;
+}
+
+.q-group {
+  border: 0;
+  padding: 0;
+  margin: 0 0 3rem;
+  min-width: 0;
+}
+
+.q-group > legend {
+  margin-bottom: 1.5rem;
+  padding: 0;
+}
+
+.q-form .field label {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.9375rem;
+  color: var(--text);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.q-form .field textarea {
+  min-height: 4.5rem;
+}
+
+.q-num {
+  color: var(--dim);
+  margin-right: 0.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.q-done {
+  padding-block: 2rem 4rem;
+}
+
+.q-done .lede {
+  margin-top: 1rem;
+}
+
+.q-how {
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+
 /* ─── Proposal (internal, previewed on screen, rendered to PDF) ── */
 
 .prop-bar {
@@ -1734,10 +1795,388 @@ a {
   color: var(--dim);
 }
 
+.prop-signed {
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.prop-bar-note {
+  font-size: 0.9375rem;
+  color: var(--dim);
+  max-width: 34rem;
+}
+
+.prop-bar-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+/* The signing block under the client's copy. */
+.sign-wrap {
+  max-width: 40rem;
+  margin-inline: 0;
+  padding-block: 3rem 6rem;
+  border-top: 1px solid var(--line-strong);
+}
+
+.sign-form .h2,
+.sign-done .h2 {
+  margin: 0.75rem 0 2rem;
+}
+
+.sign-agree {
+  display: grid;
+  grid-template-columns: 1rem minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+  margin: 0.5rem 0 2rem;
+  font-size: 0.9375rem;
+  color: var(--dim);
+  cursor: pointer;
+}
+
+.sign-agree input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-top: 0.3rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.sign-agree input:checked {
+  background: var(--text);
+  border-color: var(--text);
+}
+
+.sign-done .lede {
+  margin-bottom: 2rem;
+}
+
 .prop-foot {
   margin-top: 3rem;
   padding-top: 1rem;
   border-top: 1px solid var(--line);
   font-size: 0.8125rem;
   color: var(--dim);
+}
+
+/* ─── Studio (internal) ─────────────────────────────────────── */
+
+.studio-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  padding-block: 0.9rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.8125rem;
+  flex-wrap: wrap;
+}
+
+.studio-nav-links {
+  display: flex;
+  gap: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+}
+
+.studio-nav-links a:hover {
+  color: var(--text);
+}
+
+.studio-nav-user {
+  display: flex;
+  gap: 1.25rem;
+  align-items: baseline;
+  color: var(--dim);
+}
+
+.studio-signout {
+  background: none;
+  border: 0;
+  padding: 0 0 0.2rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.studio-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.studio-head .eyebrow a:hover {
+  color: var(--text);
+}
+
+.studio-next {
+  min-width: 14rem;
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+.studio-next .eyebrow {
+  margin-bottom: 0.4rem;
+}
+
+.studio-body {
+  padding-bottom: 6rem;
+}
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  gap: 4rem;
+  align-items: start;
+}
+
+.studio-sec {
+  margin-bottom: 3rem;
+}
+
+.studio-sec > .eyebrow {
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+
+.studio-msg {
+  white-space: pre-wrap;
+  color: var(--dim);
+  max-width: 44rem;
+}
+
+.signin {
+  margin-top: 2.5rem;
+}
+
+.empty {
+  color: var(--dim);
+}
+
+/* Tables: hairlines, tabular figures, the row's name is the link. */
+.tbl-wrap {
+  overflow-x: auto;
+}
+
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.tbl th {
+  text-align: left;
+  font-weight: 400;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding: 0 1rem 0.6rem 0;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.tbl td {
+  padding: 0.85rem 1rem 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.tbl tr[data-closed] td {
+  color: var(--dim);
+}
+
+.tbl-link {
+  border-bottom: 1px solid transparent;
+}
+
+.tbl-link:hover {
+  border-bottom-color: currentColor;
+}
+
+.tbl-sub {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--dim);
+}
+
+[data-overdue] {
+  color: var(--text);
+}
+
+[data-overdue] .tbl-sub,
+.tbl-sub[data-overdue] {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.pill-stage {
+  display: inline-block;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--line-strong);
+  white-space: nowrap;
+}
+
+.pill-stage[data-stage='signed'],
+.pill-stage[data-stage='building'],
+.pill-stage[data-stage='launched'],
+.pill-stage[data-stage='closed_won'] {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.pill-stage[data-stage='closed_lost'] {
+  color: var(--dim);
+}
+
+/* Actions: each is a form; several sit in a row and wrap. */
+.act-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 2.5rem;
+  align-items: flex-start;
+}
+
+.act {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  max-width: 34rem;
+}
+
+.act .field {
+  margin-bottom: 0;
+}
+
+.act-note {
+  margin-top: 0;
+}
+
+.act select,
+.act textarea,
+.act input[type='text'],
+.act input[type='number'],
+.act input[type='datetime-local'] {
+  width: 100%;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9375rem;
+  padding: 0.45rem 0;
+  border-radius: 0;
+}
+
+.act select:focus,
+.act textarea:focus,
+.act input:focus {
+  outline: none;
+  border-bottom-color: var(--text);
+}
+
+.act select option {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.field--inline label {
+  margin-bottom: 0.3rem;
+}
+
+.field--pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 6rem;
+  gap: 1rem;
+}
+
+.studio-form {
+  max-width: 32rem;
+}
+
+.studio-list,
+.studio-check,
+.studio-log {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.studio-list li,
+.studio-check li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.9375rem;
+  flex-wrap: wrap;
+}
+
+.studio-list code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8125rem;
+  color: var(--dim);
+  word-break: break-all;
+}
+
+.studio-list-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.studio-check li[data-done] {
+  color: var(--dim);
+}
+
+.studio-check .act {
+  flex-direction: row;
+}
+
+.studio-log li {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.8125rem;
+}
+
+.studio-qa {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 44rem;
+}
+
+.studio-qa dt {
+  font-size: 0.8125rem;
+  color: var(--dim);
+  margin-bottom: 0.2rem;
+}
+
+.studio-qa dd {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 56rem) {
+  .studio-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
 }

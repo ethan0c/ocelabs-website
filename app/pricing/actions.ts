@@ -1,29 +1,15 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { COOKIE, PIN, token } from './auth';
+import { requireSession } from '@/lib/auth';
+import { decodeInput } from '@/lib/pricing';
+import { saveQuote } from '@/lib/studio';
 
-export type UnlockState = { error?: string };
-
-export async function unlock(_prev: UnlockState, form: FormData): Promise<UnlockState> {
-  const pin = String(form.get('pin') ?? '').trim();
-  if (pin !== PIN) {
-    return { error: 'Wrong PIN.' };
-  }
-  const jar = await cookies();
-  jar.set(COOKIE, token(), {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/pricing',
-    maxAge: 60 * 60 * 24 * 30,
-  });
-  redirect('/pricing');
-}
-
-export async function lock() {
-  const jar = await cookies();
-  jar.delete({ name: COOKIE, path: '/pricing' });
-  redirect('/pricing');
+/** "Save to lead" in the estimator: the quote becomes the lead's, then back to the lead. */
+export async function saveQuoteToLead(leadId: string, encoded: string) {
+  await requireSession(`/pricing?lead=${leadId}&q=${encoded}`);
+  const input = decodeInput(encoded);
+  if (!input) throw new Error('Could not read the quote.');
+  await saveQuote(leadId, input);
+  redirect(`/studio/leads/${leadId}`);
 }

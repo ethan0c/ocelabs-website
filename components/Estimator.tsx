@@ -24,8 +24,9 @@ import {
   type QuoteInput,
 } from '@/lib/pricing';
 import { createInvoice, type InvoiceResult } from '@/app/pricing/stripe';
+import { saveQuoteToLead } from '@/app/pricing/actions';
 
-export default function Estimator({ initial }: { initial?: QuoteInput | null }) {
+export default function Estimator({ initial, leadId }: { initial?: QuoteInput | null; leadId?: string | null }) {
   const [input, setInput] = useState<QuoteInput>(() => initial ?? defaultInput());
   const [copied, setCopied] = useState(false);
   // Keyed by quote and stage, so any edit to the quote leaves the drafted
@@ -351,7 +352,12 @@ export default function Estimator({ initial }: { initial?: QuoteInput | null }) 
         <p className="eyebrow">Summary{input.client ? ` · ${input.client}` : ''}</p>
 
         <div className="est-actions">
-          <a className="btn btn--primary" href={`/pricing/proposal/pdf?q=${encoded}`}>
+          {leadId && (
+            <button type="button" className="btn btn--primary" onClick={() => startTransition(() => saveQuoteToLead(leadId, encoded))}>
+              Save to lead
+            </button>
+          )}
+          <a className={`btn${leadId ? '' : ' btn--primary'}`} href={`/pricing/proposal/pdf?q=${encoded}`}>
             Download proposal PDF
           </a>
           <a className="btn" href={`/pricing/proposal?q=${encoded}`}>

@@ -2,7 +2,8 @@
 
 import { FormEvent, useState } from 'react';
 
-const ENDPOINT = 'https://formspree.io/f/xeaojwdr';
+/* Our own route: creates the lead in the studio and replies from hello@. */
+const ENDPOINT = '/api/inquiry';
 
 /* Ranges start at the floor stated on the page. "Not sure" stays first so an
    undecided visitor isn't pushed into a number before the first conversation. */
@@ -14,6 +15,7 @@ export default function ContactForm() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [budget, setBudget] = useState(BUDGETS[0]);
+  const [hp, setHp] = useState('');
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [note, setNote] = useState<Note>(null);
@@ -37,6 +39,7 @@ export default function ContactForm() {
       body.append('email', email);
       body.append('message', message);
       body.append('budget', budget);
+      body.append('website', hp);
 
       const res = await fetch(ENDPOINT, {
         method: 'POST',
@@ -49,10 +52,10 @@ export default function ContactForm() {
         return;
       }
 
-      const data = (await res.json()) as { errors?: Array<{ message?: string }> };
+      const data = (await res.json()) as { error?: string; errors?: Array<{ message?: string }> };
       setNote({
         kind: 'error',
-        text: data.errors?.[0]?.message ?? 'Something went wrong. Try emailing us directly.',
+        text: data.error ?? data.errors?.[0]?.message ?? 'Something went wrong. Try emailing us directly.',
       });
     } catch {
       setNote({ kind: 'error', text: 'Something went wrong. Try emailing us directly.' });
@@ -74,6 +77,11 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={submit} noValidate>
+      {/* Honeypot. Hidden from people; bots fill every field. */}
+      <div className="hp" aria-hidden="true">
+        <label htmlFor="website">Website</label>
+        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
+      </div>
       <div className="field">
         <label htmlFor="email">Email</label>
         <input
