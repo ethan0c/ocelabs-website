@@ -63,7 +63,8 @@ Do not quote a fixed price on the call.
 
 Stage 3: Recap
 Trigger: the call ends.
-We do: on the lead page, fill the four recap bullets and the package, range and timeline said on the call, and press Send recap. Email B goes out with a link to the questionnaire page (/q/<token>) instead of an attachment.
+We do: on the lead page, paste the call notes (a notetaker's summary such as Fathom's, a transcript, or your own notes) and press Draft the recap. The four bullets, package, range and timeline fill in; read them, fix anything, press Send recap. Email B goes out with a link to the questionnaire page (/q/<token>).
+Notetaker: Fathom's free plan joins Google Meet, Zoom and Teams calls and emails a summary within minutes. Put the Meet link on the Cal.com event and it joins by itself.
 Automatic: the questionnaire answers land on the lead. No answers after 5 business days sends one nudge.
 
 

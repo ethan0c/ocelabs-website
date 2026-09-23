@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { requireSession } from '@/lib/auth';
 import type { Stage } from '@/lib/db/schema';
 import * as S from '@/lib/studio';
+import { draftRecap, type RecapDraft } from '@/lib/recap';
 
 /*
  * Buttons on the lead page. Each one is a workflow step from lib/studio.ts;
@@ -126,5 +127,15 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
       });
     default:
       return { error: 'Unknown action.' };
+  }
+}
+
+/** Call notes → the recap form's fields. A draft, nothing is sent. */
+export async function draftRecapAction(id: string, notes: string): Promise<RecapDraft | { error: string }> {
+  await requireSession(`/studio/leads/${id}`);
+  try {
+    return await draftRecap(notes);
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Could not draft the recap.' };
   }
 }

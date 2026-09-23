@@ -2134,6 +2134,16 @@ a {
   margin-bottom: 0.3rem;
 }
 
+.recap {
+  display: grid;
+  gap: 2rem;
+  max-width: 34rem;
+}
+
+.recap .act textarea {
+  min-height: 7rem;
+}
+
 .field--pair {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 6rem;

@@ -7,6 +7,7 @@ import { PACKAGES, encodeInput, usd, weeksLabel, type Kind } from '@/lib/pricing
 import { leadDetail, proposalLink, questionnaireLink, quoteSummary } from '@/lib/studio';
 import { QUESTIONS } from '@/app/q/[token]/questions';
 import Action from './Action';
+import RecapForm from './RecapForm';
 
 export const metadata: Metadata = { title: 'Lead — OCE Labs Studio', robots: { index: false } };
 export const dynamic = 'force-dynamic';
@@ -104,34 +105,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
               {lead.questionnaireToken && (
                 <p className="tbl-sub">Questionnaire link: <a className="ulink" href={questionnaireLink(lead.questionnaireToken)}>{questionnaireLink(lead.questionnaireToken)}</a></p>
               )}
-              {lead.stage === 'call_booked' && (
-                <Action id={id} action="recap" label="Send recap with questionnaire" primary>
-                  {[1, 2, 3, 4].map((n) => (
-                    <div key={n} className="field field--inline">
-                      <label htmlFor={`b${n}`}>
-                        {['Their business and who the site is for', 'The main problem with what they have now', 'What a visitor should do on the new site', 'Deadline, and who approves'][n - 1]}
-                      </label>
-                      <input id={`b${n}`} name={`b${n}`} type="text" />
-                    </div>
-                  ))}
-                  <div className="field field--inline">
-                    <label htmlFor="packageLabel">Likely package</label>
-                    <select id="packageLabel" name="packageLabel" defaultValue="Website Package">
-                      {(Object.keys(PACKAGES) as Kind[]).map((k) => (
-                        <option key={k} value={PACKAGES[k].label}>{PACKAGES[k].label}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="field field--inline">
-                    <label htmlFor="range">Range said on the call</label>
-                    <input id="range" name="range" type="text" defaultValue="$3,000 to $6,000" />
-                  </div>
-                  <div className="field field--inline">
-                    <label htmlFor="weeks">Timeline</label>
-                    <input id="weeks" name="weeks" type="text" defaultValue={weeksLabel(PACKAGES.website.weeks)} />
-                  </div>
-                </Action>
-              )}
+              {lead.stage === 'call_booked' && <RecapForm id={id} />}
             </section>
           )}
 

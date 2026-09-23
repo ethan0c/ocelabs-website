@@ -56,6 +56,7 @@ Scheduling
 [ ] Event: Project review, 45 min, hidden
 [ ] 24 h notice, 15 min buffers, fixed bookable window, confirmations and reminders on
 [ ] Put the Intro call link in CAL_LINK (Emails A, A2, C use it)
+[ ] Fathom (free) on the hello@ Google account, set to auto-join calendar meetings; its summary is what you paste into Draft the recap
 
 E-signature
 [x] Built in: clients sign at /p/<token>; no separate tool
@@ -86,7 +87,7 @@ Intro call
 [ ] Automatic: a Cal.com booking sets Call booked (or press Set call time on the lead)
 
 Recap
-[ ] Same day: on the lead, fill the four recap bullets, package, range, timeline → Send recap (Email B goes with the questionnaire link)
+[ ] Same day: on the lead, paste the call notes → Draft the recap → check it → Send recap (Email B goes with the questionnaire link)
 [ ] Automatic: questionnaire answers land on the lead; one nudge after 5 business days
 
 Proposal (within 2 business days of the questionnaire)
