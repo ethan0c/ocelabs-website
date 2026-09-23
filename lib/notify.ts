@@ -14,7 +14,8 @@ export async function notifyNewLead(lead: Lead, o: { emailASent: boolean }) {
   const who = lead.company || lead.name || lead.email;
   const link = `${siteUrl()}/studio/leads/${lead.id}`;
   const line = lead.summary || (lead.message ? lead.message.replace(/\s+/g, ' ').slice(0, 140) : 'No message');
-  const to = allowedEmails();
+  // A typo in the allow-list must not stop the alert reaching the others.
+  const to = allowedEmails().filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
   const recipients = to.length ? to : [await fromAddress()];
 
   try {
