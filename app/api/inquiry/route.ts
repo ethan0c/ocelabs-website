@@ -1,5 +1,5 @@
 import { createLead, getLead, sendEmailA } from '@/lib/studio';
-import { fromAddress, gmailConfigured, sendMail } from '@/lib/gmail';
+import { notifyNewLead } from '@/lib/notify';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,34 +45,17 @@ export async function POST(req: Request) {
   }
 
   const auto = process.env.AUTO_EMAIL_A !== 'false';
+  let sent = false;
   if (auto) {
     try {
-      await sendEmailA(lead.id);
+      sent = await sendEmailA(lead.id);
     } catch {
       /* logged on the lead; the studio shows it as pending */
     }
   }
 
-  if (await gmailConfigured()) {
-    try {
-      const fresh = await getLead(lead.id);
-      const to = await fromAddress();
-      const studio = `${(process.env.SITE_URL || '').replace(/\/$/, '')}/studio/leads/${lead.id}`;
-      await sendMail({
-        to,
-        replyTo: email,
-        subject: `New inquiry: ${name || email}${budget ? ` · ${budget}` : ''}`,
-        text:
-          (fresh?.summary ? `${fresh.summary}\n\n` : '') +
-          `${auto ? 'Email A went out with the booking link.' : 'Email A not sent (AUTO_EMAIL_A is off).'}\n` +
-          `Lead: ${studio}\n\n` +
-          `— Their message —\n${message}\n\n` +
-          `${name ? `${name} · ` : ''}${email}${budget ? ` · budget ${budget}` : ''}`,
-      });
-    } catch {
-      /* the lead exists either way */
-    }
-  }
+  const fresh = (await getLead(lead.id)) ?? lead;
+  await notifyNewLead(fresh, { emailASent: sent });
 
   return Response.json({ ok: true });
 }

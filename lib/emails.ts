@@ -11,7 +11,12 @@ import { usd, weeksLabel, type Quote } from '@/lib/pricing';
 
 export type Email = { subject: string; text: string };
 
-const first = (name?: string | null) => (name ? name.trim().split(/\s+/)[0] : 'there');
+/** First name, first letter capitalised however they typed it. "there" if unknown. */
+export function first(name?: string | null) {
+  const w = name?.trim().split(/\s+/)[0];
+  if (!w) return 'there';
+  return w.charAt(0).toUpperCase() + w.slice(1);
+}
 
 const sign = (signer: string) => `\n\n${signer.trim() || 'OCE Labs'}${signer.trim() ? '\nOCE Labs' : ''}`;
 

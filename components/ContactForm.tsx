@@ -12,6 +12,7 @@ const BUDGETS = ['Not sure yet', '$3k–6k', '$6k–12k', '$12k–25k', '$25k+']
 type Note = { kind: 'error' | 'ok'; text: string } | null;
 
 export default function ContactForm() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [budget, setBudget] = useState(BUDGETS[0]);
@@ -24,6 +25,10 @@ export default function ContactForm() {
     e.preventDefault();
     setNote(null);
 
+    if (!name.trim()) {
+      setNote({ kind: 'error', text: 'Please add your name.' });
+      return;
+    }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setNote({ kind: 'error', text: 'Please enter a valid email address.' });
       return;
@@ -36,6 +41,7 @@ export default function ContactForm() {
     setSending(true);
     try {
       const body = new FormData();
+      body.append('name', name);
       body.append('email', email);
       body.append('message', message);
       body.append('budget', budget);
@@ -82,6 +88,19 @@ export default function ContactForm() {
         <label htmlFor="website">Website</label>
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
       </div>
+      <div className="field">
+        <label htmlFor="name">Name</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          autoComplete="name"
+          placeholder="Your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+
       <div className="field">
         <label htmlFor="email">Email</label>
         <input

@@ -9,6 +9,7 @@ import { CONTENT_DEADLINE_DAYS, PROPOSAL_VALID_DAYS, WARRANTY_DAYS, computeQuote
 import { buildProposal, proposalFileName } from '@/lib/proposal';
 import { renderProposalPdf } from '@/lib/proposal-pdf';
 import { gistOf } from '@/lib/summarize';
+import { notifyNewLead } from '@/lib/notify';
 import { createDraftInvoice, dashboardUrl, finalizeAndSend, findOrCreateCustomer, stripe } from '@/lib/stripe';
 
 /*
@@ -181,9 +182,11 @@ export async function handleCalBooking(email: string, name: string | null, start
     .orderBy(desc(leads.createdAt))
     .limit(1);
   let lead = open[0];
+  const fresh = !lead;
   if (!lead) lead = await createLead({ name, email: e, source: 'cal.com' });
   await log(lead.id, 'webhook:cal:booking', { startAt, endAt });
   await bookCall(lead.id, startAt, endAt);
+  if (fresh) await notifyNewLead(lead, { emailASent: false });
   return lead;
 }
 
