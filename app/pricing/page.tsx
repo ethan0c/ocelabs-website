@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Estimator from '@/components/Estimator';
-import { requireSession } from '@/lib/auth';
 import { decodeInput, type QuoteInput } from '@/lib/pricing';
 import { getLead } from '@/lib/studio';
 
@@ -21,7 +20,6 @@ type Props = { searchParams: Promise<{ q?: string; lead?: string }> };
  */
 export default async function PricingPage({ searchParams }: Props) {
   const { q, lead: leadId } = await searchParams;
-  await requireSession(`/pricing${q ? `?q=${q}` : ''}`);
 
   let initial: QuoteInput | null = decodeInput(q);
   let leadName: string | null = null;

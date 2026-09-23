@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import ProposalView from '@/components/ProposalView';
-import { requireSession } from '@/lib/auth';
 import { computeQuote, decodeInput, encodeInput } from '@/lib/pricing';
 import { buildProposal } from '@/lib/proposal';
 
@@ -21,7 +20,6 @@ type Props = { searchParams: Promise<{ q?: string }> };
 
 export default async function ProposalPage({ searchParams }: Props) {
   const q = (await searchParams).q;
-  await requireSession(`/pricing/proposal${q ? `?q=${q}` : ''}`);
   const input = decodeInput(q);
   if (!input) {
     return (

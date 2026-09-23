@@ -1916,7 +1916,8 @@ a {
   color: var(--dim);
 }
 
-.studio-nav-links a:hover {
+.studio-nav-links a:hover,
+.studio-nav-links a[aria-current='page'] {
   color: var(--text);
 }
 

@@ -3,9 +3,9 @@ import { requireSession } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
-/** Everything under /studio except sign-in: signed in, or sent to sign in. */
-export default async function StudioLayout({ children }: { children: React.ReactNode }) {
-  const session = await requireSession('/studio');
+/** The estimator and proposal preview are studio pages that kept their URL. */
+export default async function PricingLayout({ children }: { children: React.ReactNode }) {
+  const session = await requireSession('/pricing');
   return (
     <div className="studio">
       <StudioNav email={session.email} />
