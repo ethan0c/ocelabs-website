@@ -8,15 +8,15 @@ Tick the setup list once. Copy the project list into the tracker row for every l
 PART 1: ONE-TIME SETUP
 
 Done
-[x] Contact form → Formspree → inbox
+[x] Contact form → /api/inquiry → studio lead + Email A
 [x] Site on Vercel
 [x] Stripe account, branding, statement descriptor
 [x] Google Workspace: hello@ocelabs.xyz mailbox, anti-spam, branding
 [x] DNS: MX → smtp.google.com, old Porkbun forwarders removed
 [x] DNS: SPF v=spf1 include:_spf.google.com ~all
 [x] DNS: Google DKIM at google._domainkey (2048-bit); old Porkbun DKIM removed
-[x] Vercel env: PRICING_PIN, PRICING_SECRET, STRIPE_SECRET_KEY, OCE_LEGAL_NAME
-[x] /pricing estimator → proposal PDF → Stripe drafts (in the repo)
+[x] Vercel env: STRIPE_SECRET_KEY, OCE_LEGAL_NAME (studio keys under Deploy)
+[x] Studio in the repo: leads, questionnaire, proposal e-sign, invoices, nudges, kickoff
 [x] Brand PNG set in public/brand (icon, mark, lockups, social card)
 
 Inbox and domain, remaining
@@ -73,65 +73,52 @@ Paperwork
 
 PART 2: PER PROJECT
 
-Copy this block into the tracker row. Every line is one action and one button.
+The lead page shows the buttons for the stage it is in. This is the same list, for reading ahead.
 
 Inquiry
-[ ] Reply within 1 business day with Email A and the Cal.com link
-[ ] Add the tracker row; Stage: New; Next action: "Nudge" in 3 business days
-[ ] No booking after 3 days: Email A2. No reply 7 days later: Closed lost
+[ ] Automatic: lead created, Email A sent with the Cal.com link, inbox pinged
+[ ] Reply personally in the thread if their message calls for it
+[ ] Automatic: no booking after 3 business days → Email A2; 7 more days of silence → Closed lost
 
 Intro call
 [ ] 10 min before: reread their message, open their site, look at two competitors, pick a likely package
 [ ] On the call: say the package and its range out loud. No fixed price
-[ ] Stage: Call booked
+[ ] Automatic: a Cal.com booking sets Call booked (or press Set call time on the lead)
 
 Recap
-[ ] Same day: Email B with the questionnaire (client-onboarding doc) attached
-[ ] Stage: Recap sent; Next action: nudge in 5 business days
+[ ] Same day: on the lead, fill the four recap bullets, package, range, timeline → Send recap (Email B goes with the questionnaire link)
+[ ] Automatic: questionnaire answers land on the lead; one nudge after 5 business days
 
 Proposal (within 2 business days of the questionnaire)
-[ ] /pricing: build the quote from the questionnaire answers
-[ ] Fill in Client (legal business name) and Client email
-[ ] Press "Download proposal PDF"
-[ ] Upload the PDF to the e-sign tool, send for signature
-[ ] Email C with the same PDF attached
-[ ] Paste the /pricing link into the tracker's Quote column
-[ ] Stage: Proposal sent; Next action: nudge day 5, again day 12; expires day 14
+[ ] Lead → Build quote (estimator opens for this lead) → Save to lead
+[ ] Lead → Send proposal (Email C with the signing link)
+[ ] Automatic: nudges day 5 and 12; expiry day 14
 
-Signature and deposit (same day the signed copy arrives)
-[ ] Open the quote from the tracker's Quote link
-[ ] Press "Draft in Stripe" on the Deposit line
-[ ] Open in Stripe, read it over, press Send
-[ ] Email D
-[ ] Create the client's shared folder; put the signed proposal in 02
-[ ] Stage: Signed; Next action: chase the four kickoff items
+Signature and deposit
+[ ] Automatic when they sign: signed PDF + Email D, deposit invoice sent from Stripe, schedule recorded
+[ ] Create the client's shared folder; signed PDF (from the lead page) in 02
 
-Kickoff (when all four are in: deposit cleared, questionnaire, brand files, copy)
-[ ] Email E with kickoff date, launch date, content deadline (kickoff + 7 days), review dates
+Kickoff
+[ ] Mark brand files and copy received on the lead as they arrive (deposit and questionnaire tick themselves)
+[ ] Automatic when the fourth item is in: Email E with kickoff, launch, content deadline, review dates
 [ ] Private repository, staging link
-[ ] Stage: Kickoff → Building
 
 Build
-[ ] Every Friday: Email F (done, next, needed from you), even if nothing is needed
+[ ] Fridays: finish the drafted Email F in Gmail and send it, even if nothing is needed
 [ ] Design review: one round of feedback per email, two rounds included
-[ ]   Web App only: press "Draft in Stripe" on the Design approved line when they approve; send it
-[ ] Staging review: same
-[ ] Any extra: written change order, "approved" in writing, added to the final invoice
-[ ] Stage: Review when staging goes out
+[ ] Web App only: Design approved on the lead when signed off (sends the 30% invoice)
+[ ] Any extra: written change order, "approved" in writing; enter it when approving staging
 
 Launch (client approves staging in writing)
-[ ] Press "Draft in Stripe" on the Balance line; add approved change orders as extra lines; send
-[ ] Email G
+[ ] Lead → Staging approved, with change orders (final invoice + Email G go out)
 [ ] Paid → connect domain, go live
-[ ] Stage: Launched
 
 Handover (site is live)
-[ ] Email H: live URL, repository access, hosting access, Search Console, content guide
-[ ] Put the handover files in 05
-[ ] Tracker: Next action date = today + 30
+[ ] Lead → Live, with the domain and the handover links (Email H goes out; day 30 is set)
+[ ] Handover files in 05
 
 Day 30
-[ ] Email I: one observation from analytics, offer the retainer, ask for a testimonial and a referral
+[ ] Automatic: Email I drafted into Gmail on the day; add the one real observation and send
 [ ] Retainer yes → Stripe subscription, not a manual invoice
 [ ] Add the project to /work if they agree
-[ ] Stage: Closed (won)
+[ ] Lead → Close, won

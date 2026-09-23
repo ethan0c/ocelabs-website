@@ -6,7 +6,7 @@ Internal. Not sent to clients. The emails in Part 3 are the client-facing pieces
 
 PART 1: THE TOOLS
 
-Four tools, three of them new. Nothing here needs a paid plan to start.
+Four tools. Nothing here needs a paid plan beyond the Workspace seat.
 
 Most of this document now runs by itself. The studio at /studio (sign in with Google) holds every lead, sends the emails from hello@, creates and sends the invoices, and drafts the ones that need a human sentence. Each stage below says what is automatic and what still needs a person. The wording of the emails is in lib/emails.ts; the rules are in lib/studio.ts.
 
@@ -30,12 +30,11 @@ Connect it to the calendar on the business inbox. Create two event types:
 • Project review, 45 minutes, for existing clients only. Not listed publicly.
 Settings: 24 hours minimum notice, 15 minutes buffer either side, a fixed window of bookable hours, automatic confirmation and reminder emails. Calendly's free plan does the same job if preferred; pick one and do not change it.
 
-E-signature (new): any free tier
-The proposal is signed before any money moves. SignWell, Documenso, and Dropbox Sign all have a free tier that covers a few documents a month, which is more than enough. Check the current limits before choosing.
+E-signature: built in
+The proposal is signed before any money moves. The client signs on the proposal page itself (/p/<token>): they read the agreement, type their name, tick consent, and press Sign. The studio records who, when, from which address and browser, and a hash of the exact document they saw, then emails both sides the signed PDF with that record as its last page. No separate e-signature service.
 
-Pipeline tracker
-Now the studio: /studio. Every lead, its stage, its next action and date, its quote, proposals, payments, and a log of everything sent. The Notion/Sheets table is no longer needed. The rest of this section describes the columns it replaced.
-One table in Notion or Google Sheets. One row per lead. Columns: Name, Company, Email, Source, Package, Quote, Stage, Next action, Next action date. "Quote" is the /pricing link: the estimator keeps the whole quote in its URL, so paste that and the form, the proposal, and the invoices all come back from it. Stages match Part 2: New, Call booked, Recap sent, Proposal sent, Signed, Kickoff, Building, Review, Launched, Closed lost. Look at it every Monday and every Friday. If "Next action date" is in the past, that is the job for the day.
+Pipeline tracker: the studio
+/studio. Every lead, its stage, its next action and date, its quote, proposals, payments, questionnaire answers, and a log of everything sent. Stages match Part 2: New, Call booked, Recap sent, Proposal sent, Signed, Kickoff, Building, Review, Launched, Closed. Look at it every Monday and every Friday; anything marked due is the job for the day. Leads that come by referral or phone are added with "Add a lead".
 
 
 PART 2: THE STAGES
@@ -181,7 +180,7 @@ Subject: OCE Labs: proposal for [Company]
 
 Hi [Name],
 
-Thank you for the questionnaire. Your proposal is attached and has also been sent to you for signature by [e-sign tool].
+Thank you for the questionnaire. Your proposal is ready to read and sign here: [proposal link]
 
 In short:
 • Scope: [one line]

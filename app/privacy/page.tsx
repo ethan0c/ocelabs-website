@@ -22,9 +22,10 @@ export default function PrivacyPage() {
         <h2>The contact form</h2>
         <p>
           When you write to us through the form, we receive your email address, your message,
-          and the budget range you pick. The form is processed by Formspree, which passes it to
-          our inbox at hello@ocelabs.xyz. We use it to reply to you and for nothing else. We keep
-          it as long as the conversation is live and for our records of the project afterwards.
+          and the budget range you pick. It is stored in our own records (a database hosted by
+          Neon) and sent to our inbox at hello@ocelabs.xyz, from which we reply. We use it to
+          answer you and, if we work together, to run the project. We keep it as long as the
+          conversation is live and for our records of the project afterwards.
         </p>
 
         <h2>Browsing the site</h2>
@@ -37,11 +38,12 @@ export default function PrivacyPage() {
 
         <h2>Clients</h2>
         <p>
-          If we work together, we hold what the project needs: your contact details, the
-          questionnaire, the signed proposal, the files you send us, and the code we write. Invoices
-          are issued through Stripe, which processes your payment details under its own privacy
-          policy; we never see your full card or bank numbers. Proposals may be sent for signature
-          through an e-signature service, which stores the signed document.
+          If we work together, we hold what the project needs: your contact details, your
+          questionnaire answers, the proposal and your electronic signature on it (your typed name,
+          email, the time, and the network address it was signed from, kept as the record of the
+          agreement), the files you send us, and the code we write. Invoices are issued through
+          Stripe, which processes your payment details under its own privacy policy; we never see
+          your full card or bank numbers. Emails we send you go from our Google Workspace account.
         </p>
 
         <h2>Who else sees it</h2>

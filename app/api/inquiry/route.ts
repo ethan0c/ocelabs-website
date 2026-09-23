@@ -5,13 +5,10 @@ export const dynamic = 'force-dynamic';
 
 /*
  * The contact form posts here. Creates the lead, replies with Email A from
- * hello@ (unless AUTO_EMAIL_A=false), and pings the inbox. Replaces
- * Formspree, whose webhooks are a paid tier.
+ * hello@ (unless AUTO_EMAIL_A=false), and pings the inbox.
  */
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-/** The old form endpoint, kept as the fallback until the database is live. */
-const FORMSPREE = 'https://formspree.io/f/xeaojwdr';
 
 // Per-instance, resets on cold start: enough to blunt a script, not a defence.
 const recent = new Map<string, number[]>();
@@ -42,16 +39,9 @@ export async function POST(req: Request) {
   try {
     lead = await createLead({ name: name || null, email, message, budget: budget || null });
   } catch (e) {
-    // No database yet (or it is down): forward to Formspree so nothing is lost.
-    console.error('inquiry: database unavailable, forwarding to Formspree', e);
-    const fallback = await fetch(FORMSPREE, {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: form,
-    });
-    return fallback.ok
-      ? Response.json({ ok: true })
-      : Response.json({ error: 'Something went wrong. Try emailing us directly.' }, { status: 502 });
+    // The page shows hello@ next to the form, so a failure still has a way through.
+    console.error('inquiry: could not create the lead', e);
+    return Response.json({ error: 'Something went wrong on our side. Email hello@ocelabs.xyz directly.' }, { status: 502 });
   }
 
   const auto = process.env.AUTO_EMAIL_A !== 'false';
