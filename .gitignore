@@ -5,3 +5,7 @@ dist
 MIGRATION.md
 # TypeScript incremental build cache
 tsconfig.tsbuildinfo
+.e2e.mts
+.e2e-stubs/
+tsconfig.e2e.json
+.emails-preview.mts
