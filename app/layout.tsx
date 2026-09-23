@@ -33,8 +33,10 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // data-theme is set by the inline script before hydration, so the server's
+  // value and the client's legitimately differ; React is told to expect it.
   return (
-    <html lang="en" data-theme="dark" className={geist.variable}>
+    <html lang="en" data-theme="dark" className={geist.variable} suppressHydrationWarning>
       <head>
         {/* Resolve theme before first paint so there is no flash. */}
         <script
