@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/ethan0c/ocelabs-website#readme",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0",
     "@neondatabase/serverless": "^1.1.0",
     "@react-pdf/renderer": "^4.9.0",
     "drizzle-orm": "^0.45.3",

@@ -65,10 +65,11 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
 
       <div className="shell studio-body studio-grid">
         <div className="studio-main">
-          {lead.message && (
+          {(lead.message || lead.summary) && (
             <section className="studio-sec">
-              <h2 className="eyebrow">Their message</h2>
-              <p className="studio-msg">{lead.message}</p>
+              <h2 className="eyebrow">What they want</h2>
+              {lead.summary && <p className="studio-summary">{lead.summary}</p>}
+              {lead.message && <p className="studio-msg">{lead.message}</p>}
             </section>
           )}
 

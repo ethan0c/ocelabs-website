@@ -8,6 +8,7 @@ import { draftMail, gmailConfigured, sendMail, type Attachment } from '@/lib/gma
 import { CONTENT_DEADLINE_DAYS, PROPOSAL_VALID_DAYS, WARRANTY_DAYS, computeQuote, usd, weeksLabel, type QuoteInput } from '@/lib/pricing';
 import { buildProposal, proposalFileName } from '@/lib/proposal';
 import { renderProposalPdf } from '@/lib/proposal-pdf';
+import { gistOf } from '@/lib/summarize';
 import { createDraftInvoice, dashboardUrl, finalizeAndSend, findOrCreateCustomer, stripe } from '@/lib/stripe';
 
 /*
@@ -137,23 +138,22 @@ export async function createLead(input: {
   return lead;
 }
 
-/** Email A: the reply with the booking link. Topic is a phrase from their message. */
+/**
+ * Email A: the reply with the booking link. The "about ___" phrase is written
+ * from their message (lib/summarize.ts) unless one is given.
+ */
 export async function sendEmailA(id: string, topic?: string) {
   const lead = await getLead(id);
   if (!lead) throw new Error('No such lead.');
-  const t = topic?.trim() || topicFrom(lead.message) || 'your project';
+  let t = topic?.trim();
+  if (!t) {
+    const gist = await gistOf(lead.message);
+    t = gist.topic;
+    if (gist.summary) await update(id, { summary: gist.summary });
+  }
   const ok = await send(id, 'A', lead.email, E.emailA({ name: lead.name, topic: t, calLink: calLink(), signer: signer() }));
   await update(id, { nextAction: 'Nudge if no booking', nextActionAt: addBusinessDays(new Date(), 3) });
   return ok;
-}
-
-/** First clause of what they wrote, trimmed to something that reads in a sentence. */
-function topicFrom(message?: string | null) {
-  if (!message) return null;
-  const clause = message.replace(/\s+/g, ' ').trim().split(/[.!?\n]/)[0];
-  if (!clause) return null;
-  const short = clause.length > 80 ? clause.slice(0, 77).replace(/\s+\S*$/, '') + '…' : clause;
-  return short.charAt(0).toLowerCase() + short.slice(1);
 }
 
 export async function sendEmailA2(id: string) {
@@ -565,11 +565,11 @@ export async function runDaily(now = new Date()): Promise<CronReport> {
             await log(lead.id, 'proposal:expired');
             out.push(`proposal expired ${lead.email}`);
           } else if (age >= 12 && !(await hasEvent(lead.id, 'email:C12'))) {
-            await send(lead.id, 'C12', lead.email, E.emailCNudge({ name: lead.name, proposalLink: proposalLink(p.token), validUntil: p.expiresAt, last: true, signer: signer() }));
+            await send(lead.id, 'C12', lead.email, E.emailCNudge({ name: lead.name, company: p.quote.client || lead.company || 'your project', proposalLink: proposalLink(p.token), validUntil: p.expiresAt, last: true, signer: signer() }));
             await update(lead.id, { nextAction: 'Proposal expires', nextActionAt: p.expiresAt });
             out.push(`C day-12 → ${lead.email}`);
           } else if (age >= 5 && !(await hasEvent(lead.id, 'email:C5'))) {
-            await send(lead.id, 'C5', lead.email, E.emailCNudge({ name: lead.name, proposalLink: proposalLink(p.token), validUntil: p.expiresAt, last: false, signer: signer() }));
+            await send(lead.id, 'C5', lead.email, E.emailCNudge({ name: lead.name, company: p.quote.client || lead.company || 'your project', proposalLink: proposalLink(p.token), validUntil: p.expiresAt, last: false, signer: signer() }));
             await update(lead.id, { nextAction: 'Nudge, day 12', nextActionAt: addDays(p.sentAt, 12) });
             out.push(`C day-5 → ${lead.email}`);
           }

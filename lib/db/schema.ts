@@ -55,6 +55,8 @@ export const leads = pgTable('leads', {
   email: text('email').notNull(),
   source: text('source').notNull().default('contact form'),
   message: text('message'),
+  /** One line from lib/summarize.ts: what they want, for the table and the ping. */
+  summary: text('summary'),
   budget: text('budget'),
   stage: text('stage').$type<Stage>().notNull().default('new'),
   nextAction: text('next_action'),

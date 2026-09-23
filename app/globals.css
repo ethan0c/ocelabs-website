@@ -1979,10 +1979,16 @@ a {
   margin-bottom: 1rem;
 }
 
+.studio-summary {
+  max-width: 44rem;
+  margin-bottom: 0.75rem;
+}
+
 .studio-msg {
   white-space: pre-wrap;
   color: var(--dim);
   max-width: 44rem;
+  font-size: 0.9375rem;
 }
 
 .signin {

@@ -67,6 +67,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                           {l.company || l.name || l.email}
                         </Link>
                         <span className="tbl-sub">{l.company && l.name ? `${l.name} · ` : ''}{l.email}</span>
+                        {l.summary && <span className="tbl-sub">{l.summary}</span>}
                       </td>
                       <td>
                         <span className="pill-stage" data-stage={l.stage}>

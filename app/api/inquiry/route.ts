@@ -1,4 +1,4 @@
-import { createLead, sendEmailA } from '@/lib/studio';
+import { createLead, getLead, sendEmailA } from '@/lib/studio';
 import { fromAddress, gmailConfigured, sendMail } from '@/lib/gmail';
 
 export const dynamic = 'force-dynamic';
@@ -55,12 +55,19 @@ export async function POST(req: Request) {
 
   if (await gmailConfigured()) {
     try {
+      const fresh = await getLead(lead.id);
       const to = await fromAddress();
+      const studio = `${(process.env.SITE_URL || '').replace(/\/$/, '')}/studio/leads/${lead.id}`;
       await sendMail({
         to,
         replyTo: email,
-        subject: `New inquiry: ${name || email}${budget ? ` (${budget})` : ''}`,
-        text: `${message}\n\n—\n${name ? `${name} · ` : ''}${email}\nBudget: ${budget || 'not given'}\n\nOpen in the studio: ${(process.env.SITE_URL || '').replace(/\/$/, '')}/studio/leads/${lead.id}`,
+        subject: `New inquiry: ${name || email}${budget ? ` · ${budget}` : ''}`,
+        text:
+          (fresh?.summary ? `${fresh.summary}\n\n` : '') +
+          `${auto ? 'Email A went out with the booking link.' : 'Email A not sent (AUTO_EMAIL_A is off).'}\n` +
+          `Lead: ${studio}\n\n` +
+          `— Their message —\n${message}\n\n` +
+          `${name ? `${name} · ` : ''}${email}${budget ? ` · budget ${budget}` : ''}`,
       });
     } catch {
       /* the lead exists either way */
