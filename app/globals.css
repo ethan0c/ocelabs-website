@@ -1442,6 +1442,18 @@ a {
   width: 3rem;
 }
 
+.est-pct .est-num--wide {
+  width: 5.5rem;
+}
+
+.est-full {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  margin: -1rem 0 2rem;
+}
+
 .est-summary {
   position: sticky;
   top: calc(var(--nav-h) + 1.5rem);

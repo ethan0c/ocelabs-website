@@ -369,7 +369,7 @@ export async function signProposal(t: string, s: { name: string; email: string; 
     await log(lead.id, 'invoice:error', { stage: 0, error: invoiceError });
   }
 
-  await send(lead.id, 'D', lead.email, E.emailD({ name: lead.name, depositAmount: rows[0].amount, folderLink: process.env.CLIENT_FOLDER_LINK, signer: signer() }), [attachment]);
+  await send(lead.id, 'D', lead.email, E.emailD({ name: lead.name, depositAmount: rows[0].amount, full: rows.length === 1, folderLink: process.env.CLIENT_FOLDER_LINK, signer: signer() }), [attachment]);
   await setStage(lead.id, 'signed', invoiceError ? `Deposit invoice failed: ${invoiceError}` : 'Chase the kickoff items', addBusinessDays(signedAt, 3));
   return { proposal: signed, pdf, invoiceError };
 }

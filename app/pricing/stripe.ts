@@ -1,7 +1,7 @@
 'use server';
 
 import { getSession } from '@/lib/auth';
-import { computeQuote, decodeInput, usd } from '@/lib/pricing';
+import { FULL_PAYMENT, computeQuote, decodeInput, usd } from '@/lib/pricing';
 import { createDraftInvoice, dashboardUrl, findOrCreateCustomer } from '@/lib/stripe';
 
 /*
@@ -19,7 +19,8 @@ export async function createInvoice(encoded: string, stageIndex: number): Promis
   const input = decodeInput(encoded);
   if (!input) return { error: 'Could not read the quote.' };
   const quote = computeQuote(input);
-  const stage = quote.payments[stageIndex];
+  // -1 bills everything at once, whatever the schedule says.
+  const stage = stageIndex < 0 ? { ...FULL_PAYMENT, amount: quote.total } : quote.payments[stageIndex];
   if (!stage) return { error: 'No such payment stage.' };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
     return { error: 'Add the client email first; Stripe needs it for the invoice.' };
@@ -36,7 +37,7 @@ export async function createInvoice(encoded: string, stageIndex: number): Promis
       metadata: {
         quote_total: String(quote.total),
         package: quote.pkg.label,
-        stage: `${stageIndex + 1} of ${quote.payments.length}: ${stage.label}`,
+        stage: stageIndex < 0 ? 'Full payment' : `${stageIndex + 1} of ${quote.payments.length}: ${stage.label}`,
         ...(input.client ? { client: input.client } : {}),
       },
     });

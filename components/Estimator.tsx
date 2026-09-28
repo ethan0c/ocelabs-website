@@ -16,6 +16,7 @@ import {
   RUSH,
   computeQuote,
   defaultInput,
+  scheduleFor,
   encodeInput,
   summaryText,
   usd,
@@ -65,7 +66,7 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
   };
 
   const draft = (i: number) => {
-    const key = `${encoded}:${i}`;
+    const key = `${encoded}:${i < 0 ? 'full' : i}`;
     setInvoices((s) => ({ ...s, [key]: 'pending' }));
     startTransition(async () => {
       const result = await createInvoice(encoded, i);
@@ -269,9 +270,7 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
           <div className="est-row est-row--input" data-on={input.customPct > 0 || undefined}>
             <span className="est-row-main">
               <span className="est-row-label">Custom discount</span>
-              <span className="est-row-note">
-                All discounts add up, capped at {DISCOUNT_CAP}%.
-              </span>
+              <span className="est-row-note">Percentages add up, to {DISCOUNT_CAP}% at most.</span>
             </span>
             <span className="est-pct">
               <input
@@ -288,6 +287,47 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
               %
             </span>
           </div>
+          <div className="est-row est-row--input" data-on={input.customAmount > 0 || undefined}>
+            <span className="est-row-main">
+              <span className="est-row-label">Amount off</span>
+              <span className="est-row-note">A flat amount, taken off after the percentages.</span>
+            </span>
+            <span className="est-pct">
+              $
+              <input
+                type="number"
+                min={0}
+                step={50}
+                value={input.customAmount}
+                onChange={(e) => set('customAmount', Math.max(0, Math.floor(Number(e.target.value) || 0)))}
+                className="est-num est-num--wide"
+                aria-label="Discount amount in dollars"
+              />
+            </span>
+          </div>
+        </fieldset>
+
+        {/* Payment plan */}
+        <fieldset className="est-block">
+          <legend className="est-legend">Payment plan</legend>
+          <label className="est-row" data-on={input.plan === 'standard' || undefined}>
+            <input type="radio" name="plan" checked={input.plan === 'standard'} onChange={() => set('plan', 'standard')} />
+            <span className="est-row-main">
+              <span className="est-row-label">Standard schedule</span>
+              <span className="est-row-note">
+                {scheduleFor(kind, input.milestones).map((st) => `${st.pct}% ${st.label.toLowerCase()}`).join(', ')}
+              </span>
+            </span>
+            <span className="est-row-price">—</span>
+          </label>
+          <label className="est-row" data-on={input.plan === 'full' || undefined}>
+            <input type="radio" name="plan" checked={input.plan === 'full'} onChange={() => set('plan', 'full')} />
+            <span className="est-row-main">
+              <span className="est-row-label">Pay in full</span>
+              <span className="est-row-note">One invoice for the whole amount, due on signature.</span>
+            </span>
+            <span className="est-row-price">100%</span>
+          </label>
         </fieldset>
 
         {/* Retainer */}
@@ -305,10 +345,31 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
                 <span className="est-row-label">{r.label}</span>
               </span>
               <span className="est-row-price">
-                {r.monthly ? `${usd.format(r.monthly)}/mo` : '—'}
+                {r.id === 'custom' ? 'Your price' : r.monthly ? `${usd.format(r.monthly)}/mo` : '—'}
               </span>
             </label>
           ))}
+          {input.retainer === 'custom' && (
+            <div className="est-row est-row--input" data-on>
+              <span className="est-row-main">
+                <span className="est-row-label">Custom retainer</span>
+                <span className="est-row-note">Monthly price, billed as a subscription.</span>
+              </span>
+              <span className="est-pct">
+                $
+                <input
+                  type="number"
+                  min={0}
+                  step={50}
+                  value={input.customRetainer}
+                  onChange={(e) => set('customRetainer', Math.max(0, Math.floor(Number(e.target.value) || 0)))}
+                  className="est-num est-num--wide"
+                  aria-label="Custom retainer per month"
+                />
+                /mo
+              </span>
+            </div>
+          )}
         </fieldset>
 
         {/* Client and notes */}
@@ -467,6 +528,29 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
             );
           })}
         </ul>
+
+        {input.plan === 'standard' && (
+          <div className="est-full">
+            <span className="est-row-note">Or bill it all at once:</span>
+            {(() => {
+              const state = invoices[`${encoded}:full`];
+              return state && state !== 'pending' && 'url' in state ? (
+                <a className="btn btn--sm btn--primary" href={state.url} target="_blank" rel="noopener noreferrer">
+                  Open in Stripe <span aria-hidden="true">&#8599;</span>
+                </a>
+              ) : (
+                <>
+                  <button type="button" className="btn btn--sm" disabled={state === 'pending'} onClick={() => draft(-1)}>
+                    {state === 'pending' ? 'Drafting…' : `Draft full amount (${usd.format(est.total)}) in Stripe`}
+                  </button>
+                  {state && state !== 'pending' && 'error' in state && (
+                    <span className="form-note act-note" data-kind="error">{state.error}</span>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+        )}
       </aside>
     </div>
   );

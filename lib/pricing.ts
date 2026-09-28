@@ -135,8 +135,8 @@ export const DISCOUNTS = [
   { id: 'firstclient', label: 'Launch client (testimonial in exchange)', pct: 10 },
 ];
 
-/** Discounts add together but never exceed this. */
-export const DISCOUNT_CAP = 50;
+/** Percentage discounts add together up to this. A flat amount can come off on top. */
+export const DISCOUNT_CAP = 100;
 
 export const RUSH = [
   { id: 'none', label: 'Standard timeline', pct: 0, weeks: null as [number, number] | null },
@@ -149,6 +149,7 @@ export const RETAINERS = [
   { id: 'basic', label: 'Basic: updates and monitoring', monthly: 300 },
   { id: 'standard', label: 'Standard: plus quarterly SEO review', monthly: 600 },
   { id: 'priority', label: 'Priority: same-day response, ongoing work', monthly: 1200 },
+  { id: 'custom', label: 'Custom', monthly: 0 },
 ];
 
 /*
@@ -190,7 +191,13 @@ export const MOBILE_DEPOSIT_PCT = 30;
 export const MOBILE_MIN_MILESTONES = 1;
 export const MOBILE_MAX_MILESTONES = 6;
 
-export function scheduleFor(kind: Kind, milestones: number): Stage[] {
+/** One invoice for everything, on signature. */
+export const FULL_PAYMENT: Stage = { label: 'Full payment', pct: 100, trigger: DEPOSIT_TRIGGER, dueDays: 0 };
+
+export type Plan = 'standard' | 'full';
+
+export function scheduleFor(kind: Kind, milestones: number, plan: Plan = 'standard'): Stage[] {
+  if (plan === 'full') return [FULL_PAYMENT];
   if (kind !== 'mobile') return FIXED_SCHEDULES[kind];
   const n = clampInt(milestones, MOBILE_MIN_MILESTONES, MOBILE_MAX_MILESTONES);
   const rest = 100 - MOBILE_DEPOSIT_PCT;
@@ -222,8 +229,14 @@ export type QuoteInput = {
   /** Discount ids that are on. */
   discounts: string[];
   customPct: number;
+  /** Flat dollars off, applied after the percentage discounts. */
+  customAmount: number;
   rush: string;
   retainer: string;
+  /** Monthly price when retainer is "custom". */
+  customRetainer: number;
+  /** Standard schedule, or one invoice for the full amount on signature. */
+  plan: Plan;
   /** Mobile only: number of payments after the deposit. */
   milestones: number;
   client: string;
@@ -239,8 +252,11 @@ export function defaultInput(kind: Kind = 'website'): QuoteInput {
     qty: {},
     discounts: [],
     customPct: 0,
+    customAmount: 0,
     rush: 'none',
     retainer: 'none',
+    customRetainer: 0,
+    plan: 'standard',
     milestones: 2,
     client: '',
     email: '',
@@ -322,15 +338,23 @@ export function computeQuote(input: QuoteInput): Quote {
   const chosen = DISCOUNTS.filter((d) => input.discounts.includes(d.id));
   const rawPct = bulkPct + chosen.reduce((s, d) => s + d.pct, 0) + customPct;
   const pct = Math.min(DISCOUNT_CAP, Math.max(0, rawPct));
-  const discountAmt = Math.round((subtotal + rushAmt) * (pct / 100));
+  const beforeDiscount = subtotal + rushAmt;
+  const pctAmt = Math.round(beforeDiscount * (pct / 100));
+  // A flat amount on top of the percentage, never taking the total below zero.
+  const flat = Math.min(Math.max(0, Math.round(input.customAmount || 0)), beforeDiscount - pctAmt);
+  const discountAmt = pctAmt + flat;
 
-  const total = subtotal + rushAmt - discountAmt;
-  const monthly = RETAINERS.find((r) => r.id === retainer)?.monthly ?? 0;
+  const total = beforeDiscount - discountAmt;
+  const monthly =
+    retainer === 'custom'
+      ? Math.max(0, Math.round(input.customRetainer || 0))
+      : RETAINERS.find((r) => r.id === retainer)?.monthly ?? 0;
 
   const discountLabels = [
     ...(bulkPct ? [`Bulk (${projects} projects) ${bulkPct}%`] : []),
     ...chosen.map((d) => `${d.label} ${d.pct}%`),
     ...(customPct ? [`Custom ${customPct}%`] : []),
+    ...(flat ? [`${usd.format(flat)} off`] : []),
   ];
 
   return {
@@ -345,7 +369,7 @@ export function computeQuote(input: QuoteInput): Quote {
     discountAmt,
     discountLabels,
     total,
-    payments: splitPayments(total, scheduleFor(kind, input.milestones)),
+    payments: splitPayments(total, scheduleFor(kind, input.milestones, input.plan)),
     monthly,
     // Quoted as a range so the fixed price can land above the estimate
     // once the questionnaire surfaces scope the call didn't.
@@ -462,6 +486,9 @@ function sanitise(raw: Partial<QuoteInput>): QuoteInput {
     customPct: clampInt(Number(raw.customPct) || 0, 0, DISCOUNT_CAP),
     rush: RUSH.some((r) => r.id === raw.rush) ? String(raw.rush) : 'none',
     retainer: RETAINERS.some((r) => r.id === raw.retainer) ? String(raw.retainer) : 'none',
+    customRetainer: clampInt(Number(raw.customRetainer) || 0, 0, 1_000_000),
+    customAmount: clampInt(Number(raw.customAmount) || 0, 0, 10_000_000),
+    plan: raw.plan === 'full' ? 'full' : 'standard',
     milestones: clampInt(Number(raw.milestones) || base.milestones, MOBILE_MIN_MILESTONES, MOBILE_MAX_MILESTONES),
     client: str(raw.client, 200),
     email: str(raw.email, 200),
