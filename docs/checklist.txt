@@ -120,6 +120,6 @@ Handover (site is live)
 
 Day 30
 [ ] Automatic: Email I drafted into Gmail on the day; add the one real observation and send
-[ ] Retainer yes → Stripe subscription, not a manual invoice
+[ ] Retainer yes → lead page → Retainer → Start retainer (Stripe subscription + confirmation email)
 [ ] Add the project to /work if they agree
 [ ] Lead → Close, won

@@ -249,16 +249,53 @@ export function emailH(o: {
 
 /* ── I: day 30 (drafted) ─────────────────────────────────────────────────── */
 
-export function emailI(o: { name?: string | null; domain: string; signer: string }): Email {
+export function emailI(o: { name?: string | null; domain: string; monthly?: number | null; signer: string }): Email {
   return {
     subject: 'One month in',
     text:
       `Hi ${first(o.name)},\n\n` +
       `It's been a month since ${o.domain} went live. [One real observation from analytics or Search Console.]\n\n` +
-      `The 30 days of included fixes end today. If you'd like us to keep looking after the site (updates, monitoring, a search review each quarter), the retainer starts at $300 a month and you can cancel any time. Just reply and I'll set it up.\n\n` +
+      `The 30 days of included fixes end today. If you'd like us to keep looking after the site (updates, monitoring, a search review each quarter), ${o.monthly ? `the retainer is ${usd.format(o.monthly)} a month` : 'the retainer starts at $300 a month'} and you can cancel any time. Just reply and I'll set it up.\n\n` +
       `Two small asks, only if you're happy with the work:\n` +
       bullets(['A sentence or two I could quote on our site', 'An intro to anyone you know who needs a site']) +
       `\n\nThanks for trusting us with this.` +
       sign(o.signer),
   };
+}
+
+/* ── J: retainer confirmed ───────────────────────────────────────────────── */
+
+export function emailJ(o: { name?: string | null; domain?: string | null; monthly: number; startAt: Date; signer: string }): Email {
+  return {
+    subject: 'Your retainer is set up',
+    text:
+      `Hi ${first(o.name)},\n\n` +
+      `You're all set. We'll keep looking after ${o.domain || 'the site'} from ${fmtDate(o.startAt)}.\n\n` +
+      bullets([
+        `${usd.format(o.monthly)} a month, invoiced by Stripe on the ${ordinal(o.startAt.getDate())} of each month, due in 7 days`,
+        'Content and image updates whenever you need them',
+        'Monitoring, security and dependency updates',
+        'A search review each quarter, with recommendations',
+        'Cancel any time by replying here; it stops at the end of the month already paid',
+      ]) +
+      `\n\nFor anything you need changed, just reply to this email.` +
+      sign(o.signer),
+  };
+}
+
+export function emailJEnd(o: { name?: string | null; until: Date; signer: string }): Email {
+  return {
+    subject: 'Re: Your retainer is set up',
+    text:
+      `Hi ${first(o.name)},\n\n` +
+      `Done, the retainer is cancelled. It runs until ${fmtDate(o.until)}, the end of the month already paid, and there are no more invoices after that.\n\n` +
+      `Thanks for having us look after the site. If you need anything later, just write.` +
+      sign(o.signer),
+  };
+}
+
+function ordinal(n: number) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }

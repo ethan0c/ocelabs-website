@@ -78,6 +78,44 @@ export async function createDraftInvoice(i: InvoiceInput): Promise<StripeInvoice
   return invoice;
 }
 
+/** The one product every retainer subscription bills against; created once, remembered. */
+async function retainerProduct(): Promise<string> {
+  const { getSetting, setSetting } = await import('@/lib/settings');
+  const key = stripeLive() ? 'stripe_retainer_product_live' : 'stripe_retainer_product_test';
+  const known = await getSetting(key);
+  if (known) return known;
+  const p = await stripe<{ id: string }>('/products', { name: 'Monthly retainer', description: 'Updates, monitoring and support after launch' });
+  await setSetting(key, p.id);
+  return p.id;
+}
+
+/**
+ * A monthly subscription billed by emailed invoice (due in 7 days). A start
+ * date in the future is a free period until then, so the first invoice goes
+ * out on that date.
+ */
+export async function createRetainer(o: { customer: string; monthly: number; startAt: Date; label: string; metadata?: Record<string, string> }) {
+  const product = await retainerProduct();
+  const future = o.startAt.getTime() > Date.now() + 60_000;
+  return stripe<{ id: string; status: string }>('/subscriptions', {
+    customer: o.customer,
+    collection_method: 'send_invoice',
+    days_until_due: '7',
+    description: o.label,
+    'items[0][price_data][currency]': 'usd',
+    'items[0][price_data][product]': product,
+    'items[0][price_data][unit_amount]': String(Math.round(o.monthly * 100)),
+    'items[0][price_data][recurring][interval]': 'month',
+    ...(future ? { trial_end: String(Math.floor(o.startAt.getTime() / 1000)) } : {}),
+    ...Object.fromEntries(Object.entries(o.metadata ?? {}).map(([k, v]) => [`metadata[${k}]`, v])),
+  });
+}
+
+/** Stop at the end of the period already billed; nothing is refunded. */
+export async function endRetainer(subId: string) {
+  return stripe<{ id: string; current_period_end?: number; cancel_at?: number }>(`/subscriptions/${subId}`, { cancel_at_period_end: 'true' });
+}
+
 /** Finalize (assigns the number) and email it with the pay link. */
 export async function finalizeAndSend(invoiceId: string): Promise<StripeInvoice> {
   await stripe(`/invoices/${invoiceId}/finalize`, {});

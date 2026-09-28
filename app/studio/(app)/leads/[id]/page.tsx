@@ -3,8 +3,8 @@ import { nowMs } from '@/lib/now';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { STAGES, STAGE_LABEL } from '@/lib/db/schema';
-import { PACKAGES, encodeInput, usd, weeksLabel, type Kind } from '@/lib/pricing';
-import { leadDetail, proposalLink, questionnaireLink, quoteSummary } from '@/lib/studio';
+import { PACKAGES, computeQuote, encodeInput, usd, weeksLabel, type Kind } from '@/lib/pricing';
+import { leadDetail, proposalLink, questionnaireLink, quoteSummary, retainerDashboard } from '@/lib/studio';
 import { QUESTIONS } from '@/app/q/[token]/questions';
 import Action from './Action';
 import RecapForm from './RecapForm';
@@ -223,6 +223,37 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
             </section>
           )}
 
+          {/* Retainer */}
+          {(['launched', 'closed_won'].includes(lead.stage) || lead.retainerSubId) && (
+            <section className="studio-sec">
+              <h2 className="eyebrow">Retainer</h2>
+              {lead.retainerSubId && lead.retainerStatus !== 'ended' ? (
+                <>
+                  <p>
+                    {usd.format(lead.retainerMonthly ?? 0)}/mo · {lead.retainerStatus === 'ending' ? 'cancelled, runs to the end of the paid month' : 'active'}
+                    {lead.retainerStartAt ? ` · from ${day.format(lead.retainerStartAt)}` : ''}
+                  </p>
+                  <div className="act-row">
+                    <a className="btn" href={retainerDashboard(lead.retainerSubId)} target="_blank" rel="noopener noreferrer">
+                      Open in Stripe <span aria-hidden="true">&#8599;</span>
+                    </a>
+                    {lead.retainerStatus === 'active' && (
+                      <Action id={id} action="retainerStop" label="Cancel retainer" confirm="Cancel at the end of the current paid month and email the client?" />
+                    )}
+                  </div>
+                </>
+              ) : (
+                <Action id={id} action="retainerStart" label="Start retainer" primary confirm="Create the subscription in Stripe and email the client the terms?">
+                  <div className="field field--inline field--pair">
+                    <input name="monthly" type="number" min={1} step={50} defaultValue={lead.quote ? computeQuote(lead.quote).monthly || 300 : 300} aria-label="Monthly price" />
+                    <input name="startAt" type="date" defaultValue={retainerStartDefault(lead.handoverAt)} aria-label="Start date" />
+                  </div>
+                  <p className="tbl-sub">Monthly price and start date. Stripe emails an invoice on that date each month, due in 7 days.</p>
+                </Action>
+              )}
+            </section>
+          )}
+
           {/* Payments */}
           {payments.length > 0 && (
             <section className="studio-sec">
@@ -305,4 +336,11 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
       </div>
     </>
   );
+}
+
+/** Day 30 after handover (when the included fixes end), or today if that has passed. */
+function retainerStartDefault(handoverAt: Date | null) {
+  const d = handoverAt ? new Date(handoverAt.getTime() + 30 * 86400_000) : new Date();
+  const start = d.getTime() < nowMs() ? new Date(nowMs()) : d;
+  return start.toISOString().slice(0, 10);
 }

@@ -1,11 +1,12 @@
-import { handleInvoicePaid } from '@/lib/studio';
+import { handleInvoicePaid, handleRetainerEnded } from '@/lib/studio';
 import { verifyWebhook } from '@/lib/stripe';
 
 export const dynamic = 'force-dynamic';
 
 /*
  * Stripe → studio. Subscribe this endpoint to `invoice.paid` in the Stripe
- * dashboard (Developers → Webhooks) and put its signing secret in
+ * dashboard (Developers → Webhooks), plus `customer.subscription.deleted`
+ * for retainers, and put its signing secret in
  * STRIPE_WEBHOOK_SECRET. A paid deposit is one of the four kickoff items.
  */
 export async function POST(req: Request) {
@@ -16,6 +17,9 @@ export async function POST(req: Request) {
   const event = JSON.parse(raw) as { type: string; data: { object: { id: string; object: string } } };
   if (event.type === 'invoice.paid' && event.data.object.object === 'invoice') {
     await handleInvoicePaid(event.data.object.id);
+  }
+  if (event.type === 'customer.subscription.deleted') {
+    await handleRetainerEnded(event.data.object.id);
   }
   return Response.json({ received: true });
 }

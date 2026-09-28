@@ -114,7 +114,8 @@ We do: press Live on the lead page with the domain and the handover links. Email
 
 
 Stage 10: Day 30
-Automatic: Email I is drafted into Gmail on the day. Add the one real observation from analytics and send it. Then press Close, won. Add the project to /work if the client agrees.
+Automatic: Email I is drafted into Gmail on the day, quoting the retainer price from their quote. Add the one real observation from analytics and send it.
+If they say yes: lead page → Retainer → price and start date (defaults to day 30) → Start retainer. That creates a monthly Stripe subscription, invoiced by email and due in 7 days, and sends them a confirmation with the terms. Cancel retainer stops it at the end of the paid month and tells them. Otherwise press Close, won. Add the project to /work if the client agrees.
 
 
 PART 3: THE EMAILS

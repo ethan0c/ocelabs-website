@@ -83,6 +83,12 @@ export const leads = pgTable('leads', {
   stagingApprovedAt: timestamp('staging_approved_at', { withTimezone: true }),
   domain: text('domain'),
   handoverAt: timestamp('handover_at', { withTimezone: true }),
+
+  /** Monthly retainer, billed by a Stripe subscription. */
+  retainerMonthly: integer('retainer_monthly'),
+  retainerSubId: text('retainer_sub_id'),
+  retainerStartAt: timestamp('retainer_start_at', { withTimezone: true }),
+  retainerStatus: text('retainer_status').$type<'active' | 'ending' | 'ended'>(),
   closedAt: timestamp('closed_at', { withTimezone: true }),
 });
 

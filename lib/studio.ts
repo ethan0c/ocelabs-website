@@ -10,7 +10,7 @@ import { buildProposal, proposalFileName } from '@/lib/proposal';
 import { renderProposalPdf } from '@/lib/proposal-pdf';
 import { gistOf } from '@/lib/summarize';
 import { notifyNewLead } from '@/lib/notify';
-import { createDraftInvoice, dashboardUrl, finalizeAndSend, findOrCreateCustomer, stripe } from '@/lib/stripe';
+import { createDraftInvoice, createRetainer, dashboardUrl, endRetainer, finalizeAndSend, findOrCreateCustomer, stripe, stripeLive } from '@/lib/stripe';
 
 /*
  * The client workflow (docs/client-workflow.txt) as code. Each stage's
@@ -516,6 +516,52 @@ export async function markLaunched(id: string, o: { domain: string; analyticsLin
   await setStage(id, 'launched', 'Day-30 email (drafted for you)', until);
 }
 
+/* ── Retainer ──────────────────────────────────────────────────────────── */
+
+/** Monthly subscription in Stripe, invoiced by email; confirmation email to the client. */
+export async function startRetainer(id: string, monthly: number, startAt: Date) {
+  const lead = await getLead(id);
+  if (!lead) throw new Error('No such lead.');
+  if (lead.retainerSubId && lead.retainerStatus === 'active') throw new Error('This client already has an active retainer.');
+  if (!(monthly > 0)) throw new Error('Enter a monthly price.');
+  const customer = await findOrCreateCustomer(lead.email, lead.quote?.client || lead.company || lead.name);
+  const sub = await createRetainer({
+    customer,
+    monthly,
+    startAt,
+    label: `Monthly retainer${lead.domain ? ` for ${lead.domain}` : ''}`,
+    metadata: { lead: lead.id },
+  });
+  await update(id, { retainerMonthly: Math.round(monthly), retainerSubId: sub.id, retainerStartAt: startAt, retainerStatus: 'active' });
+  await log(id, 'retainer:started', { monthly, startAt, subscription: sub.id });
+  await send(id, 'J', lead.email, E.emailJ({ name: lead.name, domain: lead.domain, monthly, startAt, signer: signer() }));
+  if (!lead.closedAt) await setStage(id, 'closed_won');
+  return sub;
+}
+
+export async function stopRetainer(id: string) {
+  const lead = await getLead(id);
+  if (!lead?.retainerSubId) throw new Error('No retainer on this lead.');
+  const sub = await endRetainer(lead.retainerSubId) as { cancel_at?: number; current_period_end?: number; items?: { data?: Array<{ current_period_end?: number }> } };
+  const endTs = sub.cancel_at ?? sub.current_period_end ?? sub.items?.data?.[0]?.current_period_end;
+  const until = endTs ? new Date(endTs * 1000) : new Date();
+  await update(id, { retainerStatus: 'ending' });
+  await log(id, 'retainer:cancelled', { until });
+  await send(id, 'Jend', lead.email, E.emailJEnd({ name: lead.name, until, signer: signer() }));
+  return until;
+}
+
+/** Stripe webhook: the subscription has actually ended. */
+export async function handleRetainerEnded(subId: string) {
+  const lead = await db.query.leads.findFirst({ where: eq(leads.retainerSubId, subId) });
+  if (!lead) return;
+  await update(lead.id, { retainerStatus: 'ended' });
+  await log(lead.id, 'retainer:ended');
+}
+
+export const retainerDashboard = (subId: string) =>
+  `https://dashboard.stripe.com/${stripeLive() ? '' : 'test/'}subscriptions/${subId}`;
+
 export async function closeLead(id: string, won: boolean) {
   await setStage(id, won ? 'closed_won' : 'closed_lost');
 }
@@ -591,7 +637,7 @@ export async function runDaily(now = new Date()): Promise<CronReport> {
       }
 
       if (lead.stage === 'launched' && lead.handoverAt && addDays(lead.handoverAt, WARRANTY_DAYS) <= now && !(await hasEvent(lead.id, 'draft:I'))) {
-        await draft(lead.id, 'I', lead.email, E.emailI({ name: lead.name, domain: lead.domain || 'the site', signer: signer() }));
+        await draft(lead.id, 'I', lead.email, E.emailI({ name: lead.name, domain: lead.domain || 'the site', monthly: lead.quote ? computeQuote(lead.quote).monthly || null : null, signer: signer() }));
         await update(lead.id, { nextAction: 'Send the day-30 email (drafted), then close', nextActionAt: now });
         out.push(`I drafted for ${lead.email}`);
       }

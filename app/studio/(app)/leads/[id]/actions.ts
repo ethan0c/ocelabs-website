@@ -103,6 +103,21 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
         return 'Handover email sent. Day 30 is scheduled.';
       });
     }
+    case 'retainerStart': {
+      const monthly = Number(str(form, 'monthly'));
+      const startAt = new Date(`${str(form, 'startAt')}T12:00:00`);
+      if (!(monthly > 0)) return { error: 'Enter a monthly price.' };
+      if (Number.isNaN(startAt.getTime())) return { error: 'Pick a start date.' };
+      return run(id, async () => {
+        await S.startRetainer(id, monthly, startAt);
+        return 'Retainer started. The client has the confirmation; Stripe sends the first invoice on the start date.';
+      });
+    }
+    case 'retainerStop':
+      return run(id, async () => {
+        const until = await S.stopRetainer(id);
+        return `Cancelled. It runs until ${until.toDateString()}; the client has been told.`;
+      });
     case 'closeWon':
       return run(id, async () => {
         await S.closeLead(id, true);
