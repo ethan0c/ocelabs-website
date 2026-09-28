@@ -22,7 +22,7 @@ const projects: Project[] = [
   {
     name: 'Ada Palm',
     desc: 'A New York marketing consultancy site built around a full-bleed showreel.',
-    href: 'https://adapalm-private.vercel.app',
+    href: 'https://adapalm.com',
     shot: 'adapalm.png',
   },
   {
