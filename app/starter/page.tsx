@@ -129,7 +129,9 @@ export default function StarterPage() {
         <Reveal>
           <p className="cap-note">
             Those are our custom packages, from {usd.format(PACKAGES.website.base)}.{' '}
-            <Link href="/contact">Tell us about the project</Link> instead.
+            <Link href="/contact" className="text-link">
+              Tell us about the project
+            </Link> instead.
           </p>
         </Reveal>
       </section>

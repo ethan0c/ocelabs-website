@@ -1047,15 +1047,24 @@ a {
   font-size: 0.9375rem;
 }
 
-.contact-direct a {
+.contact-direct a,
+.text-link {
   color: var(--text);
   border-bottom: 1px solid var(--line-strong);
   padding-bottom: 0.1rem;
   transition: border-color 0.25s ease;
 }
 
-.contact-direct a:hover {
+.contact-direct a:hover,
+.text-link:hover {
   border-bottom-color: var(--text);
+}
+
+/* Pointer to the Starter tier under the contact page's lede. */
+.contact-starter {
+  margin-top: 1.5rem;
+  color: var(--dim);
+  font-size: 0.9375rem;
 }
 
 /* ─── Footer ────────────────────────────────────────────────── */
