@@ -11,11 +11,11 @@ const BUDGETS = ['Not sure yet', '$3k–6k', '$6k–12k', '$12k–25k', '$25k+']
 
 type Note = { kind: 'error' | 'ok'; text: string } | null;
 
-export default function ContactForm() {
+export default function ContactForm({ budgets = BUDGETS }: { budgets?: string[] }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [budget, setBudget] = useState(BUDGETS[0]);
+  const [budget, setBudget] = useState(budgets[0]);
   const [hp, setHp] = useState('');
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -135,7 +135,7 @@ export default function ContactForm() {
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
           >
-            {BUDGETS.map((b) => (
+            {budgets.map((b) => (
               <option key={b} value={b}>
                 {b}
               </option>
