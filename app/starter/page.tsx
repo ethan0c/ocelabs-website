@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import ContactForm from '@/components/ContactForm';
 import Reveal from '@/components/Reveal';
-import { ADDONS, PACKAGES, RETAINERS, WARRANTY_DAYS, usd, weeksLabel } from '@/lib/pricing';
+import { ADDONS, PACKAGES, RETAINERS, STARTER_WARRANTY_DAYS, WARRANTY_DAYS, usd, weeksLabel } from '@/lib/pricing';
 
 /*
  * The small business tier, under the studio's name so it shares the
  * portfolio. Prices come from the price book, so this page and a Starter
  * quote can't disagree. The low price is the smaller scope, not a discount:
- * our layouts rather than a custom design, three pages, one review round.
+ * our layouts, the client's own words, one round of changes, no search work.
  */
 const pkg = PACKAGES.starter;
 const care = RETAINERS.find((r) => r.id === 'care')!.monthly;
@@ -27,41 +27,24 @@ const included = [
   },
   {
     num: '02',
-    name: 'Our layouts, your business',
-    desc: 'Built on layouts we have already proven, set in your colours, type, photos and words.',
+    name: 'One of our layouts, in your colours',
+    desc: 'You send the words and photos, and we put them in.',
   },
   {
     num: '03',
-    name: 'Domain and hosting',
-    desc: 'Registered in your name, connected, HTTPS. Nothing parked on ours.',
-  },
-  {
-    num: '04',
-    name: 'Contact form',
-    desc: 'Messages go straight to your inbox. Booking and newsletter signup can be added.',
-  },
-  {
-    num: '05',
-    name: 'Search setup',
-    desc: 'Titles, descriptions, sitemap and Google Search Console, so people can find you.',
-  },
-  {
-    num: '06',
-    name: 'One review round',
-    desc: 'You see it on a staging link, send one list of changes, and we launch.',
-  },
-  {
-    num: '07',
-    name: `${WARRANTY_DAYS} days of fixes`,
-    desc: `Anything we missed after launch, at no charge. After that, ${usd.format(care)} a month covers small edits.`,
+    name: 'On your domain, with a contact form',
+    desc: 'Messages go straight to your inbox.',
   },
 ];
 
-const custom = [
-  'A design made from scratch',
-  'More than five pages',
-  'Motion, video, or art direction',
-  'Accounts, a store, or a dashboard',
+/* What the next package up adds, so the step to it reads as more work, not a markup. */
+const adds = [
+  'Custom design from scratch',
+  'Copy written for you',
+  `Up to ${PACKAGES.website.pages} pages`,
+  'Two rounds of changes',
+  'Search setup and analytics',
+  `${WARRANTY_DAYS} days of fixes`,
 ];
 
 const BUDGETS = [
@@ -77,9 +60,8 @@ export default function StarterPage() {
         <p className="eyebrow rise rise-1">Starter by OCE Labs</p>
         <h1 className="h1 rise rise-2">A proper website for a small business.</h1>
         <p className="lede rise rise-3">
-          Up to {pkg.pages} pages, live in {weeksLabel(pkg.weeks)}, {usd.format(pkg.base)}. The
-          same studio, hosting and search setup as our custom work, built on layouts we have
-          already proven instead of designed from scratch.
+          Up to {pkg.pages} pages, live in {weeksLabel(pkg.weeks)}, {usd.format(pkg.base)}. Made by
+          the same studio as our custom work, on layouts we have already proven.
         </p>
         <div className="hero-links rise rise-3">
           <a href="#start" className="block block--primary">
@@ -94,11 +76,10 @@ export default function StarterPage() {
       <section className="shell steps">
         <Reveal className="sec-head">
           <p className="eyebrow">What {usd.format(pkg.base)} includes</p>
-          <h2 className="h2">Everything it takes to be open online.</h2>
+          <h2 className="h2">A clean, simple site that&apos;s yours.</h2>
           <p className="sec-lede">
-            Half on signature, half before launch. After launch, change your hours, prices and
-            photos yourself for a one-time {usd.format(selfEdit)}, or send them to us for{' '}
-            {usd.format(care)} a month and we make them within two business days.
+            One round of changes before launch, and {STARTER_WARRANTY_DAYS} days of fixes after.
+            Half on signature, half before launch.
           </p>
         </Reveal>
         <Reveal stagger>
@@ -112,26 +93,32 @@ export default function StarterPage() {
             </div>
           ))}
         </Reveal>
+        <Reveal>
+          <p className="cap-note">
+            After launch, edit your hours, prices and photos yourself for a one-time{' '}
+            {usd.format(selfEdit)}, or send changes to us for {usd.format(care)} a month.
+          </p>
+        </Reveal>
       </section>
 
       <section className="shell capabilities">
         <Reveal className="makes">
           <div className="sec-head sec-head--tight">
-            <p className="eyebrow">When to go custom</p>
-            <h2 className="h2">Starter is not the right fit if you need</h2>
+            <p className="eyebrow">Website Package, from {usd.format(PACKAGES.website.base)}</p>
+            <h2 className="h2">Need more? The Website Package adds</h2>
           </div>
           <ul className="makes-list">
-            {custom.map((c) => (
+            {adds.map((c) => (
               <li key={c}>{c}</li>
             ))}
           </ul>
         </Reveal>
         <Reveal>
           <p className="cap-note">
-            Those are our custom packages, from {usd.format(PACKAGES.website.base)}.{' '}
+            Bigger than that, with motion, a store or accounts?{' '}
             <Link href="/contact" className="text-link">
               Tell us about the project
-            </Link> instead.
+            </Link>.
           </p>
         </Reveal>
       </section>

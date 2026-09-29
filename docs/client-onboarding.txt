@@ -112,19 +112,20 @@ Starter Site
 $1,500 to $2,500
 2 to 3 weeks from kickoff
 
-A small business website built on our proven layouts rather than designed from scratch. Right for a local shop, a trade, a salon, a restaurant, or a solo practice that needs to be found and contacted, on a tight budget.
+A simple website built on one of our layouts rather than designed from scratch. Right for a local shop, a trade, a salon, a restaurant, or a solo practice on a tight budget that needs a clean site of its own.
 
 What is included:
 • Up to three pages, such as Home, Services, and Contact
-• Our layouts, set in your colours, type, photos, and words
-• One round of changes on a staging link before launch
+• One of our layouts, set in your logo and colours
+• Your words and photos, which you provide
 • Contact form delivered to your inbox
-• Search setup: titles, descriptions, sitemap, and Google Search Console
 • Domain connected with HTTPS
+• One round of changes on a staging link before launch
+• 14 days of fixes after launch
+
+Not included (these come with the Website Package): custom design, copy written for you, search setup, analytics, and a second round of changes.
 
 Optional: edit your own hours, prices, and photos ($400 once), or send changes to us and we make them within two business days ($150 a month).
-
-If you outgrow it, move up to the Website Package; the Starter's layouts do not carry over, but your content, domain, and search history do.
 
 
 Website Package

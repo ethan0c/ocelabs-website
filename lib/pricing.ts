@@ -26,7 +26,7 @@ export const PACKAGES: Record<
     base: 1500,
     pages: 3,
     extraPage: 250,
-    blurb: 'Built on our proven layouts, up to three pages, one review round.',
+    blurb: 'One of our layouts in your logo and colours, with your words and photos.',
     weeks: [2, 3],
   },
   website: {
@@ -74,6 +74,13 @@ export const PROPOSAL_VALID_DAYS = 14;
 
 /** Days of included fixes after launch. */
 export const WARRANTY_DAYS = 30;
+
+/** Starter gets a shorter window; it is part of what keeps its price down. */
+export const STARTER_WARRANTY_DAYS = 14;
+
+export function warrantyDays(kind: Kind) {
+  return kind === 'starter' ? STARTER_WARRANTY_DAYS : WARRANTY_DAYS;
+}
 
 export type Addon = {
   id: string;
