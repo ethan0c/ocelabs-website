@@ -17,6 +17,7 @@ export type RecapDraft = {
 };
 
 const RANGES: Record<Kind, string> = {
+  starter: '$1,500 to $2,500',
   website: '$3,000 to $6,000',
   brand: '$6,000 to $12,000',
   webapp: '$12,000 to $25,000',
@@ -25,7 +26,7 @@ const RANGES: Record<Kind, string> = {
 
 const SYSTEM = `You help a small web studio write the recap email after an intro call with a prospective client. From the notes you are given, reply with JSON only:
 
-{"bullets": ["...", "...", "...", "..."], "kind": "website" | "brand" | "webapp" | "mobile"}
+{"bullets": ["...", "...", "...", "..."], "kind": "starter" | "website" | "brand" | "webapp" | "mobile"}
 
 The four bullets, in this order, each one sentence, written to the client in plain English ("you", "your"):
 1. Their business and who the site is for
@@ -33,7 +34,7 @@ The four bullets, in this order, each one sentence, written to the client in pla
 3. What a visitor should do on the new site
 4. Deadline, and who gives final approval
 
-"kind" is the package that fits: "website" (a custom site up to five pages), "brand" (design-led site with motion and video, up to ten pages), "webapp" (accounts, dashboard, CMS, integrations), "mobile" (iOS and Android app).
+"kind" is the package that fits: "starter" (a small business site on our existing layouts, up to three pages, for a tight budget), "website" (a custom site up to five pages), "brand" (design-led site with motion and video, up to ten pages), "webapp" (accounts, dashboard, CMS, integrations), "mobile" (iOS and Android app).
 
 If the notes don't say something, write what was said and no more; never invent a deadline or a name. No markdown, no quotes inside strings.`;
 

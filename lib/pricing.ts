@@ -7,7 +7,7 @@
  * Edit numbers in the price book; nothing below depends on specific values.
  */
 
-export type Kind = 'website' | 'brand' | 'webapp' | 'mobile';
+export type Kind = 'starter' | 'website' | 'brand' | 'webapp' | 'mobile';
 
 export const PACKAGES: Record<
   Kind,
@@ -21,6 +21,14 @@ export const PACKAGES: Record<
     weeks: [number, number];
   }
 > = {
+  starter: {
+    label: 'Starter Site',
+    base: 1500,
+    pages: 3,
+    extraPage: 250,
+    blurb: 'One of our layouts in your logo and colours, with your words and photos.',
+    weeks: [2, 3],
+  },
   website: {
     label: 'Website Package',
     base: 3000,
@@ -67,6 +75,13 @@ export const PROPOSAL_VALID_DAYS = 14;
 /** Days of included fixes after launch. */
 export const WARRANTY_DAYS = 30;
 
+/** Starter gets a shorter window; it is part of what keeps its price down. */
+export const STARTER_WARRANTY_DAYS = 14;
+
+export function warrantyDays(kind: Kind) {
+  return kind === 'starter' ? STARTER_WARRANTY_DAYS : WARRANTY_DAYS;
+}
+
 export type Addon = {
   id: string;
   label: string;
@@ -84,33 +99,36 @@ export const ADDONS: Addon[] = [
   // Content & brand
   { id: 'copy', label: 'Copywriting', price: 600, unit: 'per 5 pages', group: 'Content & brand' },
   { id: 'logo', label: 'Logo and identity', price: 1200, group: 'Content & brand' },
-  { id: 'imagery', label: 'Image sourcing and art direction', price: 400, includedIn: ['brand', 'webapp'], group: 'Content & brand' },
-  { id: 'motion', label: 'Motion and custom interactions', price: 1500, includedIn: ['brand', 'webapp'], not: ['mobile'], group: 'Content & brand' },
+  { id: 'imagery', label: 'Image sourcing and art direction', price: 400, includedIn: ['brand', 'webapp'], not: ['starter'], group: 'Content & brand' },
+  { id: 'motion', label: 'Motion and custom interactions', price: 1500, includedIn: ['brand', 'webapp'], not: ['starter', 'mobile'], group: 'Content & brand' },
   { id: 'video', label: 'Video hero or showreel', price: 500, not: ['mobile'], group: 'Content & brand' },
   { id: 'themes', label: 'Light and dark themes', price: 300, includedIn: ['brand', 'webapp'], group: 'Content & brand' },
 
   // Features
-  { id: 'cms', label: 'Blog or content system', price: 1500, includedIn: ['webapp', 'mobile'], group: 'Features' },
+  // Starter only. Delivered with a third-party content editor on top of the
+  // site, not something we build ourselves; tool not chosen yet.
+  { id: 'selfedit', label: 'Edit it yourself (text, photos, hours, prices)', price: 400, not: ['website', 'brand', 'webapp', 'mobile'], group: 'Features' },
+  { id: 'cms', label: 'Blog or content system', price: 1500, includedIn: ['webapp', 'mobile'], not: ['starter'], group: 'Features' },
   { id: 'booking', label: 'Booking and scheduling', price: 800, group: 'Features' },
   { id: 'newsletter', label: 'Newsletter signup and automation', price: 300, group: 'Features' },
   { id: 'payments', label: 'Payments or simple e-commerce', price: 2500, group: 'Features' },
-  { id: 'shop', label: 'Full store with inventory', price: 5000, not: ['mobile'], group: 'Features' },
-  { id: 'i18n', label: 'Additional language', price: 1000, unit: 'per language', group: 'Features' },
+  { id: 'shop', label: 'Full store with inventory', price: 5000, not: ['starter', 'mobile'], group: 'Features' },
+  { id: 'i18n', label: 'Additional language', price: 1000, unit: 'per language', not: ['starter'], group: 'Features' },
   { id: 'integration', label: 'Third-party integration (CRM, calendar, email)', price: 600, unit: 'each', group: 'Features' },
   { id: 'forms', label: 'Advanced forms (multi-step, uploads, quotes)', price: 500, group: 'Features' },
 
   // Product
-  { id: 'accounts', label: 'User accounts and login', price: 2500, includedIn: ['webapp', 'mobile'], not: ['website'], group: 'Product' },
-  { id: 'dashboard', label: 'Admin dashboard', price: 3000, includedIn: ['webapp', 'mobile'], not: ['website'], group: 'Product' },
-  { id: 'customerportal', label: 'Customer portal (orders, documents, billing)', price: 3500, not: ['website', 'brand'], group: 'Product' },
-  { id: 'push', label: 'Push notifications', price: 800, includedIn: ['mobile'], not: ['website', 'brand', 'webapp'], group: 'Product' },
-  { id: 'offline', label: 'Offline mode and sync', price: 2500, not: ['website', 'brand', 'webapp'], group: 'Product' },
-  { id: 'ai', label: 'AI feature (chat, recommendations, generation)', price: 4000, not: ['website'], group: 'Product' },
-  { id: 'api', label: 'Public API for partners', price: 3000, not: ['website', 'brand'], group: 'Product' },
+  { id: 'accounts', label: 'User accounts and login', price: 2500, includedIn: ['webapp', 'mobile'], not: ['starter', 'website'], group: 'Product' },
+  { id: 'dashboard', label: 'Admin dashboard', price: 3000, includedIn: ['webapp', 'mobile'], not: ['starter', 'website'], group: 'Product' },
+  { id: 'customerportal', label: 'Customer portal (orders, documents, billing)', price: 3500, not: ['starter', 'website', 'brand'], group: 'Product' },
+  { id: 'push', label: 'Push notifications', price: 800, includedIn: ['mobile'], not: ['starter', 'website', 'brand', 'webapp'], group: 'Product' },
+  { id: 'offline', label: 'Offline mode and sync', price: 2500, not: ['starter', 'website', 'brand', 'webapp'], group: 'Product' },
+  { id: 'ai', label: 'AI feature (chat, recommendations, generation)', price: 4000, not: ['starter', 'website'], group: 'Product' },
+  { id: 'api', label: 'Public API for partners', price: 3000, not: ['starter', 'website', 'brand'], group: 'Product' },
 
   // Search & reach
   { id: 'localseo', label: 'Local SEO (Business Profile, citations, location pages)', price: 800, group: 'Search & reach' },
-  { id: 'contentplan', label: 'Keyword research and content plan', price: 700, group: 'Search & reach' },
+  { id: 'contentplan', label: 'Keyword research and content plan', price: 700, not: ['starter'], group: 'Search & reach' },
   { id: 'migration', label: 'Migration with redirects from an existing site', price: 600, group: 'Search & reach' },
   { id: 'a11y', label: 'Accessibility audit and fixes', price: 500, group: 'Search & reach' },
   { id: 'reporting', label: 'Monthly analytics report setup', price: 400, group: 'Search & reach' },
@@ -146,6 +164,7 @@ export const RUSH = [
 
 export const RETAINERS = [
   { id: 'none', label: 'No retainer', monthly: 0 },
+  { id: 'care', label: 'Starter care: small edits within two business days', monthly: 150 },
   { id: 'basic', label: 'Basic: updates and monitoring', monthly: 300 },
   { id: 'standard', label: 'Standard: plus quarterly SEO review', monthly: 600 },
   { id: 'priority', label: 'Priority: same-day response, ongoing work', monthly: 1200 },
@@ -172,6 +191,10 @@ const DEPOSIT_TRIGGER = 'On signature, before any work starts';
 const LAUNCH_TRIGGER = 'On staging approval, before launch';
 
 const FIXED_SCHEDULES: Record<Exclude<Kind, 'mobile'>, Stage[]> = {
+  starter: [
+    { label: 'Deposit', pct: 50, trigger: DEPOSIT_TRIGGER, dueDays: 0 },
+    { label: 'Balance', pct: 50, trigger: LAUNCH_TRIGGER, dueDays: 7 },
+  ],
   website: [
     { label: 'Deposit', pct: 50, trigger: DEPOSIT_TRIGGER, dueDays: 0 },
     { label: 'Balance', pct: 50, trigger: LAUNCH_TRIGGER, dueDays: 7 },

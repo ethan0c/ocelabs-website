@@ -108,6 +108,26 @@ PART 3: PACKAGES AND PRICING
 Every package includes design, development, hosting setup, your domain connected, a contact form, analytics, and full search setup. The difference between packages is scope. The ranges below are estimates. After the questionnaire we send a fixed quote and a launch date, and neither changes unless the scope does. Timelines count from kickoff, once the items under "Before we start" are in.
 
 
+Starter Site
+$1,500 to $2,500
+2 to 3 weeks from kickoff
+
+A simple website built on one of our layouts rather than designed from scratch. Right for a local shop, a trade, a salon, a restaurant, or a solo practice on a tight budget that needs a clean site of its own.
+
+What is included:
+• Up to three pages, such as Home, Services, and Contact
+• One of our layouts, set in your logo and colours
+• Your words and photos, which you provide
+• Contact form delivered to your inbox
+• Domain connected with HTTPS
+• One round of changes on a staging link before launch
+• 14 days of fixes after launch
+
+Not included (these come with the Website Package): custom design, copy written for you, search setup, analytics, and a second round of changes.
+
+Optional: edit your own hours, prices, and photos ($400 once), or send changes to us and we make them within two business days ($150 a month).
+
+
 Website Package
 $3,000 to $6,000
 4 to 6 weeks from kickoff

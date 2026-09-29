@@ -7,7 +7,7 @@
 import {
   CONTENT_DEADLINE_DAYS,
   PROPOSAL_VALID_DAYS,
-  WARRANTY_DAYS,
+  warrantyDays,
   usd,
   weeksLabel,
   type Quote,
@@ -51,6 +51,7 @@ export function buildProposal(q: Quote, now = new Date()): Proposal {
   const validUntil = longDate.format(plusDays(now, PROPOSAL_VALID_DAYS));
   const total = usd.format(q.total);
   const timeline = `${weeksLabel(q.weeks)} from kickoff`;
+  const starter = input.kind === 'starter';
   const thing = input.projects > 1 ? 'sites or apps' : input.kind === 'mobile' ? 'app' : 'site';
 
   const scope: Row[] = [
@@ -94,7 +95,9 @@ export function buildProposal(q: Quote, now = new Date()): Proposal {
         ...(q.pkg.pages > 0
           ? [
               p(
-                `The ${thing} will have up to ${input.pages} pages. Every project ships fully set up: hosting, domain connection, HTTPS, redirects, analytics, search console, and a sitemap.`,
+                starter
+                  ? `The ${thing} will have up to ${input.pages} pages, built on one of our layouts in your logo and colours, with the words and photos you provide. It ships on your domain with HTTPS and a contact form to your inbox.`
+                  : `The ${thing} will have up to ${input.pages} pages. Every project ships fully set up: hosting, domain connection, HTTPS, redirects, analytics, search console, and a sitemap.`,
               ),
             ]
           : []),
@@ -138,7 +141,9 @@ export function buildProposal(q: Quote, now = new Date()): Proposal {
       title: 'Reviews and revisions',
       blocks: [
         p(
-          `There are two review points: a design review of the direction and key pages before development, and a staging review of the full ${thing} on a private link before launch. Each includes two rounds of revisions. Feedback for each round is collected in one email or one document from the one approver you name in the questionnaire.`,
+          starter
+            ? `There is one review point: a staging review of the full ${thing} on a private link before launch, with one round of changes. Feedback is collected in one email or one document from the one approver you name in the questionnaire.`
+            : `There are two review points: a design review of the direction and key pages before development, and a staging review of the full ${thing} on a private link before launch. Each includes two rounds of revisions. Feedback for each round is collected in one email or one document from the one approver you name in the questionnaire.`,
         ),
       ],
     },
@@ -183,7 +188,7 @@ export function buildProposal(q: Quote, now = new Date()): Proposal {
       title: 'After launch',
       blocks: [
         p(
-          `For ${WARRANTY_DAYS} days after launch we fix anything we missed at no charge. Ongoing updates and support after that are covered by an optional monthly retainer, which is separate from this agreement.`,
+          `For ${warrantyDays(input.kind)} days after launch we fix anything we missed at no charge. Ongoing updates and support after that are covered by an optional monthly retainer, which is separate from this agreement.`,
         ),
       ],
     },

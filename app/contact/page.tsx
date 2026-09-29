@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { PACKAGES, usd } from '@/lib/pricing';
 import ContactForm from '@/components/ContactForm';
 
 export const metadata: Metadata = {
@@ -12,8 +14,14 @@ export default function ContactPage() {
       <header className="shell page-head">
         <h1 className="h1 rise rise-1">Tell us what you&apos;re building.</h1>
         <p className="lede rise rise-2">
-          A sentence or two is enough to start. Projects begin at $3k, and we
+          Our projects begin at $3k, and we
           reply within a day.
+        </p>
+        <p className="contact-starter rise rise-2">
+          Small business on a tighter budget?{' '}
+          <Link href="/starter" className="text-link">
+            See Starter, from {usd.format(PACKAGES.starter.base)} &rarr;
+          </Link>
         </p>
       </header>
 

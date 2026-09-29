@@ -410,11 +410,12 @@ a {
   text-wrap: pretty;
 }
 
+/* Sentence case at reading size. Tiny tracked capitals read as template
+   chrome; this reads as a quiet line of copy above the heading. */
 .eyebrow {
-  font-size: 0.6875rem;
-  letter-spacing: 0.2em;
+  font-size: 0.9375rem;
+  letter-spacing: -0.005em;
   color: var(--dim);
-  text-transform: uppercase;
 }
 
 /* ─── Home ──────────────────────────────────────────────────── */
@@ -1047,15 +1048,24 @@ a {
   font-size: 0.9375rem;
 }
 
-.contact-direct a {
+.contact-direct a,
+.text-link {
   color: var(--text);
   border-bottom: 1px solid var(--line-strong);
   padding-bottom: 0.1rem;
   transition: border-color 0.25s ease;
 }
 
-.contact-direct a:hover {
+.contact-direct a:hover,
+.text-link:hover {
   border-bottom-color: var(--text);
+}
+
+/* Pointer to the Starter tier under the contact page's lede. */
+.contact-starter {
+  margin-top: 1.5rem;
+  color: var(--dim);
+  font-size: 0.9375rem;
 }
 
 /* ─── Footer ────────────────────────────────────────────────── */
