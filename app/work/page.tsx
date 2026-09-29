@@ -32,6 +32,12 @@ const projects: Project[] = [
     shot: 'helthy.png',
   },
   {
+    name: 'JobScout',
+    desc: 'An AI career agent that matches jobs to your resume and tracks every application.',
+    href: 'https://jobscout-pi-pied.vercel.app',
+    shot: 'jobscout.png',
+  },
+  {
     name: 'Personal Portfolio',
     desc: 'A Next.js portfolio with expressive motion.',
     href: 'https://chibudomonyejesi.com',
