@@ -410,11 +410,12 @@ a {
   text-wrap: pretty;
 }
 
+/* Sentence case at reading size. Tiny tracked capitals read as template
+   chrome; this reads as a quiet line of copy above the heading. */
 .eyebrow {
-  font-size: 0.6875rem;
-  letter-spacing: 0.2em;
+  font-size: 0.9375rem;
+  letter-spacing: -0.005em;
   color: var(--dim);
-  text-transform: uppercase;
 }
 
 /* ─── Home ──────────────────────────────────────────────────── */
