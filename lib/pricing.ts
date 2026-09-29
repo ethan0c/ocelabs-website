@@ -98,6 +98,8 @@ export const ADDONS: Addon[] = [
   { id: 'themes', label: 'Light and dark themes', price: 300, includedIn: ['brand', 'webapp'], group: 'Content & brand' },
 
   // Features
+  // Starter only. Delivered with a third-party content editor on top of the
+  // site, not something we build ourselves; tool not chosen yet.
   { id: 'selfedit', label: 'Edit it yourself (text, photos, hours, prices)', price: 400, not: ['website', 'brand', 'webapp', 'mobile'], group: 'Features' },
   { id: 'cms', label: 'Blog or content system', price: 1500, includedIn: ['webapp', 'mobile'], not: ['starter'], group: 'Features' },
   { id: 'booking', label: 'Booking and scheduling', price: 800, group: 'Features' },
