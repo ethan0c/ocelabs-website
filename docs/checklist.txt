@@ -5,7 +5,7 @@ Internal. The short version of client-workflow.txt: what to press, in order.
 Tick the setup list once. Copy the project list into the tracker row for every lead.
 
 
-PART 1: ONE-TIME SETUP
+Part 1: One-time setup
 
 Done
 [x] Contact form → /api/inquiry → studio lead + Email A
@@ -72,7 +72,7 @@ Paperwork
 [ ] Shared-folder template: 01 Questionnaire, 02 Proposal (signed), 03 Brand files, 04 Copy, 05 Handover
 
 
-PART 2: PER PROJECT
+Part 2: Per project
 
 The lead page shows the buttons for the stage it is in. This is the same list, for reading ahead.
 

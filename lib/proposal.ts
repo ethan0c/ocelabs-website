@@ -7,6 +7,7 @@
 import {
   CONTENT_DEADLINE_DAYS,
   PROPOSAL_VALID_DAYS,
+  packageIncludes,
   warrantyDays,
   usd,
   weeksLabel,
@@ -17,7 +18,8 @@ export type Row = { label: string; note?: string; amount: string; total?: boolea
 
 export type Block =
   | { kind: 'p'; text: string; strong?: boolean; muted?: boolean }
-  | { kind: 'table'; rows: Row[] };
+  | { kind: 'table'; rows: Row[] }
+  | { kind: 'list'; items: string[] };
 
 export type Section = { n: number; title: string; blocks: Block[] };
 
@@ -92,16 +94,16 @@ export function buildProposal(q: Quote, now = new Date()): Proposal {
       blocks: [
         p(`We will design, build and launch the following. ${q.pkg.blurb}`),
         { kind: 'table', rows: scope },
-        ...(q.pkg.pages > 0
+        p(`The ${q.pkg.label} includes:`),
+        { kind: 'list', items: packageIncludes(input.kind, input.pages) },
+        ...(input.notes.trim() ? [p(input.notes.trim(), { muted: true })] : []),
+        ...((q.thirdParty ?? []).length
           ? [
               p(
-                starter
-                  ? `The ${thing} will have up to ${input.pages} pages, built on one of our layouts in your logo and colours, with the words and photos you provide. It ships on your domain with HTTPS and a contact form to your inbox.`
-                  : `The ${thing} will have up to ${input.pages} pages. Every project ships fully set up: hosting, domain connection, HTTPS, redirects, analytics, search console, and a sitemap.`,
+                `Some features run on services you sign up for: ${q.thirdParty.join('; ')}. We set them up in your name and connect them to the ${thing}. Their fees are billed to you by the provider and are not part of this price.`,
               ),
             ]
           : []),
-        ...(input.notes.trim() ? [p(input.notes.trim(), { muted: true })] : []),
         p('Anything not listed here is outside the scope and is quoted separately.', { strong: true }),
       ],
     },

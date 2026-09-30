@@ -1,42 +1,51 @@
-/** The 16 questions from docs/client-onboarding.txt, Part 1, in their groups. */
-export type Question = { id: string; text: string };
+/**
+ * The questionnaire, in its groups. Ids are stored with the answers; keep
+ * them stable and add new ones at the end of the numbering.
+ *
+ * `call` marks what we ask on the intro call: the answers that decide the
+ * package and the price. We type those into the recap form, so the client
+ * gets them pre-filled to confirm rather than asked twice. Everything else
+ * is homework that needs them to go and look something up.
+ */
+export type Question = { id: string; text: string; call?: boolean };
 export type QuestionGroup = { title: string; items: Question[] };
 
 export const QUESTIONS: QuestionGroup[] = [
   {
     title: 'About you',
     items: [
-      { id: 'q1', text: 'What does your business do, in one or two sentences?' },
-      { id: 'q2', text: 'Who is the site for? Describe your ideal visitor: who they are, what they need, and how they usually find businesses like yours.' },
-      { id: 'q3', text: 'What should a visitor do after reading the site? For example: email you, book a call, buy something, download the app, follow you on social media.' },
+      { id: 'q1', call: true, text: 'What does your business do? One or two sentences is plenty.' },
+      { id: 'q2', call: true, text: 'Who are your customers, and how do they usually find you?' },
+      { id: 'q3', call: true, text: 'What do you want people to do after visiting the site? For example: call you, book an appointment, buy something, or fill in a form.' },
     ],
   },
   {
     title: 'The site',
     items: [
-      { id: 'q4', text: 'Do you have an existing site? If so, what works about it and what does not?' },
-      { id: 'q5', text: 'Which pages do you need? Typical choices are Home, About, Services or Work, Pricing, and Contact. List anything else you have in mind.' },
-      { id: 'q6', text: 'Is the written content ready, or do you need help writing it?' },
-      { id: 'q7', text: 'Do you have a logo, brand colours, fonts, or photography we should use? If not, we can create them.' },
-      { id: 'q8', text: 'Share two or three websites you like, and say what you like about each one. They do not have to be in your industry.' },
+      { id: 'q4', text: 'Do you have a website now? If so, what do you like about it, what bugs you, and roughly how many pages or blog posts does it have?' },
+      { id: 'q5', text: 'Which pages do you want? Most sites have Home, About, Services and Contact. Add anything else you have in mind.' },
+      { id: 'q6', text: 'Is the text for the site written yet, or will you need help with it?' },
+      { id: 'q7', text: 'Do you have a logo, brand colours or photos we should use?' },
+      { id: 'q8', text: 'Name two or three websites you like and what you like about them. They can be from any industry.' },
     ],
   },
   {
-    title: 'Search',
+    title: 'Being found',
     items: [
-      { id: 'q9', text: 'What would someone type into Google to find you? List a few phrases.' },
-      { id: 'q10', text: 'Do you serve a specific city, region, or country?' },
-      { id: 'q11', text: 'Do you already have a Google Business Profile, existing search rankings, or a newsletter list we should protect during the move?' },
+      { id: 'q9', text: 'What would someone type into Google to find a business like yours?' },
+      { id: 'q10', text: 'Where are your customers? A town, a region, the whole country?' },
+      { id: 'q11', text: 'Do you have a Google Business listing (the box that shows up on Google Maps) or a mailing list we should keep in mind?' },
     ],
   },
   {
     title: 'Practical',
     items: [
-      { id: 'q12', text: 'Do you own a domain name? Which one, and where is it registered?' },
-      { id: 'q13', text: 'Do you need anything beyond pages? For example: a contact form, appointment booking, a newsletter, online payments, a customer login, or a blog.' },
-      { id: 'q14', text: 'Who gives final approval on the project?' },
-      { id: 'q15', text: 'After launch, who will update the content, and roughly how often?' },
-      { id: 'q16', text: 'When do you need the site live? Is there a budget range you are working within?' },
+      { id: 'q12', text: 'Do you already own a web address (like yourbusiness.com)? Which one, and who did you buy it through?' },
+      { id: 'q13', call: true, text: 'Does the site need to do anything beyond showing information? For example: take bookings, take payments, sell products, sell tickets, or have a members-only area. If you already use a tool for any of this (like Square, Calendly or Shopify), tell us which. If you sell products, roughly how many?' },
+      { id: 'q17', call: true, text: 'For those features, is a well-known tool fine (booking through Calendly, a store on Shopify), or does it need to work in a way no existing tool does? If so, describe how.' },
+      { id: 'q14', call: true, text: 'Who has the final say on the site?' },
+      { id: 'q15', text: 'After launch, who will keep the site up to date, and how often do you expect changes?' },
+      { id: 'q16', call: true, text: 'Is there a date you need the site live by? If you have a budget in mind, let us know that too.' },
     ],
   },
 ];

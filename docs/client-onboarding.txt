@@ -2,7 +2,7 @@ OCE LABS
 Project Questionnaire and How We Work
 
 
-PART 1: PROJECT QUESTIONNAIRE
+Part 1: Project questionnaire
 
 Short answers are fine. Skip anything that does not apply. Send it back by email or paste your answers into the contact form.
 
@@ -66,7 +66,7 @@ Anything still missing one week after kickoff moves the launch date by the same 
 
 
 
-PART 2: HOW WE WORK
+Part 2: How we work
 
 
 Search and AI: built in, not bolted on
@@ -103,7 +103,7 @@ Always up. The hosting network has no single machine that can fail. Each deploym
 
 
 
-PART 3: PACKAGES AND PRICING
+Part 3: Packages and pricing
 
 Every package includes design, development, hosting setup, your domain connected, a contact form, analytics, and full search setup. The difference between packages is scope. The ranges below are estimates. After the questionnaire we send a fixed quote and a launch date, and neither changes unless the scope does. Timelines count from kickoff, once the items under "Before we start" are in.
 
@@ -214,7 +214,7 @@ What is included:
 
 
 
-PART 4: WHAT YOU GET AT HANDOVER
+Part 4: What you get at handover
 
 • The live site on your domain, with HTTPS, redirects, and analytics configured
 • Access to the code repository and hosting account, both in your name or shared with you

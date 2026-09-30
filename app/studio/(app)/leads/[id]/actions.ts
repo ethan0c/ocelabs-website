@@ -5,6 +5,7 @@ import { requireSession } from '@/lib/auth';
 import type { Stage } from '@/lib/db/schema';
 import * as S from '@/lib/studio';
 import { draftRecap, type RecapDraft } from '@/lib/recap';
+import { QUESTIONS } from '@/app/q/[token]/questions';
 
 /*
  * Buttons on the lead page. Each one is a workflow step from lib/studio.ts;
@@ -47,12 +48,18 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
     case 'recap': {
       const bullets = [1, 2, 3, 4].map((n) => str(form, `b${n}`)).filter(Boolean);
       if (bullets.length < 2) return { error: 'Add at least two recap points.' };
+      const prefill: Record<string, string> = {};
+      for (const q of QUESTIONS.flatMap((g) => g.items)) {
+        const v = str(form, `pre_${q.id}`);
+        if (v) prefill[q.id] = v.slice(0, 4000);
+      }
       return run(id, async () => {
         const ok = await S.sendRecap(id, {
           bullets,
           packageLabel: str(form, 'packageLabel') || 'Website Package',
           range: str(form, 'range') || '$3,000 to $6,000',
           weeks: str(form, 'weeks') || '4 to 6 weeks',
+          prefill,
         });
         return ok ? 'Recap sent with the questionnaire link.' : 'Gmail is not connected; the questionnaire link is on this page.';
       });
@@ -142,6 +149,23 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
       });
     default:
       return { error: 'Unknown action.' };
+  }
+}
+
+/** Autosave while on the call. Only question ids and the call notes are kept. */
+export async function saveCallAction(id: string, raw: Record<string, string>): Promise<{ ok: true } | { error: string }> {
+  await requireSession(`/studio/leads/${id}`);
+  const keys = new Set([...QUESTIONS.flatMap((g) => g.items).map((q) => q.id), S.CALL_NOTES]);
+  const answers: Record<string, string> = {};
+  for (const [k, v] of Object.entries(raw)) {
+    const t = typeof v === 'string' ? v.trim() : '';
+    if (keys.has(k) && t) answers[k] = t.slice(0, k === S.CALL_NOTES ? 20000 : 4000);
+  }
+  try {
+    await S.saveCallAnswers(id, answers);
+    return { ok: true };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Could not save.' };
   }
 }
 

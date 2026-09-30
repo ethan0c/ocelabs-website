@@ -5,11 +5,11 @@ import { db, events, leads, payments, proposals, type Lead, type Payment, type P
 import { siteUrl } from '@/lib/auth';
 import * as E from '@/lib/emails';
 import { draftMail, gmailConfigured, sendMail, type Attachment } from '@/lib/gmail';
-import { CONTENT_DEADLINE_DAYS, PROPOSAL_VALID_DAYS, WARRANTY_DAYS, computeQuote, usd, weeksLabel, type QuoteInput } from '@/lib/pricing';
+import { CONTENT_DEADLINE_DAYS, PROPOSAL_VALID_DAYS, WARRANTY_DAYS, computeQuote, warrantyDays, usd, weeksLabel, type QuoteInput } from '@/lib/pricing';
 import { buildProposal, proposalFileName } from '@/lib/proposal';
 import { renderProposalPdf } from '@/lib/proposal-pdf';
 import { gistOf } from '@/lib/summarize';
-import { notifyNewLead } from '@/lib/notify';
+import { notifyNewLead, notifyStudio } from '@/lib/notify';
 import { createDraftInvoice, createRetainer, dashboardUrl, endRetainer, finalizeAndSend, findOrCreateCustomer, stripe, stripeLive } from '@/lib/stripe';
 
 /*
@@ -203,15 +203,47 @@ export async function ensureQuestionnaireToken(id: string) {
 
 export const questionnaireLink = (t: string) => `${siteUrl()}/q/${t}`;
 
-export async function sendRecap(id: string, o: { bullets: string[]; packageLabel: string; range: string; weeks: string }) {
+/*
+ * Before the client returns the questionnaire, the lead's questionnaire
+ * field holds what we typed on the call. Keys starting with "_" are ours
+ * (the call notes) and never reach the client.
+ */
+export const CALL_NOTES = '_call_notes';
+const isPrivate = (k: string) => k.startsWith('_');
+
+export function clientPrefill(q: Questionnaire | null | undefined): Questionnaire {
+  return Object.fromEntries(Object.entries(q ?? {}).filter(([k]) => !isPrivate(k)));
+}
+
+function privatePart(q: Questionnaire | null | undefined): Questionnaire {
+  return Object.fromEntries(Object.entries(q ?? {}).filter(([k]) => isPrivate(k)));
+}
+
+/** Autosave from the call: the answers and notes as typed so far. */
+export async function saveCallAnswers(id: string, answers: Questionnaire) {
+  const lead = await getLead(id);
+  if (!lead) throw new Error('No such lead.');
+  if (lead.questionnaireAt) throw new Error('The client has already returned the questionnaire.');
+  await update(id, { questionnaire: Object.keys(answers).length ? answers : null });
+}
+
+export async function sendRecap(
+  id: string,
+  o: { bullets: string[]; packageLabel: string; range: string; weeks: string; prefill?: Questionnaire },
+) {
   const lead = await getLead(id);
   if (!lead) throw new Error('No such lead.');
   const t = await ensureQuestionnaireToken(id);
+  // Answers we already have from the call start the questionnaire off; the client can change them.
+  if (!lead.questionnaireAt) {
+    const merged = { ...privatePart(lead.questionnaire), ...o.prefill };
+    await update(id, { questionnaire: Object.keys(merged).length ? merged : null });
+  }
   const ok = await send(
     id,
     'B',
     lead.email,
-    E.emailB({ ...o, name: lead.name, questionnaireLink: questionnaireLink(t), signer: signer() }),
+    E.emailB({ ...o, prefilled: Boolean(o.prefill && Object.keys(o.prefill).length), name: lead.name, questionnaireLink: questionnaireLink(t), signer: signer() }),
   );
   await setStage(id, 'recap_sent', 'Nudge for the questionnaire', addBusinessDays(new Date(), 5));
   return ok;
@@ -225,13 +257,15 @@ export async function submitQuestionnaire(t: string, answers: Questionnaire) {
   const lead = await leadByQuestionnaireToken(t);
   if (!lead) throw new Error('This link is not valid.');
   await update(lead.id, {
-    questionnaire: answers,
+    // Their answers replace our pre-fill; our call notes stay.
+    questionnaire: { ...privatePart(lead.questionnaire), ...answers },
     questionnaireAt: new Date(),
     nextAction: 'Build the quote and send the proposal',
     nextActionAt: addBusinessDays(new Date(), 2),
     ...(answers.company && !lead.company ? { company: answers.company } : {}),
   });
   await log(lead.id, 'questionnaire', { answered: Object.keys(answers).length });
+  await notifyStudio(lead, 'Questionnaire in', `${Object.keys(answers).length} answers. The quote is due within two business days.`);
   await checkKickoff(lead.id);
   return lead;
 }
@@ -268,6 +302,7 @@ export async function createAndSendProposal(id: string) {
       leadId: id,
       token: token(),
       quote,
+      priced: q,
       sentAt: now,
       expiresAt: addDays(now, PROPOSAL_VALID_DAYS),
       status: 'sent',
@@ -302,8 +337,13 @@ export async function markProposalViewed(p: Proposal) {
   await log(p.leadId, 'proposal:viewed');
 }
 
+/** The quote as it was priced when sent. Proposals from before `priced` existed are recomputed. */
+export function proposalQuote(p: Proposal) {
+  return p.priced ?? computeQuote(p.quote);
+}
+
 export function proposalDoc(p: Proposal) {
-  return buildProposal(computeQuote(p.quote), p.createdAt);
+  return buildProposal(proposalQuote(p), p.createdAt);
 }
 
 /* ── Stage 5: signature → deposit ──────────────────────────────────────── */
@@ -342,7 +382,7 @@ export async function signProposal(t: string, s: { name: string; email: string; 
   const attachment: Attachment = { filename: proposalFileName(doc.client).replace(/\.pdf$/, '-signed.pdf'), contentType: 'application/pdf', data: pdf };
 
   // Payment schedule from the signed quote; the deposit goes out now.
-  const q = computeQuote(p.quote);
+  const q = proposalQuote(p);
   await db.delete(payments).where(and(eq(payments.leadId, lead.id), eq(payments.status, 'scheduled')));
   const rows = await db
     .insert(payments)
@@ -369,7 +409,10 @@ export async function signProposal(t: string, s: { name: string; email: string; 
     await log(lead.id, 'invoice:error', { stage: 0, error: invoiceError });
   }
 
-  await send(lead.id, 'D', lead.email, E.emailD({ name: lead.name, depositAmount: rows[0].amount, full: rows.length === 1, folderLink: process.env.CLIENT_FOLDER_LINK, signer: signer() }), [attachment]);
+  // The signed copy goes to the lead and, if they typed a different one, the signer.
+  const to = [lead.email, s.email.toLowerCase()].filter((e, i, a) => a.indexOf(e) === i).join(', ');
+  await send(lead.id, 'D', to, E.emailD({ name: lead.name, depositAmount: rows[0].amount, full: rows.length === 1, folderLink: process.env.CLIENT_FOLDER_LINK, signer: signer() }), [attachment]);
+  await notifyStudio(lead, 'Proposal signed', `Signed by ${s.name} <${s.email}>. ${invoiceError ? `The deposit invoice failed: ${invoiceError}` : 'The deposit invoice went out through Stripe.'}`);
   await setStage(lead.id, 'signed', invoiceError ? `Deposit invoice failed: ${invoiceError}` : 'Chase the kickoff items', addBusinessDays(signedAt, 3));
   return { proposal: signed, pdf, invoiceError };
 }
@@ -377,7 +420,9 @@ export async function signProposal(t: string, s: { name: string; email: string; 
 /** Create and send one scheduled payment as a Stripe invoice. */
 export async function sendPayment(lead: Lead, pay: Payment, quote: QuoteInput, extras: Array<{ label: string; amount: number }> = []) {
   if (pay.status !== 'scheduled') throw new Error(`Payment "${pay.label}" was already ${pay.status}.`);
-  const q = computeQuote(quote);
+  // Describe the invoice from the signed proposal, not today's price book.
+  const signedP = pay.proposalId ? await db.query.proposals.findFirst({ where: eq(proposals.id, pay.proposalId) }) : null;
+  const q = signedP ? proposalQuote(signedP) : computeQuote(quote);
   const customer = await findOrCreateCustomer(lead.email, quote.client || lead.company || lead.name);
   const invoice = await createDraftInvoice({
     customer,
@@ -510,7 +555,7 @@ export async function markLaunched(id: string, o: { domain: string; analyticsLin
   const lead = await getLead(id);
   if (!lead) throw new Error('No such lead.');
   const now = new Date();
-  const until = addDays(now, WARRANTY_DAYS);
+  const until = addDays(now, lead.quote ? warrantyDays(lead.quote.kind) : WARRANTY_DAYS);
   await update(id, { domain: o.domain, handoverAt: now, launchAt: now });
   await send(id, 'H', lead.email, E.emailH({ ...o, name: lead.name, until, signer: signer() }));
   await setStage(id, 'launched', 'Day-30 email (drafted for you)', until);
@@ -636,7 +681,7 @@ export async function runDaily(now = new Date()): Promise<CronReport> {
         }
       }
 
-      if (lead.stage === 'launched' && lead.handoverAt && addDays(lead.handoverAt, WARRANTY_DAYS) <= now && !(await hasEvent(lead.id, 'draft:I'))) {
+      if (lead.stage === 'launched' && lead.handoverAt && addDays(lead.handoverAt, lead.quote ? warrantyDays(lead.quote.kind) : WARRANTY_DAYS) <= now && !(await hasEvent(lead.id, 'draft:I'))) {
         await draft(lead.id, 'I', lead.email, E.emailI({ name: lead.name, domain: lead.domain || 'the site', monthly: lead.quote ? computeQuote(lead.quote).monthly || null : null, signer: signer() }));
         await update(lead.id, { nextAction: 'Send the day-30 email (drafted), then close', nextActionAt: now });
         out.push(`I drafted for ${lead.email}`);

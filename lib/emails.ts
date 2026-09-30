@@ -63,6 +63,7 @@ export function emailB(o: {
   range: string;
   weeks: string;
   questionnaireLink: string;
+  prefilled?: boolean;
   signer: string;
 }): Email {
   return {
@@ -73,7 +74,7 @@ export function emailB(o: {
       bullets(o.bullets) +
       `\n\nBased on that, I'd point you at the ${o.packageLabel}. It usually runs ${o.range} and takes ${o.weeks} from kickoff.\n\n` +
       `From here:\n` +
-      `1. Fill in this short questionnaire. Ten minutes, short answers are fine: ${o.questionnaireLink}\n` +
+      `1. Fill in this short questionnaire. ${o.prefilled ? "I've filled in what we covered on the call, so check those and add the rest" : 'About fifteen minutes, and short answers are fine'}: ${o.questionnaireLink}\n` +
       `2. Within two business days I'll send you a fixed price, a launch date, and a short agreement you can sign online.\n` +
       `3. Once that's signed and the deposit's in, we start.\n\n` +
       `The questionnaire page also has a bit about how we work and what you get at the end.` +
@@ -242,7 +243,7 @@ export function emailH(o: {
         line('Google Search Console, sitemap submitted', o.searchConsoleLink),
         'A short guide to updating content, attached',
       ]) +
-      `\n\nFor the next 30 days, until ${fmtDate(o.until)}, anything we missed gets fixed at no charge. Just reply here.` +
+      `\n\nUntil ${fmtDate(o.until)}, anything we missed gets fixed at no charge. Just reply here.` +
       sign(o.signer),
   };
 }
@@ -255,7 +256,7 @@ export function emailI(o: { name?: string | null; domain: string; monthly?: numb
     text:
       `Hi ${first(o.name)},\n\n` +
       `It's been a month since ${o.domain} went live. [One real observation from analytics or Search Console.]\n\n` +
-      `The 30 days of included fixes end today. If you'd like us to keep looking after the site (updates, monitoring, a search review each quarter), ${o.monthly ? `the retainer is ${usd.format(o.monthly)} a month` : 'the retainer starts at $300 a month'} and you can cancel any time. Just reply and I'll set it up.\n\n` +
+      `Your included fixes end today. If you'd like us to keep looking after the site (updates, monitoring, a search review each quarter), ${o.monthly ? `the retainer is ${usd.format(o.monthly)} a month` : 'the retainer starts at $300 a month'} and you can cancel any time. Just reply and I'll set it up.\n\n` +
       `Two small asks, only if you're happy with the work:\n` +
       bullets(['A sentence or two I could quote on our site', 'An intro to anyone you know who needs a site']) +
       `\n\nThanks for trusting us with this.` +

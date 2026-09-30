@@ -1,0 +1,89 @@
+OCE LABS
+Pricing Guide: How to Quote Anything
+
+Internal. The numbers live in lib/pricing.ts and the estimator; this is how to use them. The scenarios below are also tests (lib/pricing.test.ts), so if a price changes, the test for it changes too.
+
+
+Part 1: The rules
+
+1. Quote the package the client actually needs. A cheap package with lots of add-ons undersells the work. When the estimator says a Starter quote has reached the Website Package price, quote the Website Package.
+
+2. Tool or custom. Most features are a tool we set up and style: Cal.com for booking, Stripe for payments, Shopify for a store. That's the default price, and the proposal names the tool and says the client pays its subscription. A custom build is only offered on Web App and Mobile. If a website client needs something no tool can do, they need a web app.
+
+3. Don't discount to win. The discounts in the estimator are for relationships (referrals, nonprofits, launch clients), not for closing. If the price is too high, take something out of the scope instead.
+
+4. Anything the price book doesn't list goes under "Not listed" as its own line, in words the client understands. Never hide it inside another line.
+
+5. The range we give on the call is the estimate. The fixed price comes after the questionnaire. If the answers show more work than we heard on the call, the price goes up before the proposal goes out, not after.
+
+
+Part 2: What to ask before you price it
+
+Online booking
+  One calendar or several staff? Deposits or no-show fees? Classes or one-on-one?
+  A booking tool covers almost every service business: tool price.
+  Custom only when booking is part of the product, for example a marketplace where customers book providers.
+
+Taking payments
+  One-off, deposits, invoices or subscriptions?
+  Stripe-hosted checkout covers most of it: tool price. If they have a store, the store already takes payments.
+
+Online store
+  How many products? Sizes or colours? Shipping rules? Who enters the products?
+  Shopify is the tool price. More than 50 products for us to enter: add "Product entry" under Not listed, about $10 to $15 a product.
+
+Members-only area
+  Free or paid? Just hidden pages, or profiles and saved data?
+  Hidden pages and paid access: Memberstack or Outseta, tool price.
+  Profiles, dashboards, or members interacting with each other: that's a web app.
+
+Events and tickets
+  How many events a year? Seated or general admission?
+  Luma, Eventbrite or Tito cover nearly everything.
+
+Connecting another service (CRM, accounting, email)
+  Which service, and which way does the data go?
+  If Zapier or the service's own connector can do it, it's the tool price, charged per service.
+
+Migration
+  How many pages and posts are on the old site, and on what platform?
+  One unit per 25. A 100-post blog is four units.
+
+Copywriting
+  Is anything written? One unit per five pages. They still approve every word.
+
+Price calculator or configurator
+  Can they explain the pricing rules on the call? If not, don't quote it until they can. Write the rules into the proposal notes.
+
+AI features
+  One unit per feature. An assistant that answers questions from their content is one.
+  Anything that takes actions for users (books, buys, sends): quote as a custom line after a scoping call.
+
+Additional languages
+  Who translates? We build it; translation is theirs or a separate vendor.
+
+
+Part 3: Common requests
+
+Plumber, electrician, cleaner: Starter, plus Online booking if they take jobs online. About $2,000.
+Salon or barber: Starter, Online booking, Reviews, Edit it yourself. About $2,700.
+Restaurant or cafe: Website Package. Menu pages as extra pages, Events if they host, Business email. Online ordering is usually a link to Toast or Square, which costs nothing to add.
+Consultant or coach: Website Package, Online booking, Take payments. About $4,250.
+Boutique: Website Package with Online store (Shopify). About $6,000. On Starter the estimator will flag it.
+Nonprofit: Website Package, Take payments for donations, Email list signup, nonprofit discount.
+Startup marketing site: Brand Website Package. Add Copywriting if they have nothing written.
+Existing site with years of blog posts: Website or Brand, Blog or content system, Migration by post count.
+
+
+Part 4: Unusual requests
+
+"Can you make it like Airbnb / Uber / a marketplace?" Web App at least. Scoping call first, then custom lines for each major piece. Don't give a number on the first call beyond "from $12,000".
+"We need a customer portal." Web App with the Customer portal add-on.
+"Can people log in and see their orders?" If they already use Shopify, customer accounts are built in; the store add-on covers it. Otherwise it's a web app.
+"Can you do our photos / video?" We don't shoot. Refer a photographer, or arrange one and add it as a line under Not listed with our markup.
+"Can you manage our Google ads / social media?" Not a build. Refer out, or quote a retainer.
+"Can you host our email?" Business email add-on. They pay Google per mailbox.
+"We need it in two weeks." Rush option. If "Fastest" isn't offered for their package, the answer is no, or less scope.
+"Two sites for two brands." Sites on this engagement: 2. The second is 60% of the first, then the bulk discount.
+"Just fix our current site." Not a package. Quote hours as a line under Not listed, or put them on a retainer.
+"Can you integrate with our custom internal system?" Web App, Connect another service built custom, and a scoping call to see their API first.

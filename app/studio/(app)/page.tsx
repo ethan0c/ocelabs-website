@@ -66,7 +66,10 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                         <Link href={`/studio/leads/${l.id}`} className="tbl-link">
                           {l.company || l.name || l.email}
                         </Link>
-                        <span className="tbl-sub">{l.company && l.name ? `${l.name} · ` : ''}{l.email}</span>
+                        <span className="tbl-sub">
+                          {l.company && l.name ? `${l.name} · ` : ''}
+                          <a href={`mailto:${l.email}`} className="ulink ulink--muted">{l.email}</a>
+                        </span>
                         {l.summary && <span className="tbl-sub">{l.summary}</span>}
                       </td>
                       <td>

@@ -13,14 +13,19 @@ import {
   MOBILE_MIN_MILESTONES,
   PACKAGES,
   RETAINERS,
-  RUSH,
+  addonPrice,
+  buildOf,
+  canBuildCustom,
   computeQuote,
+  rushOptions,
+  rushWeeks,
   defaultInput,
   scheduleFor,
   encodeInput,
   summaryText,
   usd,
   weeksLabel,
+  type Build,
   type Kind,
   type QuoteInput,
 } from '@/lib/pricing';
@@ -55,6 +60,11 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
   const setCount = (id: string, n: number) =>
     set('qty', { ...input.qty, [id]: Math.max(0, Math.floor(n)) });
 
+  const setBuild = (id: string, b: Build) => set('build', { ...input.build, [id]: b });
+
+  const setExtra = (i: number, patch: Partial<QuoteInput['extras'][number]>) =>
+    set('extras', input.extras.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(summaryText(est));
@@ -87,7 +97,14 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
                 name="kind"
                 value={k}
                 checked={kind === k}
-                onChange={() => setInput((s) => ({ ...s, kind: k, pages: PACKAGES[k].pages }))}
+                onChange={() =>
+                  setInput((s) => ({
+                    ...s,
+                    kind: k,
+                    pages: PACKAGES[k].pages,
+                    rush: rushOptions(k).some((r) => r.id === s.rush) ? s.rush : 'none',
+                  }))
+                }
               />
               <span className="est-row-main">
                 <span className="est-row-label">{PACKAGES[k].label}</span>
@@ -173,56 +190,127 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
               {items.map((a) => {
                 const included = a.includedIn?.includes(kind);
                 const n = input.qty[a.id] ?? 0;
+                const build = buildOf(a, input);
+                const price = addonPrice(a, build);
+                const how = build === 'custom' ? 'Built custom.' : a.tools ? `With ${a.tools}; they pay its subscription.` : '';
+                // Tool or custom, shown once the add-on is on and the package allows custom.
+                const toggle = n > 0 && !included && canBuildCustom(a, kind) && (
+                  <div className="est-row est-row--input est-build" data-on>
+                    <span className="est-row-main">
+                      <span className="est-row-note">How is it delivered?</span>
+                    </span>
+                    <span className="est-build-opts">
+                      {(['tool', 'custom'] as const).map((b) => (
+                        <label key={b} className="est-build-opt">
+                          <input type="radio" name={`build-${a.id}`} checked={build === b} onChange={() => setBuild(a.id, b)} />
+                          {b === 'tool' ? `A tool, ${usd.format(a.price)}` : `Custom, ${usd.format(a.custom!)}`}
+                        </label>
+                      ))}
+                    </span>
+                  </div>
+                );
+                const note = [n > 0 && !included ? how : '', a.ask ?? ''].filter(Boolean).join(' ');
                 if (a.unit && !included) {
                   return (
-                    <div key={a.id} className="est-row est-row--input" data-on={n > 0 || undefined}>
-                      <span className="est-row-main">
-                        <span className="est-row-label">{a.label}</span>
-                        <span className="est-row-note">
-                          {usd.format(a.price)} {a.unit}
+                    <div key={a.id}>
+                      <div className="est-row est-row--input" data-on={n > 0 || undefined}>
+                        <span className="est-row-main">
+                          <span className="est-row-label">{a.label}</span>
+                          <span className="est-row-note">
+                            {usd.format(price)} {a.unit}
+                            {note ? `. ${note}` : ''}
+                          </span>
                         </span>
-                      </span>
-                      <input
-                        type="number"
-                        min={0}
-                        value={n}
-                        onChange={(e) => setCount(a.id, Number(e.target.value) || 0)}
-                        className="est-num"
-                        aria-label={`${a.label} count`}
-                      />
+                        <input
+                          type="number"
+                          min={0}
+                          value={n}
+                          onChange={(e) => setCount(a.id, Number(e.target.value) || 0)}
+                          className="est-num"
+                          aria-label={`${a.label} count`}
+                        />
+                      </div>
+                      {toggle}
                     </div>
                   );
                 }
                 return (
-                  <label
-                    key={a.id}
-                    className="est-row"
-                    data-on={(included || n > 0) || undefined}
-                    data-included={included || undefined}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={included || n > 0}
-                      disabled={included}
-                      onChange={(e) => setCount(a.id, e.target.checked ? 1 : 0)}
-                    />
-                    <span className="est-row-main">
-                      <span className="est-row-label">{a.label}</span>
-                    </span>
-                    <span className="est-row-price">
-                      {included ? 'Included' : usd.format(a.price)}
-                    </span>
-                  </label>
+                  <div key={a.id}>
+                    <label
+                      className="est-row"
+                      data-on={(included || n > 0) || undefined}
+                      data-included={included || undefined}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={included || n > 0}
+                        disabled={included}
+                        onChange={(e) => setCount(a.id, e.target.checked ? 1 : 0)}
+                      />
+                      <span className="est-row-main">
+                        <span className="est-row-label">{a.label}</span>
+                        {!included && note && <span className="est-row-note">{note}</span>}
+                      </span>
+                      <span className="est-row-price">
+                        {included ? 'Included' : usd.format(price)}
+                      </span>
+                    </label>
+                    {toggle}
+                  </div>
                 );
               })}
             </fieldset>
           );
         })}
 
+        {/* Anything the price book doesn't list */}
+        <fieldset className="est-block">
+          <legend className="est-legend">Not listed</legend>
+          <p className="est-row-note est-extras-note">
+            Anything else, priced by hand: a photo shoot you arrange, product entry, a one-off
+            integration. The label shows on the proposal as written.
+          </p>
+          {input.extras.map((x, i) => (
+            <div key={i} className="est-row est-row--input est-extra" data-on={x.amount > 0 || undefined}>
+              <input
+                type="text"
+                value={x.label}
+                onChange={(e) => setExtra(i, { label: e.target.value })}
+                placeholder="What it is, in words the client understands"
+                className="est-text"
+                aria-label="Line description"
+              />
+              <span className="est-pct">
+                $
+                <input
+                  type="number"
+                  min={0}
+                  step={50}
+                  value={x.amount}
+                  onChange={(e) => setExtra(i, { amount: Math.max(0, Math.floor(Number(e.target.value) || 0)) })}
+                  className="est-num est-num--wide"
+                  aria-label="Line price in dollars"
+                />
+                <button
+                  type="button"
+                  className="btn btn--sm"
+                  onClick={() => set('extras', input.extras.filter((_, j) => j !== i))}
+                  aria-label="Remove line"
+                >
+                  &times;
+                </button>
+              </span>
+            </div>
+          ))}
+          <button type="button" className="btn btn--sm est-add" onClick={() => set('extras', [...input.extras, { label: '', amount: 0 }])}>
+            Add a line
+          </button>
+        </fieldset>
+
         {/* Timeline */}
         <fieldset className="est-block">
           <legend className="est-legend">Timeline</legend>
-          {RUSH.map((r) => (
+          {rushOptions(kind).map((r) => (
             <label key={r.id} className="est-row" data-on={input.rush === r.id || undefined}>
               <input
                 type="radio"
@@ -233,7 +321,7 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
               <span className="est-row-main">
                 <span className="est-row-label">{r.label}</span>
                 <span className="est-row-note">
-                  {r.weeks ? weeksLabel(r.weeks) : weeksLabel(pkg.weeks)} from kickoff
+                  {weeksLabel(rushWeeks(pkg.weeks, r.factor))} from kickoff
                 </span>
               </span>
               <span className="est-row-price">{r.pct ? `+${r.pct}%` : '—'}</span>
@@ -429,6 +517,14 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
           </button>
         </div>
 
+        {est.warnings.length > 0 && (
+          <ul className="est-warnings" role="status">
+            {est.warnings.map((w) => (
+              <li key={w}>{w}</li>
+            ))}
+          </ul>
+        )}
+
         <ul className="est-lines">
           {est.lines.map((l, i) => (
             <li key={i}>
@@ -479,6 +575,12 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
             <dt>Timeline</dt>
             <dd>{weeksLabel(est.weeks)} from kickoff</dd>
           </div>
+          {est.thirdParty.length > 0 && (
+            <div>
+              <dt>They pay for</dt>
+              <dd>{est.thirdParty.join('; ')}</dd>
+            </div>
+          )}
           <div>
             <dt>Content deadline</dt>
             <dd>{CONTENT_DEADLINE_DAYS} days after kickoff</dd>

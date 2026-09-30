@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description: 'What OCE Labs collects, why, and how to reach us about it.',
 };
 
-const UPDATED = 'September 22, 2026';
+const UPDATED = 'September 30, 2026';
 
 export default function PrivacyPage() {
   return (
@@ -14,55 +14,64 @@ export default function PrivacyPage() {
         <p className="eyebrow rise rise-1">Privacy</p>
         <h1 className="h1 rise rise-2">What we collect.</h1>
         <p className="lede rise rise-3">
-          Very little. This page lists all of it. Last updated {UPDATED}.
+          Not much, and it&rsquo;s all listed here. Last updated {UPDATED}.
         </p>
       </header>
 
       <section className="shell legal">
-        <h2>The contact form</h2>
+        <h2>When you contact us</h2>
         <p>
-          When you write to us through the form, we receive your email address, your message,
-          and the budget range you pick. It is stored in our own records (a database hosted by
-          Neon) and sent to our inbox at hello@ocelabs.xyz, from which we reply. We use it to
-          answer you and, if we work together, to run the project. We keep it as long as the
-          conversation is live and for our records of the project afterwards.
+          The contact form sends us your name, email, message and the budget range you pick. We
+          save it in our database (hosted by Neon) and it lands in our inbox at <a href="mailto:hello@ocelabs.xyz" className="text-link">hello@ocelabs.xyz</a>,
+          which runs on Google Workspace. To help us reply faster, your message is passed to
+          Claude, an AI model made by Anthropic, which writes a one-line summary for our notes.
+          Anthropic doesn&rsquo;t use it to train its models. If you book a call, Cal.com handles
+          the booking and shares your name, email and the time with us.
         </p>
 
         <h2>Browsing the site</h2>
         <p>
-          We run no analytics and set no tracking cookies. The site remembers your light or dark
-          theme choice in your browser&rsquo;s local storage; that value never leaves your device.
-          Our host, Vercel, keeps standard server logs (IP address, pages requested, time) for a
-          short period for security and uptime.
+          There are no analytics and no tracking cookies. The site remembers whether you picked
+          light or dark mode, and that setting stays in your browser. Our host, Vercel, keeps
+          ordinary server logs (IP address, the page you asked for, the time) for a short while to
+          keep the site secure and running.
         </p>
 
-        <h2>Clients</h2>
+        <h2>If we work together</h2>
         <p>
-          If we work together, we hold what the project needs: your contact details, your
-          questionnaire answers, the proposal and your electronic signature on it (your typed name,
-          email, the time, and the network address it was signed from, kept as the record of the
-          agreement), the files you send us, and the code we write. Invoices are issued through
-          Stripe, which processes your payment details under its own privacy policy; we never see
-          your full card or bank numbers. Emails we send you go from our Google Workspace account.
+          We keep what the project needs: your contact details, your questionnaire answers, the
+          signed proposal, the files you send us and the code we write. When you sign a proposal
+          online we record your typed name, email, the time, your IP address and browser, so
+          there&rsquo;s a clear record of who signed and when. Invoices go through Stripe, which
+          handles your card or bank details under its own privacy policy. We never see the full
+          numbers.
         </p>
 
         <h2>Who else sees it</h2>
         <p>
-          Nobody, beyond the services named above, which act on our instructions. We do not sell,
-          rent, or share personal information. We would disclose it only if the law required it.
+          Only the services named on this page, and only to do the job we use them for. We
+          don&rsquo;t sell or share your information with anyone else. The one exception is if the
+          law requires us to hand something over.
+        </p>
+
+        <h2>How long we keep it</h2>
+        <p>
+          If we don&rsquo;t end up working together, we delete your details on request, or after
+          a year of no contact. If we do, we keep project records for as long as tax and contract
+          law ask us to.
         </p>
 
         <h2>Your choices</h2>
         <p>
-          Email hello@ocelabs.xyz to see what we hold about you, to correct it, or to have it
-          deleted. We will do it within a few days unless we need to keep a record of a contract or
-          a payment.
+          Email <a href="mailto:hello@ocelabs.xyz" className="text-link">hello@ocelabs.xyz</a> to see what we have about you, fix it, or ask us to delete it.
+          We&rsquo;ll get it done within a few days, except for anything we&rsquo;re required to
+          keep, like a signed contract or a payment record.
         </p>
 
         <h2>Changes</h2>
         <p>
-          If this page changes, the date at the top changes with it. We do not send notices about
-          it.
+          If we change this page, we&rsquo;ll update the date at the top. If a change affects a
+          current client, we&rsquo;ll tell you by email.
         </p>
       </section>
     </>

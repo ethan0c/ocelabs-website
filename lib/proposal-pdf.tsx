@@ -2,6 +2,7 @@ import path from 'node:path';
 import {
   Document,
   Font,
+  Link,
   Page,
   Path,
   StyleSheet,
@@ -104,6 +105,9 @@ const s = StyleSheet.create({
   section: { marginBottom: 16 },
   h2: { fontSize: 10.5, fontWeight: 500, marginBottom: 4 },
   p: { marginBottom: 6 },
+  list: { marginBottom: 8 },
+  listItem: { flexDirection: 'row', marginBottom: 3 },
+  bullet: { width: 10, color: DIM },
   strong: { fontWeight: 600 },
   muted: { color: DIM },
   table: { marginTop: 2, marginBottom: 8 },
@@ -153,6 +157,18 @@ function BlockView({ b }: { b: Block }) {
       <Text style={[s.p, b.strong ? s.strong : {}, b.muted ? s.muted : {}]}>{b.text}</Text>
     );
   }
+  if (b.kind === 'list') {
+    return (
+      <View style={s.list}>
+        {b.items.map((t) => (
+          <View key={t} style={s.listItem} wrap={false}>
+            <Text style={s.bullet}>•</Text>
+            <Text style={{ flex: 1 }}>{t}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  }
   return (
     <View style={s.table}>
       {b.rows.map((r, i) => (
@@ -186,7 +202,11 @@ export default function ProposalPdf({ pr, sig }: { pr: Proposal; sig?: Signature
 
         <View style={s.footer} fixed>
           <Text>
-            {pr.studio} · {STUDIO_EMAIL}
+            {pr.studio} ·{' '}
+            {/* Clickable in any PDF viewer; same colour as the line so it stays quiet. */}
+            <Link src={`mailto:${STUDIO_EMAIL}`} style={{ color: DIM, textDecoration: 'none' }}>
+              {STUDIO_EMAIL}
+            </Link>
           </Text>
           <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
         </View>
