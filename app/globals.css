@@ -848,6 +848,8 @@ a {
 /* The Starter demos, grouped under the client work with a rule between. */
 .work-starters {
   padding-top: 4.5rem;
+  /* Lands clear of the sticky nav when Lenis is off (reduced motion). */
+  scroll-margin-top: var(--nav-h);
   border-top: 1px solid var(--line);
 }
 

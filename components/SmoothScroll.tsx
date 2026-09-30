@@ -57,10 +57,19 @@ export default function SmoothScroll() {
   }, []);
 
   // A client-side nav keeps the old scroll offset otherwise, and any ScrollTrigger
-  // measured against the previous page's height is now wrong.
+  // measured against the previous page's height is now wrong. A link with a hash
+  // (/work#templates) lands on that section instead, clear of the sticky nav.
   useEffect(() => {
-    lenis?.scrollTo(0, { immediate: true });
     ScrollTrigger.refresh();
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    const target = id ? document.getElementById(id) : null;
+    // Both paths honour the target's scroll-margin-top.
+    if (target) {
+      if (lenis) lenis.scrollTo(target, { immediate: true });
+      else target.scrollIntoView();
+    } else {
+      lenis?.scrollTo(0, { immediate: true });
+    }
   }, [pathname]);
 
   return null;

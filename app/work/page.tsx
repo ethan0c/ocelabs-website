@@ -7,7 +7,7 @@ import WorkPreview from '@/components/WorkPreview';
 
 export const metadata: Metadata = {
   title: 'Work — OCE Labs',
-  description: 'Selected projects from OCE Labs.',
+  description: 'Websites and apps we have designed and built.',
 };
 
 type Project = {
@@ -21,31 +21,31 @@ type Project = {
 const projects: Project[] = [
   {
     name: 'Ada Palm',
-    desc: 'A New York marketing consultancy site built around a full-bleed showreel.',
+    desc: 'A site for a New York marketing consultancy, with their showreel filling the screen.',
     href: 'https://adapalm.com',
     shot: 'adapalm.png',
   },
   {
     name: 'Helthy',
-    desc: 'An AI fitness and nutrition platform with tracking and guidance.',
+    desc: 'An AI fitness and nutrition app that tracks how you eat and train, and tells you what to do next.',
     href: 'https://helthy.app',
     shot: 'helthy.png',
   },
   {
     name: 'JobScout',
-    desc: 'An AI career agent that matches jobs to your resume and tracks every application.',
+    desc: 'An AI career agent that finds jobs that fit your resume and keeps track of every application.',
     href: 'https://jobscout-pi-pied.vercel.app',
     shot: 'jobscout.png',
   },
   {
     name: 'Personal Portfolio',
-    desc: 'A Next.js portfolio with expressive motion.',
+    desc: 'A personal portfolio, and the place we try out new animation ideas first.',
     href: 'https://chibudomonyejesi.com',
     shot: 'portfolio.png',
   },
   {
     name: 'Concepta',
-    desc: 'A brand-forward marketing site.',
+    desc: 'The marketing site for Concepta.',
     href: 'https://www.conceptainnovation.com/',
     shot: 'concepta.png',
   },
@@ -59,19 +59,19 @@ const projects: Project[] = [
 const starters: Project[] = [
   {
     name: 'Restaurant',
-    desc: 'La Palma Taquería: a tortilla-press opening, a video hero, and the menu set like a printed one.',
+    desc: 'La Palma Taquería. It opens with a tortilla press, and the menu is laid out like the printed one on the table.',
     href: 'https://oce-starter-services.vercel.app/restaurant',
     shot: 'starter-restaurant.png',
   },
   {
     name: 'Barbershop',
-    desc: "Maceo's: a barber-pole opening, the price board on the wall, and a booking link per barber.",
+    desc: "Maceo's. Prices read like the board on the wall, and every barber has their own booking link.",
     href: 'https://oce-starter-services.vercel.app/barbershop',
     shot: 'starter-barbershop.png',
   },
   {
     name: 'Car detailing',
-    desc: 'Sheen: a foam-and-squeegee opening, a drag-to-compare before and after, and prices by car size.',
+    desc: 'Sheen. Drag the slider to see a car before and after, then check the price for your size of car.',
     href: 'https://oce-starter-services.vercel.app/detailing',
     shot: 'starter-detailing.png',
   },
@@ -173,13 +173,17 @@ export default function WorkPage() {
         </Reveal>
       </section>
 
-      <section className="shell work-starters">
+      {/* Starter links here by id, so keep it. */}
+      <section id="templates" className="shell work-starters">
         <Reveal className="sec-head">
           <p className="eyebrow">Starter templates</p>
-          <h2 className="h2">Ready-made sites for local businesses.</h2>
+          <h2 className="h2">Made for local businesses.</h2>
           <p className="sec-lede">
-            Live demos of our Starter layouts, each for a made-up business. Yours gets your words, photos, colours and
-            prices, and goes live in days.
+            These are demo sites for businesses we made up. Pick the one closest to yours and we&apos;ll swap in your
+            name, photos, colours and prices.{' '}
+            <Link href="/starter" className="text-link">
+              How Starter works
+            </Link>
           </p>
         </Reveal>
         <div className="work-grid">

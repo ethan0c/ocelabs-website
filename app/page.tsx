@@ -10,37 +10,37 @@ const steps = [
   {
     num: '01',
     name: 'Domain and hosting',
-    desc: 'Registered in your name, connected, HTTPS, redirects. Nothing parked on ours.',
+    desc: 'Registered in your name and set up properly, so you own it outright. Nothing sits on our accounts.',
   },
   {
     num: '02',
     name: 'Design',
-    desc: 'Identity, interface, and art direction. Two review rounds, one approver.',
+    desc: 'How it looks, how it feels to use, and how it fits your brand. Two rounds of feedback, and one person on your side signs off.',
   },
   {
     num: '03',
     name: 'Build',
-    desc: 'Websites, web apps, iOS and Android from one codebase.',
+    desc: 'Websites, web apps, and apps for iPhone and Android.',
   },
   {
     num: '04',
     name: 'Setup',
-    desc: 'Contact forms, booking, analytics, business email, and whatever else the site needs to work on day one.',
+    desc: 'Contact forms, booking, visitor stats, business email, and whatever else it needs to work on the first day.',
   },
   {
     num: '05',
     name: 'Search',
-    desc: 'Search-ready build, sitemap and Search Console submitted, local SEO and content plan when it fits.',
+    desc: 'Built so Google can find it and make sense of it, and submitted the day it launches. Local search and a content plan if you need them.',
   },
   {
     num: '06',
     name: 'Launch',
-    desc: 'A date in writing at kickoff. Staging review, then live on your domain, usually the same day.',
+    desc: 'You get a launch date in writing at the start. We show you the finished site privately first, then put it live, usually the same day.',
   },
   {
     num: '07',
     name: 'Upkeep',
-    desc: 'Thirty days of fixes included. After that, a monthly retainer for updates, monitoring, and a search review each quarter.',
+    desc: 'If anything breaks in the first thirty days, we fix it. After that, a monthly plan covers updates, keeping an eye on things, and a look at your search results every few months.',
   },
 ];
 
@@ -55,8 +55,9 @@ export default function HomePage() {
             The whole thing, not just the website.
           </h1>
           <p className="lede rise rise-2">
-            Domain, design, build, hosting, forms, search, and the upkeep after. One studio
-            from the first call to the first visitor, and a running site at the end of it.
+            We register the domain, design and build the site, set up the forms and email, get it
+            on Google, and look after it once it&apos;s live. You deal with the same two people the
+            whole way through.
           </p>
           <div className="hero-links rise rise-3">
             <Link href="/contact" className="block block--primary">
@@ -94,8 +95,8 @@ export default function HomePage() {
           <p className="eyebrow">What every project includes</p>
           <h2 className="h2">From the domain to the search results.</h2>
           <p className="sec-lede">
-            Most studios hand you a design and a folder of files. We hand you a running
-            site: registered, hosted, wired up, indexed, and looked after.
+            A lot of studios hand over a design and a folder of files and call it done. We hand
+            over a site that&apos;s live, working, and looked after.
           </p>
         </Reveal>
         <Reveal stagger>
@@ -125,8 +126,8 @@ export default function HomePage() {
         </Reveal>
         <Reveal>
           <p className="cap-note">
-            We work in what&apos;s left after the excess is gone. Every element earns its
-            place or it goes &mdash; clarity is what you refuse to add.
+            We keep things simple on purpose. If something on the page isn&apos;t helping the
+            person reading it, we take it out.
           </p>
         </Reveal>
       </section>
