@@ -5,6 +5,7 @@ import { requireSession } from '@/lib/auth';
 import type { Stage } from '@/lib/db/schema';
 import * as S from '@/lib/studio';
 import { draftRecap, type RecapDraft } from '@/lib/recap';
+import { QUESTIONS } from '@/app/q/[token]/questions';
 
 /*
  * Buttons on the lead page. Each one is a workflow step from lib/studio.ts;
@@ -47,12 +48,18 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
     case 'recap': {
       const bullets = [1, 2, 3, 4].map((n) => str(form, `b${n}`)).filter(Boolean);
       if (bullets.length < 2) return { error: 'Add at least two recap points.' };
+      const prefill: Record<string, string> = {};
+      for (const q of QUESTIONS.flatMap((g) => g.items)) {
+        const v = str(form, `pre_${q.id}`);
+        if (v) prefill[q.id] = v.slice(0, 4000);
+      }
       return run(id, async () => {
         const ok = await S.sendRecap(id, {
           bullets,
           packageLabel: str(form, 'packageLabel') || 'Website Package',
           range: str(form, 'range') || '$3,000 to $6,000',
           weeks: str(form, 'weeks') || '4 to 6 weeks',
+          prefill,
         });
         return ok ? 'Recap sent with the questionnaire link.' : 'Gmail is not connected; the questionnaire link is on this page.';
       });

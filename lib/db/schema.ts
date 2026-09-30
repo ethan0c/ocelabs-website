@@ -67,6 +67,7 @@ export const leads = pgTable('leads', {
   quote: jsonb('quote').$type<QuoteInput>(),
 
   questionnaireToken: text('questionnaire_token').unique(),
+  /** The client's answers once questionnaireAt is set; before that, our pre-fill from the call. */
   questionnaire: jsonb('questionnaire').$type<Questionnaire>(),
   questionnaireAt: timestamp('questionnaire_at', { withTimezone: true }),
 

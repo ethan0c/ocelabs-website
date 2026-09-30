@@ -36,3 +36,22 @@ export async function notifyNewLead(lead: Lead, o: { emailASent: boolean }) {
     return false;
   }
 }
+
+/** A short alert to the same people when a client moves the project forward. */
+export async function notifyStudio(lead: Lead, subject: string, body: string) {
+  if (!(await gmailConfigured())) return false;
+  const to = allowedEmails().filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+  const recipients = to.length ? to : [await fromAddress()];
+  try {
+    await sendMail({
+      to: recipients.join(', '),
+      replyTo: lead.email,
+      subject: `${subject}: ${lead.company || lead.name || lead.email}`,
+      text: `${body}\n\n${siteUrl()}/studio/leads/${lead.id}`,
+    });
+    return true;
+  } catch (e) {
+    console.error('notifyStudio failed', e);
+    return false;
+  }
+}

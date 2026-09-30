@@ -28,6 +28,8 @@ export default async function QuestionnairePage({ params }: { params: Promise<{ 
   }
 
   const done = Boolean(lead.questionnaireAt);
+  const prefill = (!done && lead.questionnaire) || {};
+  const prefilled = Object.keys(prefill).length > 0;
 
   return (
     <>
@@ -36,42 +38,39 @@ export default async function QuestionnairePage({ params }: { params: Promise<{ 
         <p className="lede rise rise-2">
           {done
             ? 'Within two business days you will get a fixed quote, a launch date, and a short agreement to sign.'
-            : 'Short answers are fine. Skip anything that does not apply. We write a first draft of every page from what you tell us here.'}
+            : `Short answers are fine, and skip anything that doesn\u2019t apply.${prefilled ? ' We\u2019ve filled in a few from our call; change anything that\u2019s off.' : ''} Your answers save on this device as you type, so you can come back to it later.`}
         </p>
       </header>
 
       {!done && (
         <section className="shell q-wrap">
-          <QForm token={token} name={lead.name ?? ''} company={lead.company ?? ''} />
+          <QForm token={token} name={lead.name ?? ''} company={lead.company ?? ''} prefill={prefill} />
         </section>
       )}
 
       <section className="shell legal q-how">
         <h2>Before we start</h2>
         <p>
-          The project begins, and the timeline starts counting, on the kickoff day. Kickoff happens
-          when all four of these are in: the deposit is paid, this questionnaire is returned, your
-          logo, brand files and any photography are shared, and any existing copy you want kept is
-          shared. Anything still missing one week after kickoff moves the launch date by the same
+          We start work, and the timeline starts counting, once four things are in: the deposit,
+          this questionnaire, your logo and any photos, and any existing text you want to keep. If
+          something is still missing a week after we start, the launch date moves back by the same
           number of days.
         </p>
         <h2>How we work</h2>
         <p>
-          Every page is delivered as complete, readable HTML before any script runs, so Google and AI
-          assistants read the same clean page a person does. Each page has one clear title, one honest
-          description, structured data, a sitemap and a preview image. We build with Next.js and host
-          on Vercel; the code is written for you and lives in a private repository you can be given
-          access to at any time. No platform subscription: hosting at typical traffic is free or a
-          few dollars a month, the domain is registered in your name, and you own the site outright.
+          We build every site from scratch for you, so it loads fast and reads well to both people
+          and Google. There&rsquo;s no website-builder subscription. Hosting usually costs nothing
+          or a few dollars a month, the web address is registered in your name, and the site is
+          yours outright.
         </p>
-        <h2>What you get at handover</h2>
+        <h2>When it&rsquo;s done</h2>
         <p>
-          The live site on your domain with HTTPS, redirects and analytics; access to the code
-          repository and hosting account; a sitemap, robots file and structured data submitted to
-          Google Search Console; a short written guide to updating content; and thirty days of fixes
-          for anything we missed. After that, an optional monthly retainer keeps it looked after.
+          You get the live site on your own web address, logins to everything it runs on, and a
+          short guide to making updates. We fix anything we missed for a set time after launch
+          (your proposal says how long). After that, you can keep us on a monthly plan to look
+          after it.
         </p>
-        <p>Questions? hello@ocelabs.xyz</p>
+        <p>Questions? <a href="mailto:hello@ocelabs.xyz" className="text-link">hello@ocelabs.xyz</a></p>
       </section>
     </>
   );

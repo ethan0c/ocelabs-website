@@ -2,6 +2,7 @@ import path from 'node:path';
 import {
   Document,
   Font,
+  Link,
   Page,
   Path,
   StyleSheet,
@@ -186,7 +187,11 @@ export default function ProposalPdf({ pr, sig }: { pr: Proposal; sig?: Signature
 
         <View style={s.footer} fixed>
           <Text>
-            {pr.studio} · {STUDIO_EMAIL}
+            {pr.studio} ·{' '}
+            {/* Clickable in any PDF viewer; same colour as the line so it stays quiet. */}
+            <Link src={`mailto:${STUDIO_EMAIL}`} style={{ color: DIM, textDecoration: 'none' }}>
+              {STUDIO_EMAIL}
+            </Link>
           </Text>
           <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
         </View>

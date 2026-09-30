@@ -1707,6 +1707,17 @@ a {
   min-height: 4.5rem;
 }
 
+.q-prefilled {
+  margin: 0 0 0.5rem;
+  color: var(--dim);
+  font-size: 0.875rem;
+}
+
+.recap-prefill summary {
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+}
+
 .q-num {
   color: var(--dim);
   margin-right: 0.25rem;

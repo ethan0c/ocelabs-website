@@ -217,7 +217,14 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
             <section className="studio-sec">
               <h2 className="eyebrow">Live</h2>
               <p className="tbl-sub">
-                {lead.domain} since {lead.handoverAt ? day.format(lead.handoverAt) : '—'}. The day-30 email is drafted into Gmail on the day.
+                {lead.domain ? (
+                  <a href={`https://${lead.domain.replace(/^https?:\/\//, '')}`} target="_blank" rel="noopener noreferrer" className="ulink">
+                    {lead.domain}
+                  </a>
+                ) : (
+                  'The site'
+                )}{' '}
+                live since {lead.handoverAt ? day.format(lead.handoverAt) : '—'}. The day-30 email is drafted into Gmail on the day.
               </p>
               <Action id={id} action="closeWon" label="Close, won" />
             </section>
@@ -279,7 +286,9 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
           {/* Questionnaire */}
           {lead.questionnaire && (
             <section className="studio-sec">
-              <h2 className="eyebrow">Questionnaire · {lead.questionnaireAt ? day.format(lead.questionnaireAt) : ''}</h2>
+              <h2 className="eyebrow">
+                {lead.questionnaireAt ? `Questionnaire · ${day.format(lead.questionnaireAt)}` : 'Questionnaire · pre-filled by us, not returned yet'}
+              </h2>
               <dl className="studio-qa">
                 {lead.questionnaire.contact_name && (<><dt>Name</dt><dd>{lead.questionnaire.contact_name}</dd></>)}
                 {lead.questionnaire.company && (<><dt>Legal name</dt><dd>{lead.questionnaire.company}</dd></>)}

@@ -2,6 +2,7 @@
 
 import { useActionState, useState, useTransition } from 'react';
 import { PACKAGES, weeksLabel, type Kind } from '@/lib/pricing';
+import { QUESTIONS } from '@/app/q/[token]/questions';
 import { act, draftRecapAction, type ActionState } from './actions';
 
 const LABELS = [
@@ -104,6 +105,21 @@ export default function RecapForm({ id }: { id: string }) {
           <label htmlFor="weeks">Timeline</label>
           <input id="weeks" name="weeks" type="text" value={weeks} onChange={(e) => setWeeks(e.target.value)} />
         </div>
+        <details className="recap-prefill">
+          <summary>Pre-fill questionnaire answers (optional)</summary>
+          <p className="tbl-sub">
+            Only for what the call actually covered. Leave the rest blank; blank boxes get
+            better answers than ones the client skims past. They can edit anything you fill in.
+          </p>
+          {QUESTIONS.flatMap((g) => g.items).map((q, i) => (
+            <div key={q.id} className="field field--inline">
+              <label htmlFor={`pre_${q.id}`}>
+                {i + 1}. {q.text}
+              </label>
+              <textarea id={`pre_${q.id}`} name={`pre_${q.id}`} rows={2} />
+            </div>
+          ))}
+        </details>
         <button type="submit" className="btn btn--primary" disabled={pending}>
           {pending ? 'Sending…' : 'Send recap with questionnaire'}
         </button>

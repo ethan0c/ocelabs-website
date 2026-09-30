@@ -4,7 +4,7 @@ Client Workflow: From Contact Form to Handover
 Internal. Not sent to clients. The emails in Part 3 are the client-facing pieces.
 
 
-PART 1: THE TOOLS
+Part 1: The tools
 
 Four tools. Nothing here needs a paid plan beyond the Workspace seat.
 
@@ -37,7 +37,7 @@ Pipeline tracker: the studio
 /studio. Every lead, its stage, its next action and date, its quote, proposals, payments, questionnaire answers, and a log of everything sent. Stages match Part 2: New, Call booked, Recap sent, Proposal sent, Signed, Kickoff, Building, Review, Launched, Closed. Look at it every Monday and every Friday; anything marked due is the job for the day. Leads that come by referral or phone are added with "Add a lead".
 
 
-PART 2: THE STAGES
+Part 2: The stages
 
 Each stage has one trigger, one thing we send, and one thing we wait for.
 
@@ -118,7 +118,7 @@ Automatic: Email I is drafted into Gmail on the day, quoting the retainer price 
 If they say yes: lead page → Retainer → price and start date (defaults to day 30) → Start retainer. That creates a monthly Stripe subscription, invoiced by email and due in 7 days, and sends them a confirmation with the terms. Cancel retainer stops it at the end of the paid month and tells them. Otherwise press Close, won. Add the project to /work if the client agrees.
 
 
-PART 3: THE EMAILS
+Part 3: The emails
 
 Replace anything in [brackets]. Keep them short; every one of these fits on a phone screen.
 
@@ -301,7 +301,7 @@ Thank you for trusting us with this.
 [Your name]
 
 
-PART 4: THE PROPOSAL AND THE PAPERWORK
+Part 4: The proposal and the paperwork
 
 The proposal is one PDF, two to three pages, and it is also the contract. It is generated at /pricing/proposal from the estimator's quote, so the numbers cannot drift from the calculation; edit the wording in app/pricing/proposal/page.tsx. Sections:
 

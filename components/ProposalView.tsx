@@ -71,7 +71,10 @@ export default function ProposalView({
 
       <footer className="prop-foot">
         <p>
-          {pr.studio} · {STUDIO_EMAIL}
+          {pr.studio} ·{' '}
+          <a href={`mailto:${STUDIO_EMAIL}`} className="text-link">
+            {STUDIO_EMAIL}
+          </a>
         </p>
       </footer>
     </article>
