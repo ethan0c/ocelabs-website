@@ -79,7 +79,7 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
     const key = `${encoded}:${i < 0 ? 'full' : i}`;
     setInvoices((s) => ({ ...s, [key]: 'pending' }));
     startTransition(async () => {
-      const result = await createInvoice(encoded, i);
+      const result = await createInvoice(encoded, i, leadId);
       setInvoices((s) => ({ ...s, [key]: result }));
     });
   };

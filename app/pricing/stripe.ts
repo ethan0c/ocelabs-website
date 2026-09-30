@@ -13,7 +13,7 @@ import { createDraftInvoice, dashboardUrl, findOrCreateCustomer } from '@/lib/st
 
 export type InvoiceResult = { url: string } | { error: string };
 
-export async function createInvoice(encoded: string, stageIndex: number): Promise<InvoiceResult> {
+export async function createInvoice(encoded: string, stageIndex: number, leadId?: string | null): Promise<InvoiceResult> {
   if (!(await getSession())) return { error: 'Signed out. Reload and sign in.' };
 
   const input = decodeInput(encoded);
@@ -39,6 +39,8 @@ export async function createInvoice(encoded: string, stageIndex: number): Promis
         package: quote.pkg.label,
         stage: stageIndex < 0 ? 'Full payment' : `${stageIndex + 1} of ${quote.payments.length}: ${stage.label}`,
         ...(input.client ? { client: input.client } : {}),
+        // Lets the webhook record the payment on the lead when it's paid.
+        ...(leadId ? { lead: leadId } : {}),
       },
     });
     return { url: dashboardUrl(invoice) };

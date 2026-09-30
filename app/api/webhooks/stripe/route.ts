@@ -1,4 +1,4 @@
-import { handleInvoicePaid, handleRetainerEnded } from '@/lib/studio';
+import { handleInvoicePaid, handleRetainerEnded, type PaidInvoice } from '@/lib/studio';
 import { verifyWebhook } from '@/lib/stripe';
 
 export const dynamic = 'force-dynamic';
@@ -14,9 +14,9 @@ export async function POST(req: Request) {
   if (!verifyWebhook(raw, req.headers.get('stripe-signature'))) {
     return new Response('Bad signature', { status: 400 });
   }
-  const event = JSON.parse(raw) as { type: string; data: { object: { id: string; object: string } } };
+  const event = JSON.parse(raw) as { type: string; data: { object: PaidInvoice & { object: string } } };
   if (event.type === 'invoice.paid' && event.data.object.object === 'invoice') {
-    await handleInvoicePaid(event.data.object.id);
+    await handleInvoicePaid(event.data.object);
   }
   if (event.type === 'customer.subscription.deleted') {
     await handleRetainerEnded(event.data.object.id);

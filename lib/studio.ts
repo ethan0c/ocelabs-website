@@ -80,7 +80,8 @@ export async function setStage(id: string, stage: Stage, nextAction?: string | n
     stage,
     nextAction: nextAction ?? null,
     nextActionAt: nextActionAt ?? null,
-    ...(stage.startsWith('closed') ? { closedAt: new Date() } : {}),
+    // Reopening a closed lead puts it back in front of the daily job.
+    closedAt: stage.startsWith('closed') ? new Date() : null,
   });
   await log(id, `stage:${stage}`);
   return row;
@@ -384,6 +385,36 @@ export async function signProposal(t: string, s: { name: string; email: string; 
   // Payment schedule from the signed quote; the deposit goes out now.
   const q = proposalQuote(p);
   await db.delete(payments).where(and(eq(payments.leadId, lead.id), eq(payments.status, 'scheduled')));
+
+  // Paid ahead of signing (an invoice made by hand): bill only what's left, at launch.
+  const paidRows = await db.select().from(payments).where(and(eq(payments.leadId, lead.id), eq(payments.status, 'paid')));
+  const paidSum = paidRows.reduce((sum, r) => sum + r.amount, 0);
+  if (paidSum > 0) {
+    await db.update(payments).set({ proposalId: p.id }).where(and(eq(payments.leadId, lead.id), eq(payments.status, 'paid')));
+    const balance = Math.max(0, q.total - paidSum);
+    if (balance > 0) {
+      const last = q.payments[q.payments.length - 1];
+      await db.insert(payments).values({
+        leadId: lead.id,
+        proposalId: p.id,
+        stageIndex: Math.max(...paidRows.map((r) => r.stageIndex)) + 1,
+        label: 'Balance',
+        pct: Math.round((balance / q.total) * 100),
+        amount: balance,
+        trigger: last.trigger,
+        dueDays: last.dueDays,
+        status: 'scheduled',
+      });
+    }
+    await log(lead.id, 'payments:paid-ahead', { paid: paidSum, balance });
+    const to = [lead.email, s.email.toLowerCase()].filter((e, i, a) => a.indexOf(e) === i).join(', ');
+    await send(lead.id, 'D', to, E.emailD({ name: lead.name, depositAmount: 0, paidAlready: paidSum, balance, questionnaireDone: Boolean(lead.questionnaireAt), folderLink: process.env.CLIENT_FOLDER_LINK, signer: signer() }), [attachment]);
+    await notifyStudio(lead, 'Proposal signed', `Signed by ${s.name} <${s.email}>. ${usd.format(paidSum)} was already paid, so no invoice went out.${balance > 0 ? ` The ${usd.format(balance)} balance is scheduled for launch.` : ''}`);
+    await setStage(lead.id, 'signed', 'Chase the kickoff items', addBusinessDays(signedAt, 3));
+    await checkKickoff(lead.id);
+    return { proposal: signed, pdf, invoiceError: null };
+  }
+
   const rows = await db
     .insert(payments)
     .values(
@@ -411,7 +442,7 @@ export async function signProposal(t: string, s: { name: string; email: string; 
 
   // The signed copy goes to the lead and, if they typed a different one, the signer.
   const to = [lead.email, s.email.toLowerCase()].filter((e, i, a) => a.indexOf(e) === i).join(', ');
-  await send(lead.id, 'D', to, E.emailD({ name: lead.name, depositAmount: rows[0].amount, full: rows.length === 1, folderLink: process.env.CLIENT_FOLDER_LINK, signer: signer() }), [attachment]);
+  await send(lead.id, 'D', to, E.emailD({ name: lead.name, depositAmount: rows[0].amount, full: rows.length === 1, questionnaireDone: Boolean(lead.questionnaireAt), folderLink: process.env.CLIENT_FOLDER_LINK, signer: signer() }), [attachment]);
   await notifyStudio(lead, 'Proposal signed', `Signed by ${s.name} <${s.email}>. ${invoiceError ? `The deposit invoice failed: ${invoiceError}` : 'The deposit invoice went out through Stripe.'}`);
   await setStage(lead.id, 'signed', invoiceError ? `Deposit invoice failed: ${invoiceError}` : 'Chase the kickoff items', addBusinessDays(signedAt, 3));
   return { proposal: signed, pdf, invoiceError };
@@ -444,14 +475,78 @@ export async function sendPayment(lead: Lead, pay: Payment, quote: QuoteInput, e
   return sent;
 }
 
+/** The fields of a Stripe invoice the webhook needs. */
+export type PaidInvoice = {
+  id: string;
+  livemode?: boolean;
+  amount_paid?: number;
+  customer_email?: string | null;
+  billing_reason?: string | null;
+  metadata?: Record<string, string> | null;
+};
+
 /** Stripe webhook: invoice.paid. */
-export async function handleInvoicePaid(stripeInvoiceId: string) {
-  const pay = await db.query.payments.findFirst({ where: eq(payments.stripeInvoiceId, stripeInvoiceId) });
-  if (!pay || pay.status === 'paid') return null;
+export async function handleInvoicePaid(inv: PaidInvoice) {
+  const pay = await db.query.payments.findFirst({ where: eq(payments.stripeInvoiceId, inv.id) });
+  if (!pay) return recordHandInvoice(inv);
+  if (pay.status === 'paid') return null;
   await db.update(payments).set({ status: 'paid', paidAt: new Date() }).where(eq(payments.id, pay.id));
   await log(pay.leadId, 'invoice:paid', { stage: pay.stageIndex, label: pay.label, amount: pay.amount });
   if (pay.stageIndex === 0) await checkKickoff(pay.leadId);
   return pay;
+}
+
+/**
+ * A paid invoice we didn't schedule: one made by hand, from the estimator or
+ * the Stripe dashboard. Matched to its lead by the invoice's lead tag, else
+ * by the client's email, and recorded as paid so the lead knows it's in.
+ * Retainer invoices are subscriptions and are left alone.
+ */
+async function recordHandInvoice(inv: PaidInvoice) {
+  if (inv.billing_reason && inv.billing_reason !== 'manual') return null;
+  const amount = Math.round((inv.amount_paid ?? 0) / 100);
+  if (amount <= 0) return null;
+
+  let lead = inv.metadata?.lead ? await getLead(inv.metadata.lead) : undefined;
+  if (!lead && inv.customer_email) {
+    lead = await db.query.leads.findFirst({ where: eq(leads.email, inv.customer_email.toLowerCase()), orderBy: desc(leads.createdAt) });
+  }
+  if (!lead) return null;
+
+  const existing = await db.select().from(payments).where(eq(payments.leadId, lead.id));
+  const p = await db.query.proposals.findFirst({
+    where: and(eq(proposals.leadId, lead.id), ne(proposals.status, 'void')),
+    orderBy: desc(proposals.createdAt),
+  });
+  const total = p ? proposalQuote(p).total : lead.quote ? computeQuote(lead.quote).total : 0;
+  const [row] = await db
+    .insert(payments)
+    .values({
+      leadId: lead.id,
+      proposalId: p?.id ?? null,
+      stageIndex: existing.length ? Math.max(...existing.map((r) => r.stageIndex)) + 1 : 0,
+      label: 'Payment, invoiced by hand',
+      pct: total ? Math.round((amount / total) * 100) : 0,
+      amount,
+      trigger: 'Invoiced outside the proposal schedule',
+      dueDays: 0,
+      status: 'paid',
+      stripeInvoiceId: inv.id,
+      stripeUrl: dashboardUrl({ id: inv.id, livemode: Boolean(inv.livemode) }),
+      sentAt: new Date(),
+      paidAt: new Date(),
+    })
+    .returning();
+  await log(lead.id, 'invoice:paid', { stage: row.stageIndex, label: row.label, amount, invoice: inv.id, byHand: true });
+  const unsigned = p?.status !== 'signed';
+  await notifyStudio(
+    lead,
+    'Payment in',
+    `${usd.format(amount)} paid on a Stripe invoice made outside the proposal. It's recorded on this lead.` +
+      (unsigned ? ' The proposal isn\u2019t signed yet; ask them to sign it. Signing won\u2019t bill them again.' : ''),
+  );
+  if (row.stageIndex === 0) await checkKickoff(lead.id);
+  return row;
 }
 
 /* ── Stage 6: kickoff ──────────────────────────────────────────────────── */

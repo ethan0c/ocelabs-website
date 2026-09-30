@@ -147,15 +147,33 @@ export function emailCNudge(o: {
 
 /* ── D: signed ───────────────────────────────────────────────────────────── */
 
-export function emailD(o: { name?: string | null; depositAmount: number; full?: boolean; folderLink?: string | null; signer: string }): Email {
+export function emailD(o: {
+  name?: string | null;
+  depositAmount: number;
+  full?: boolean;
+  /** Paid before signing, on an invoice made by hand. */
+  paidAlready?: number;
+  balance?: number;
+  questionnaireDone: boolean;
+  folderLink?: string | null;
+  signer: string;
+}): Email {
+  const paid = (o.paidAlready ?? 0) > 0;
   return {
     subject: 'Welcome aboard, and what happens next',
     text:
       `Hi ${first(o.name)},\n\n` +
       `Thanks for signing. Glad to be working with you. Your signed copy is attached.\n\n` +
-      `You'll get a separate email from Stripe with the ${o.full ? 'invoice' : 'deposit invoice'} for ${usd.format(o.depositAmount)}. Bank transfer or card, whichever's easier.\n\n` +
+      (paid
+        ? `Your payment of ${usd.format(o.paidAlready!)} is already in, thank you.${o.balance ? ` The remaining ${usd.format(o.balance)} is invoiced when you approve the finished site, before launch.` : ''}\n\n`
+        : `You'll get a separate email from Stripe with the ${o.full ? 'invoice' : 'deposit invoice'} for ${usd.format(o.depositAmount)}. Bank transfer or card, whichever's easier.\n\n`) +
       `We start the day these four things are in:\n` +
-      bullets([o.full ? 'The payment' : 'The deposit', 'The questionnaire (done)', 'Your logo, brand files, and any photos you want used', 'Any existing copy you want to keep']) +
+      bullets([
+        paid ? 'The payment (done)' : o.full ? 'The payment' : 'The deposit',
+        o.questionnaireDone ? 'The questionnaire (done)' : 'The questionnaire',
+        'Your logo, brand files, and any photos you want used',
+        'Any existing copy you want to keep',
+      ]) +
       `\n\nSend files by replying to this email${o.folderLink ? `, or drop them in this folder: ${o.folderLink}` : ''}. As soon as the last one lands I'll confirm your kickoff and launch dates.` +
       sign(o.signer),
   };
