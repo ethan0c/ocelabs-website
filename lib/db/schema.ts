@@ -13,7 +13,7 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
-import type { QuoteInput } from '@/lib/pricing';
+import type { Quote, QuoteInput } from '@/lib/pricing';
 
 export const STAGES = [
   'new',
@@ -114,6 +114,8 @@ export const proposals = pgTable('proposals', {
   token: text('token').notNull().unique(),
   /** Snapshot of the quote at send time; the lead's quote may move on. */
   quote: jsonb('quote').$type<QuoteInput>().notNull(),
+  /** The priced quote as sent, so later price-book changes never alter a sent or signed proposal. */
+  priced: jsonb('priced').$type<Quote>(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   sentAt: timestamp('sent_at', { withTimezone: true }),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),

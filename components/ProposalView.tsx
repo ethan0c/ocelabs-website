@@ -92,6 +92,15 @@ function BlockView({ b }: { b: Block }) {
     }
     return <p className={b.muted ? 'prop-notes' : undefined}>{b.text}</p>;
   }
+  if (b.kind === 'list') {
+    return (
+      <ul className="prop-list">
+        {b.items.map((t) => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
+    );
+  }
   return (
     <table className="prop-table">
       <tbody>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Estimator from '@/components/Estimator';
-import { decodeInput, type QuoteInput } from '@/lib/pricing';
+import { decodeInput, sanitise, type QuoteInput } from '@/lib/pricing';
 import { getLead } from '@/lib/studio';
 
 export const metadata: Metadata = {
@@ -27,7 +27,8 @@ export default async function PricingPage({ searchParams }: Props) {
     const lead = await getLead(leadId);
     if (lead) {
       leadName = lead.company || lead.name || lead.email;
-      if (!initial && lead.quote) initial = lead.quote;
+      // Saved quotes may predate fields the estimator now expects.
+      if (!initial && lead.quote) initial = sanitise(lead.quote);
       if (initial) {
         initial = {
           ...initial,

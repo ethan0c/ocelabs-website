@@ -152,6 +152,23 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
   }
 }
 
+/** Autosave while on the call. Only question ids and the call notes are kept. */
+export async function saveCallAction(id: string, raw: Record<string, string>): Promise<{ ok: true } | { error: string }> {
+  await requireSession(`/studio/leads/${id}`);
+  const keys = new Set([...QUESTIONS.flatMap((g) => g.items).map((q) => q.id), S.CALL_NOTES]);
+  const answers: Record<string, string> = {};
+  for (const [k, v] of Object.entries(raw)) {
+    const t = typeof v === 'string' ? v.trim() : '';
+    if (keys.has(k) && t) answers[k] = t.slice(0, k === S.CALL_NOTES ? 20000 : 4000);
+  }
+  try {
+    await S.saveCallAnswers(id, answers);
+    return { ok: true };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Could not save.' };
+  }
+}
+
 /** Call notes → the recap form's fields. A draft, nothing is sent. */
 export async function draftRecapAction(id: string, notes: string): Promise<RecapDraft | { error: string }> {
   await requireSession(`/studio/leads/${id}`);

@@ -105,7 +105,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
               {lead.questionnaireToken && (
                 <p className="tbl-sub">Questionnaire link: <a className="ulink" href={questionnaireLink(lead.questionnaireToken)}>{questionnaireLink(lead.questionnaireToken)}</a></p>
               )}
-              {lead.stage === 'call_booked' && <RecapForm id={id} />}
+              {lead.stage === 'call_booked' && <RecapForm id={id} saved={lead.questionnaire ?? {}} />}
             </section>
           )}
 
@@ -290,6 +290,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
                 {lead.questionnaireAt ? `Questionnaire · ${day.format(lead.questionnaireAt)}` : 'Questionnaire · pre-filled by us, not returned yet'}
               </h2>
               <dl className="studio-qa">
+                {lead.questionnaire._call_notes && (<><dt>Call notes (ours)</dt><dd>{lead.questionnaire._call_notes}</dd></>)}
                 {lead.questionnaire.contact_name && (<><dt>Name</dt><dd>{lead.questionnaire.contact_name}</dd></>)}
                 {lead.questionnaire.company && (<><dt>Legal name</dt><dd>{lead.questionnaire.company}</dd></>)}
                 {QUESTIONS.flatMap((g) => g.items).map((qq) =>

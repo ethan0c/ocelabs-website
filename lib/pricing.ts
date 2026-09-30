@@ -17,6 +17,11 @@ export const PACKAGES: Record<
     pages: number;
     extraPage: number;
     blurb: string;
+    /**
+     * What the proposal lists as included, in the client's words. {pages} is
+     * the page count on the quote. Add-ons marked includedIn are added after.
+     */
+    includes: string[];
     /** Calendar weeks from kickoff, low and high. */
     weeks: [number, number];
   }
@@ -27,6 +32,12 @@ export const PACKAGES: Record<
     pages: 3,
     extraPage: 250,
     blurb: 'One of our layouts in your logo and colours, with your words and photos.',
+    includes: [
+      'Up to {pages} pages on one of our layouts, in your logo and colours',
+      'Your words and photos, placed and checked on phones, tablets and computers',
+      'A contact form that sends to your inbox',
+      'Set up on your web address, with a secure connection',
+    ],
     weeks: [2, 3],
   },
   website: {
@@ -35,6 +46,14 @@ export const PACKAGES: Record<
     pages: 5,
     extraPage: 350,
     blurb: 'Custom site, up to five pages, full setup.',
+    includes: [
+      'A custom design for up to {pages} pages',
+      'Built to work on phones, tablets and computers',
+      'A contact form that sends to your inbox',
+      'Hosting, your web address connected with a secure connection, and redirects from any old pages',
+      'Search basics: page titles and descriptions, a sitemap, and Google Search Console',
+      'Visitor analytics',
+    ],
     weeks: [4, 6],
   },
   brand: {
@@ -43,6 +62,14 @@ export const PACKAGES: Record<
     pages: 10,
     extraPage: 450,
     blurb: 'Art direction, motion, video, up to ten pages.',
+    includes: [
+      'A custom design for up to {pages} pages, with art direction',
+      'Built to work on phones, tablets and computers',
+      'A contact form that sends to your inbox',
+      'Hosting, your web address connected with a secure connection, and redirects from any old pages',
+      'Search basics: page titles and descriptions, a sitemap, and Google Search Console',
+      'Visitor analytics',
+    ],
     weeks: [6, 10],
   },
   webapp: {
@@ -50,7 +77,13 @@ export const PACKAGES: Record<
     base: 12000,
     pages: 10,
     extraPage: 450,
-    blurb: 'Accounts, CMS, dashboard, integrations.',
+    blurb: 'Accounts, content system and admin dashboard.',
+    includes: [
+      'Design and build of up to {pages} pages and screens',
+      'A design review before development starts',
+      'Built to work on phones, tablets and computers',
+      'Hosting, your web address connected with a secure connection, and visitor analytics',
+    ],
     weeks: [10, 16],
   },
   mobile: {
@@ -59,6 +92,11 @@ export const PACKAGES: Record<
     pages: 0,
     extraPage: 0,
     blurb: 'iOS and Android from one codebase, plus marketing site.',
+    includes: [
+      'One app for iPhone and Android',
+      'A marketing site for the app',
+      'Submission to the App Store and Google Play',
+    ],
     weeks: [16, 26],
   },
 };
@@ -82,12 +120,29 @@ export function warrantyDays(kind: Kind) {
   return kind === 'starter' ? STARTER_WARRANTY_DAYS : WARRANTY_DAYS;
 }
 
+/**
+ * How a feature gets delivered. Most of our sites connect a tool the client
+ * signs up for (Cal.com, Stripe, Shopify); a web app may need it built into
+ * the product instead, which is a different job at a different price.
+ */
+export type Build = 'tool' | 'custom';
+
+/** Only these packages can take a custom build. A website that needs one is a web app. */
+export const CUSTOM_KINDS: Kind[] = ['webapp', 'mobile'];
+
 export type Addon = {
   id: string;
   label: string;
+  /** The price as a tool we set up, or the only price when there is no tool. */
   price: number;
+  /** The price built into the product. Only on packages in CUSTOM_KINDS. */
+  custom?: number;
+  /** The tools we'd use, named on the proposal. The client pays their subscriptions. */
+  tools?: string;
   /** Charged per unit when set; the UI shows a count instead of a checkbox. */
   unit?: string;
+  /** What to find out before quoting it. Shown in the estimator only. */
+  ask?: string;
   /** Packages that already include this. Shown as "Included", costs nothing. */
   includedIn?: Kind[];
   /** Packages this does not apply to. Hidden. */
@@ -97,42 +152,62 @@ export type Addon = {
 
 export const ADDONS: Addon[] = [
   // Content & brand
-  { id: 'copy', label: 'Copywriting', price: 600, unit: 'per 5 pages', group: 'Content & brand' },
-  { id: 'logo', label: 'Logo and identity', price: 1200, group: 'Content & brand' },
-  { id: 'imagery', label: 'Image sourcing and art direction', price: 400, includedIn: ['brand', 'webapp'], not: ['starter'], group: 'Content & brand' },
+  { id: 'copy', label: 'Copywriting', price: 900, unit: 'per 5 pages', ask: 'Do they have anything written? Interview-based writing, one unit per five pages.', group: 'Content & brand' },
+  { id: 'logo', label: 'Logo and identity', price: 2500, ask: 'A new logo, or a clean-up of one they have? A clean-up is a custom line at about half.', group: 'Content & brand' },
+  { id: 'imagery', label: 'Image sourcing and art direction', price: 600, includedIn: ['brand', 'webapp'], not: ['starter'], ask: 'Stock and art direction only. A photo shoot is a separate vendor.', group: 'Content & brand' },
   { id: 'motion', label: 'Motion and custom interactions', price: 1500, includedIn: ['brand', 'webapp'], not: ['starter', 'mobile'], group: 'Content & brand' },
-  { id: 'video', label: 'Video hero or showreel', price: 500, not: ['mobile'], group: 'Content & brand' },
-  { id: 'themes', label: 'Light and dark themes', price: 300, includedIn: ['brand', 'webapp'], group: 'Content & brand' },
+  { id: 'video', label: 'Video hero or showreel', price: 600, not: ['mobile'], ask: 'Editing and placing footage they supply. Filming is a separate vendor.', group: 'Content & brand' },
+  { id: 'themes', label: 'Light and dark themes', price: 400, includedIn: ['brand', 'webapp'], group: 'Content & brand' },
 
   // Features
   // Starter only. Delivered with a third-party content editor on top of the
   // site, not something we build ourselves; tool not chosen yet.
   { id: 'selfedit', label: 'Edit it yourself (text, photos, hours, prices)', price: 400, not: ['website', 'brand', 'webapp', 'mobile'], group: 'Features' },
-  { id: 'cms', label: 'Blog or content system', price: 1500, includedIn: ['webapp', 'mobile'], not: ['starter'], group: 'Features' },
-  { id: 'booking', label: 'Booking and scheduling', price: 800, group: 'Features' },
-  { id: 'newsletter', label: 'Newsletter signup and automation', price: 300, group: 'Features' },
-  { id: 'payments', label: 'Payments or simple e-commerce', price: 2500, group: 'Features' },
-  { id: 'shop', label: 'Full store with inventory', price: 5000, not: ['starter', 'mobile'], group: 'Features' },
-  { id: 'i18n', label: 'Additional language', price: 1000, unit: 'per language', not: ['starter'], group: 'Features' },
-  { id: 'integration', label: 'Third-party integration (CRM, calendar, email)', price: 600, unit: 'each', group: 'Features' },
-  { id: 'forms', label: 'Advanced forms (multi-step, uploads, quotes)', price: 500, group: 'Features' },
+  { id: 'cms', label: 'Blog or content system', price: 1500, includedIn: ['webapp', 'mobile'], not: ['starter'], ask: 'Who posts, and how often? Moving old posts over is Migration.', group: 'Features' },
+  { id: 'booking', label: 'Online booking', price: 500, custom: 4000, tools: 'Cal.com, Calendly, Acuity or Square Appointments', ask: 'One calendar or several staff? Deposits or no-show fees? If a booking tool already does it, it is the tool price.', group: 'Features' },
+  { id: 'payments', label: 'Take payments (deposits, invoices, simple checkout)', price: 750, custom: 4500, tools: 'Stripe', ask: 'One-off, deposits or subscriptions? Stripe-hosted checkout is the tool price; a checkout inside their app is custom.', group: 'Features' },
+  { id: 'shop', label: 'Online store', price: 3000, custom: 9000, tools: 'Shopify', not: ['mobile'], ask: 'How many products, with sizes or colours? Over 50 products to enter, add a custom line for product entry.', group: 'Features' },
+  { id: 'membership', label: 'Members-only area (gated pages, paid memberships)', price: 1500, custom: 5000, tools: 'Memberstack or Outseta', not: ['mobile'], ask: 'Free or paid? Is it just hidden pages, or do members have profiles and data? The second is a web app.', group: 'Features' },
+  { id: 'events', label: 'Events and ticket sales', price: 500, custom: 5000, tools: 'Luma, Eventbrite or Tito', ask: 'How many events a year, and seated or general admission?', group: 'Features' },
+  { id: 'newsletter', label: 'Email list signup and welcome email', price: 350, tools: 'Mailchimp, Kit or Beehiiv', ask: 'Which email tool do they use now? Writing a longer sequence is Copywriting.', group: 'Features' },
+  { id: 'forms', label: 'Advanced forms (multi-step, file uploads, quote requests)', price: 400, custom: 1200, tools: 'Tally or Typeform', group: 'Features' },
+  { id: 'calculator', label: 'Price calculator or product configurator', price: 2500, not: ['mobile'], ask: 'How many inputs, and are the rules written down? If they can\u2019t explain the pricing on a call, quote after they do.', group: 'Features' },
+  { id: 'chat', label: 'Live chat', price: 250, tools: 'Crisp, Tidio or Intercom', ask: 'Who answers it? An AI assistant is under Product.', group: 'Features' },
+  { id: 'reviews', label: 'Reviews shown on the site (Google, Yelp, Trustpilot)', price: 300, tools: 'Elfsight or Trustindex', group: 'Features' },
+  { id: 'i18n', label: 'Additional language', price: 1000, unit: 'per language', not: ['starter'], ask: 'Who translates? We build it; translation is theirs or a separate vendor.', group: 'Features' },
+  { id: 'integration', label: 'Connect another service (CRM, accounting, email)', price: 600, custom: 2000, unit: 'each', tools: 'Zapier or the service\u2019s own connector', ask: 'Which service, and which way does data go? A ready connector is the tool price; a direct API build is custom.', group: 'Features' },
+  { id: 'email', label: 'Business email on their domain', price: 250, tools: 'Google Workspace', ask: 'How many mailboxes? They pay Google per mailbox.', group: 'Features' },
 
   // Product
-  { id: 'accounts', label: 'User accounts and login', price: 2500, includedIn: ['webapp', 'mobile'], not: ['starter', 'website'], group: 'Product' },
+  { id: 'accounts', label: 'User accounts and login', price: 2500, includedIn: ['webapp', 'mobile'], not: ['starter', 'website'], ask: 'On a brand site, gated pages alone are the Members-only area instead.', group: 'Product' },
   { id: 'dashboard', label: 'Admin dashboard', price: 3000, includedIn: ['webapp', 'mobile'], not: ['starter', 'website'], group: 'Product' },
   { id: 'customerportal', label: 'Customer portal (orders, documents, billing)', price: 3500, not: ['starter', 'website', 'brand'], group: 'Product' },
   { id: 'push', label: 'Push notifications', price: 800, includedIn: ['mobile'], not: ['starter', 'website', 'brand', 'webapp'], group: 'Product' },
   { id: 'offline', label: 'Offline mode and sync', price: 2500, not: ['starter', 'website', 'brand', 'webapp'], group: 'Product' },
-  { id: 'ai', label: 'AI feature (chat, recommendations, generation)', price: 4000, not: ['starter', 'website'], group: 'Product' },
+  { id: 'ai', label: 'AI feature (chat, recommendations, generation)', price: 6000, unit: 'each', not: ['starter', 'website'], ask: 'One feature per unit. An assistant that answers from their own content is one; anything that takes actions for users, quote as a custom line.', group: 'Product' },
   { id: 'api', label: 'Public API for partners', price: 3000, not: ['starter', 'website', 'brand'], group: 'Product' },
 
   // Search & reach
-  { id: 'localseo', label: 'Local SEO (Business Profile, citations, location pages)', price: 800, group: 'Search & reach' },
-  { id: 'contentplan', label: 'Keyword research and content plan', price: 700, not: ['starter'], group: 'Search & reach' },
-  { id: 'migration', label: 'Migration with redirects from an existing site', price: 600, group: 'Search & reach' },
-  { id: 'a11y', label: 'Accessibility audit and fixes', price: 500, group: 'Search & reach' },
+  { id: 'localseo', label: 'Local search (Google Business listing, directories, location pages)', price: 1000, ask: 'How many locations? Each extra location page is an extra page.', group: 'Search & reach' },
+  { id: 'contentplan', label: 'Keyword research and content plan', price: 1000, not: ['starter'], group: 'Search & reach' },
+  { id: 'migration', label: 'Move an existing site over, with redirects', price: 750, unit: 'per 25 pages or posts', ask: 'How many pages and posts are on the old site, and on what platform? One unit per 25.', group: 'Search & reach' },
+  { id: 'a11y', label: 'Accessibility audit and fixes', price: 800, group: 'Search & reach' },
   { id: 'reporting', label: 'Monthly analytics report setup', price: 400, group: 'Search & reach' },
 ];
+
+/** Whether this add-on can be built custom on this package. */
+export function canBuildCustom(a: Addon, kind: Kind) {
+  return a.custom != null && CUSTOM_KINDS.includes(kind);
+}
+
+/** The way an add-on is delivered on this quote, after the package rules. */
+export function buildOf(a: Addon, input: Pick<QuoteInput, 'kind' | 'build'>): Build {
+  return canBuildCustom(a, input.kind) && input.build?.[a.id] === 'custom' ? 'custom' : 'tool';
+}
+
+export function addonPrice(a: Addon, build: Build) {
+  return build === 'custom' && a.custom != null ? a.custom : a.price;
+}
 
 export const GROUPS = ['Content & brand', 'Features', 'Product', 'Search & reach'] as const;
 
@@ -156,11 +231,25 @@ export const DISCOUNTS = [
 /** Percentage discounts add together up to this. A flat amount can come off on top. */
 export const DISCOUNT_CAP = 100;
 
-export const RUSH = [
-  { id: 'none', label: 'Standard timeline', pct: 0, weeks: null as [number, number] | null },
-  { id: 'fast', label: 'Under 3 weeks', pct: 25, weeks: [2, 3] as [number, number] },
-  { id: 'urgent', label: 'Under 10 days', pct: 50, weeks: [1, 2] as [number, number] },
+/*
+ * Rush shortens the package's own timeline rather than naming a fixed one,
+ * so it always buys something. The fastest option is off for packages where
+ * halving the build isn't a promise we can keep in writing.
+ */
+export const RUSH: Array<{ id: string; label: string; pct: number; factor: number; not?: Kind[] }> = [
+  { id: 'none', label: 'Standard timeline', pct: 0, factor: 1 },
+  { id: 'fast', label: 'Faster, about 30% sooner', pct: 25, factor: 0.7 },
+  { id: 'urgent', label: 'Fastest, about half the time', pct: 50, factor: 0.5, not: ['starter', 'webapp', 'mobile'] },
 ];
+
+export function rushOptions(kind: Kind) {
+  return RUSH.filter((r) => !r.not?.includes(kind));
+}
+
+export function rushWeeks(weeks: [number, number], factor: number): [number, number] {
+  const lo = Math.max(1, Math.round(weeks[0] * factor));
+  return [lo, Math.max(lo, Math.round(weeks[1] * factor))];
+}
 
 export const RETAINERS = [
   { id: 'none', label: 'No retainer', monthly: 0 },
@@ -249,6 +338,10 @@ export type QuoteInput = {
   projects: number;
   /** Add-on id to count. Checkbox add-ons are 0 or 1. */
   qty: Record<string, number>;
+  /** Add-on id to how it's delivered. Missing means a tool. */
+  build: Record<string, Build>;
+  /** Work the price book doesn't list, priced by hand. Counted like an add-on. */
+  extras: Line[];
   /** Discount ids that are on. */
   discounts: string[];
   customPct: number;
@@ -273,6 +366,8 @@ export function defaultInput(kind: Kind = 'website'): QuoteInput {
     pages: PACKAGES[kind].pages,
     projects: 1,
     qty: {},
+    build: {},
+    extras: [],
     discounts: [],
     customPct: 0,
     customAmount: 0,
@@ -308,7 +403,19 @@ export type Quote = {
   low: number;
   high: number;
   weeks: [number, number];
+  /** Tools on this quote whose subscriptions the client pays. */
+  thirdParty: string[];
+  /** Signs the quote is in the wrong package or missing something. Studio only. */
+  warnings: string[];
 };
+
+/** The proposal's "included" list: the package's own items, then add-ons it includes. */
+export function packageIncludes(kind: Kind, pages: number) {
+  return [
+    ...PACKAGES[kind].includes.map((t) => t.replace('{pages}', String(pages))),
+    ...ADDONS.filter((a) => a.includedIn?.includes(kind)).map((a) => a.label),
+  ];
+}
 
 export function visibleAddons(kind: Kind) {
   return ADDONS.filter((a) => !a.not?.includes(kind));
@@ -327,13 +434,21 @@ export function computeQuote(input: QuoteInput): Quote {
     });
   }
 
+  const thirdParty: string[] = [];
   for (const a of visibleAddons(kind)) {
     const n = qty[a.id] ?? 0;
     if (n <= 0 || a.includedIn?.includes(kind)) continue;
+    const build = buildOf(a, input);
+    const how = build === 'custom' ? ', built custom' : a.tools ? `, set up with ${a.tools}` : '';
     lines.push({
-      label: a.unit ? `${a.label} × ${n}` : a.label,
-      amount: a.price * n,
+      label: `${a.label}${how}${a.unit ? ` × ${n}` : ''}`,
+      amount: addonPrice(a, build) * n,
     });
+    if (build === 'tool' && a.tools) thirdParty.push(a.tools);
+  }
+
+  for (const x of input.extras ?? []) {
+    if (x.label.trim() && x.amount > 0) lines.push({ label: x.label.trim(), amount: Math.round(x.amount) });
   }
 
   const perProject = lines.reduce((s, l) => s + l.amount, 0);
@@ -347,15 +462,15 @@ export function computeQuote(input: QuoteInput): Quote {
 
   const subtotal = lines.reduce((s, l) => s + l.amount, 0);
 
-  const rushOpt = RUSH.find((r) => r.id === rush) ?? RUSH[0];
+  const rushOpt = rushOptions(kind).find((r) => r.id === rush) ?? RUSH[0];
   const rushPct = rushOpt.pct;
   const rushAmt = Math.round(subtotal * (rushPct / 100));
 
-  // Rush overrides the package timeline; otherwise extra projects extend it.
-  const weeks: [number, number] = rushOpt.weeks ?? [
-    pkg.weeks[0] + extraProjects * WEEKS_PER_EXTRA_PROJECT,
-    pkg.weeks[1] + extraProjects * WEEKS_PER_EXTRA_PROJECT,
-  ];
+  // Extra projects extend the package timeline; rush then shortens the result.
+  const weeks = rushWeeks(
+    [pkg.weeks[0] + extraProjects * WEEKS_PER_EXTRA_PROJECT, pkg.weeks[1] + extraProjects * WEEKS_PER_EXTRA_PROJECT],
+    rushOpt.factor,
+  );
 
   const bulkPct = BULK.filter((b) => projects >= b.min).map((b) => b.pct).pop() ?? 0;
   const chosen = DISCOUNTS.filter((d) => input.discounts.includes(d.id));
@@ -399,7 +514,40 @@ export function computeQuote(input: QuoteInput): Quote {
     low: Math.round(total / 100) * 100,
     high: Math.round((total * 1.15) / 100) * 100,
     weeks,
+    thirdParty,
+    warnings: warningsFor(input, perProject),
   };
+}
+
+/**
+ * Quotes that look like the wrong package. A cheap package loaded with
+ * add-ons undersells the work and teaches the client our packages are
+ * padding; a premium studio moves them up instead.
+ */
+function warningsFor(input: QuoteInput, perProject: number): string[] {
+  const { kind } = input;
+  const out: string[] = [];
+  const on = (id: string) => (input.qty[id] ?? 0) > 0;
+  if (kind === 'starter' && perProject >= PACKAGES.website.base) {
+    out.push(`This Starter quote is ${usd.format(perProject)}, at or above the Website Package (${usd.format(PACKAGES.website.base)}). Quote the Website Package instead.`);
+  }
+  const pkg = PACKAGES[kind];
+  if (pkg.pages > 0 && input.pages > pkg.pages * 2) {
+    out.push(`${input.pages} pages is more than twice what ${pkg.label} includes. Check whether a bigger package fits, or whether many pages share one template (a custom line is fairer then).`);
+  }
+  if ((kind === 'website' || kind === 'brand') && ['membership', 'shop', 'booking', 'payments', 'events'].filter(on).length >= 3) {
+    out.push('Three or more tools on one site. If they need to talk to each other (members who book and pay), this is a web app.');
+  }
+  if (on('shop') && on('payments')) {
+    out.push('The online store already takes payments. Keep Take payments only if they also need deposits or invoices outside the store.');
+  }
+  if (on('accounts') && on('membership')) {
+    out.push('User accounts and a Members-only area overlap. Pick one.');
+  }
+  if (on('calculator') && !input.notes.trim()) {
+    out.push('Write the calculator rules into the notes, so the scope is clear on the proposal.');
+  }
+  return out;
 }
 
 /**
@@ -451,6 +599,7 @@ export function summaryText(q: Quote) {
     'Payments:',
     ...q.payments.map((p) => `${p.label} (${p.pct}%): ${usd.format(p.amount)} — ${p.trigger.toLowerCase()}`),
     ...(q.monthly ? [`Retainer: ${usd.format(q.monthly)} per month`] : []),
+    ...(q.thirdParty.length ? [`Tools you subscribe to directly: ${q.thirdParty.join('; ')}`] : []),
     '',
     `Timeline: ${weeksLabel(q.weeks)} from kickoff`,
     `Kickoff: deposit paid, questionnaire returned, logo and brand files, existing copy shared`,
@@ -488,7 +637,7 @@ export function decodeInput(value: string | undefined | null): QuoteInput | null
 }
 
 /** Never trust the URL: every field is coerced back into a valid value. */
-function sanitise(raw: Partial<QuoteInput>): QuoteInput {
+export function sanitise(raw: Partial<QuoteInput>): QuoteInput {
   const kind: Kind = raw.kind && raw.kind in PACKAGES ? raw.kind : 'website';
   const base = defaultInput(kind);
   const qty: Record<string, number> = {};
@@ -498,16 +647,27 @@ function sanitise(raw: Partial<QuoteInput>): QuoteInput {
       if (Number.isFinite(n) && n > 0) qty[a.id] = clampInt(n, 0, 99);
     }
   }
+  const build: Record<string, Build> = {};
+  if (raw.build && typeof raw.build === 'object') {
+    for (const a of ADDONS) if (raw.build[a.id] === 'custom') build[a.id] = 'custom';
+  }
+  const extras: Line[] = Array.isArray(raw.extras)
+    ? raw.extras
+        .slice(0, 20)
+        .map((x) => ({ label: str(x?.label, 200), amount: clampInt(Number(x?.amount) || 0, 0, 1_000_000) }))
+    : [];
   return {
     kind,
     pages: clampInt(Number(raw.pages) || base.pages, 1, 500),
     projects: clampInt(Number(raw.projects) || 1, 1, 50),
     qty,
+    build,
+    extras,
     discounts: Array.isArray(raw.discounts)
       ? DISCOUNTS.filter((d) => raw.discounts!.includes(d.id)).map((d) => d.id)
       : [],
     customPct: clampInt(Number(raw.customPct) || 0, 0, DISCOUNT_CAP),
-    rush: RUSH.some((r) => r.id === raw.rush) ? String(raw.rush) : 'none',
+    rush: rushOptions(kind).some((r) => r.id === raw.rush) ? String(raw.rush) : 'none',
     retainer: RETAINERS.some((r) => r.id === raw.retainer) ? String(raw.retainer) : 'none',
     customRetainer: clampInt(Number(raw.customRetainer) || 0, 0, 1_000_000),
     customAmount: clampInt(Number(raw.customAmount) || 0, 0, 10_000_000),

@@ -203,6 +203,30 @@ export async function ensureQuestionnaireToken(id: string) {
 
 export const questionnaireLink = (t: string) => `${siteUrl()}/q/${t}`;
 
+/*
+ * Before the client returns the questionnaire, the lead's questionnaire
+ * field holds what we typed on the call. Keys starting with "_" are ours
+ * (the call notes) and never reach the client.
+ */
+export const CALL_NOTES = '_call_notes';
+const isPrivate = (k: string) => k.startsWith('_');
+
+export function clientPrefill(q: Questionnaire | null | undefined): Questionnaire {
+  return Object.fromEntries(Object.entries(q ?? {}).filter(([k]) => !isPrivate(k)));
+}
+
+function privatePart(q: Questionnaire | null | undefined): Questionnaire {
+  return Object.fromEntries(Object.entries(q ?? {}).filter(([k]) => isPrivate(k)));
+}
+
+/** Autosave from the call: the answers and notes as typed so far. */
+export async function saveCallAnswers(id: string, answers: Questionnaire) {
+  const lead = await getLead(id);
+  if (!lead) throw new Error('No such lead.');
+  if (lead.questionnaireAt) throw new Error('The client has already returned the questionnaire.');
+  await update(id, { questionnaire: Object.keys(answers).length ? answers : null });
+}
+
 export async function sendRecap(
   id: string,
   o: { bullets: string[]; packageLabel: string; range: string; weeks: string; prefill?: Questionnaire },
@@ -211,7 +235,10 @@ export async function sendRecap(
   if (!lead) throw new Error('No such lead.');
   const t = await ensureQuestionnaireToken(id);
   // Answers we already have from the call start the questionnaire off; the client can change them.
-  if (!lead.questionnaireAt) await update(id, { questionnaire: o.prefill && Object.keys(o.prefill).length ? o.prefill : null });
+  if (!lead.questionnaireAt) {
+    const merged = { ...privatePart(lead.questionnaire), ...o.prefill };
+    await update(id, { questionnaire: Object.keys(merged).length ? merged : null });
+  }
   const ok = await send(
     id,
     'B',
@@ -230,7 +257,8 @@ export async function submitQuestionnaire(t: string, answers: Questionnaire) {
   const lead = await leadByQuestionnaireToken(t);
   if (!lead) throw new Error('This link is not valid.');
   await update(lead.id, {
-    questionnaire: answers,
+    // Their answers replace our pre-fill; our call notes stay.
+    questionnaire: { ...privatePart(lead.questionnaire), ...answers },
     questionnaireAt: new Date(),
     nextAction: 'Build the quote and send the proposal',
     nextActionAt: addBusinessDays(new Date(), 2),
@@ -274,6 +302,7 @@ export async function createAndSendProposal(id: string) {
       leadId: id,
       token: token(),
       quote,
+      priced: q,
       sentAt: now,
       expiresAt: addDays(now, PROPOSAL_VALID_DAYS),
       status: 'sent',
@@ -308,8 +337,13 @@ export async function markProposalViewed(p: Proposal) {
   await log(p.leadId, 'proposal:viewed');
 }
 
+/** The quote as it was priced when sent. Proposals from before `priced` existed are recomputed. */
+export function proposalQuote(p: Proposal) {
+  return p.priced ?? computeQuote(p.quote);
+}
+
 export function proposalDoc(p: Proposal) {
-  return buildProposal(computeQuote(p.quote), p.createdAt);
+  return buildProposal(proposalQuote(p), p.createdAt);
 }
 
 /* ── Stage 5: signature → deposit ──────────────────────────────────────── */
@@ -348,7 +382,7 @@ export async function signProposal(t: string, s: { name: string; email: string; 
   const attachment: Attachment = { filename: proposalFileName(doc.client).replace(/\.pdf$/, '-signed.pdf'), contentType: 'application/pdf', data: pdf };
 
   // Payment schedule from the signed quote; the deposit goes out now.
-  const q = computeQuote(p.quote);
+  const q = proposalQuote(p);
   await db.delete(payments).where(and(eq(payments.leadId, lead.id), eq(payments.status, 'scheduled')));
   const rows = await db
     .insert(payments)
@@ -386,7 +420,9 @@ export async function signProposal(t: string, s: { name: string; email: string; 
 /** Create and send one scheduled payment as a Stripe invoice. */
 export async function sendPayment(lead: Lead, pay: Payment, quote: QuoteInput, extras: Array<{ label: string; amount: number }> = []) {
   if (pay.status !== 'scheduled') throw new Error(`Payment "${pay.label}" was already ${pay.status}.`);
-  const q = computeQuote(quote);
+  // Describe the invoice from the signed proposal, not today's price book.
+  const signedP = pay.proposalId ? await db.query.proposals.findFirst({ where: eq(proposals.id, pay.proposalId) }) : null;
+  const q = signedP ? proposalQuote(signedP) : computeQuote(quote);
   const customer = await findOrCreateCustomer(lead.email, quote.client || lead.company || lead.name);
   const invoice = await createDraftInvoice({
     customer,

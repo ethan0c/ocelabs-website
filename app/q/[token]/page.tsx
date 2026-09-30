@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { leadByQuestionnaireToken } from '@/lib/studio';
+import { clientPrefill, leadByQuestionnaireToken } from '@/lib/studio';
 import QForm from './QForm';
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default async function QuestionnairePage({ params }: { params: Promise<{ 
   }
 
   const done = Boolean(lead.questionnaireAt);
-  const prefill = (!done && lead.questionnaire) || {};
+  const prefill = done ? {} : clientPrefill(lead.questionnaire);
   const prefilled = Object.keys(prefill).length > 0;
 
   return (
