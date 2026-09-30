@@ -75,7 +75,9 @@ const s = StyleSheet.create({
     color: DIM,
   },
   brand: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  wordmark: { color: INK, letterSpacing: 1.6, fontSize: 8, fontWeight: 500 },
+  // lineHeight 1 so the text box hugs the letters; the page's 1.55 left the
+  // caps riding high in a tall box, and the mark looked like it had dropped.
+  wordmark: { color: INK, letterSpacing: 1.6, fontSize: 8, fontWeight: 500, lineHeight: 1 },
   footer: {
     position: 'absolute',
     // Measured from the top: react-pdf drops a `bottom`-anchored fixed box
@@ -88,12 +90,7 @@ const s = StyleSheet.create({
     fontSize: 8,
     color: DIM,
   },
-  eyebrow: {
-    fontSize: 7.5,
-    letterSpacing: 1.4,
-    textTransform: 'uppercase',
-    color: DIM,
-  },
+  eyebrow: { fontSize: 9, color: DIM },
   title: { fontSize: 24, letterSpacing: -0.4, marginTop: 6, marginBottom: 16, lineHeight: 1.15 },
   facts: {
     flexDirection: 'row',
@@ -105,13 +102,7 @@ const s = StyleSheet.create({
   },
   factValue: { marginTop: 2 },
   section: { marginBottom: 16 },
-  h2: {
-    fontSize: 7.5,
-    letterSpacing: 1.4,
-    textTransform: 'uppercase',
-    color: DIM,
-    marginBottom: 4,
-  },
+  h2: { fontSize: 10.5, fontWeight: 500, marginBottom: 4 },
   p: { marginBottom: 6 },
   strong: { fontWeight: 600 },
   muted: { color: DIM },
@@ -147,7 +138,9 @@ const s = StyleSheet.create({
 /** The aperture mark, as on the site: ring open at 3 o'clock with one tick. */
 function Mark({ size = 11 }: { size?: number }) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
+    // Nudged down 1.2pt (half the margin) so the ring centres on the caps,
+    // measured on a render; flex centring alone leaves it riding high.
+    <Svg width={size} height={size} viewBox="0 0 24 24" style={{ marginTop: 2.4 }}>
       <Path d="M20.6 8.4A10 10 0 1 0 20.6 15.6" stroke={INK} strokeWidth={1.75} fill="none" />
       <Path d="M14 12h8" stroke={INK} strokeWidth={1.75} />
     </Svg>

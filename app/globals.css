@@ -173,7 +173,9 @@ a {
 }
 
 .wordmark svg {
-  margin-top: -0.05em;
+  /* Measured at 4x: this puts the ring's centre on the caps' centre. A
+     transform, because a margin this small snaps to a whole pixel. */
+  transform: translateY(-0.036em);
 }
 
 /*
@@ -223,9 +225,7 @@ a {
 }
 
 .nav-link {
-  font-size: 0.8125rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-size: 0.9375rem;
   color: var(--dim);
   padding-block: 0.25rem;
   transition: color 0.25s ease;
@@ -369,8 +369,7 @@ a {
 .sheet-link {
   font-size: clamp(2rem, 11vw, 3rem);
   line-height: 1.25;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   padding-block: 0.35rem;
 }
 
@@ -771,17 +770,15 @@ a {
 }
 
 .work-shot--empty span {
-  font-size: 0.6875rem;
-  letter-spacing: 0.18em;
+  font-size: 0.9375rem;
   color: var(--dim);
-  text-transform: uppercase;
 }
 
 /* Index number sits in a fixed column so names align across cells, echoing
    the .cap-row treatment on the home page. */
 .work-head {
   display: grid;
-  grid-template-columns: 1.5rem 1fr;
+  grid-template-columns: 1.5rem 1fr auto;
   gap: 0.75rem;
   align-items: baseline;
 }
@@ -795,6 +792,14 @@ a {
 .work-name {
   font-size: 1.125rem;
   letter-spacing: -0.015em;
+}
+
+/* Same small dim type as the index, pushed to the row's far end. */
+.work-kind {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--dim);
+  white-space: nowrap;
 }
 
 .work-desc,
@@ -878,9 +883,7 @@ a {
 
 .field label {
   display: block;
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
   color: var(--dim);
   margin-bottom: 0.6rem;
 }
@@ -1336,9 +1339,7 @@ a {
 }
 
 .est-legend {
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
   color: var(--dim);
   margin-bottom: 0.75rem;
   padding: 0;
@@ -1659,9 +1660,7 @@ a {
 }
 
 .legal h2 {
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 1rem;
   color: var(--text);
   font-weight: 400;
   margin: 2.25rem 0 0.6rem;
@@ -1766,9 +1765,7 @@ a {
 }
 
 .prop-facts dt {
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
   color: var(--dim);
 }
 
@@ -1783,9 +1780,7 @@ a {
 }
 
 .prop-sec h2 {
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 0.9375rem;
   color: var(--dim);
   font-weight: 400;
   margin-bottom: 0.6rem;
@@ -1941,8 +1936,7 @@ a {
 .studio-nav-links {
   display: flex;
   gap: 1.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-size: 0.875rem;
   color: var(--dim);
 }
 
@@ -2043,9 +2037,7 @@ a {
 .tbl th {
   text-align: left;
   font-weight: 400;
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
   color: var(--dim);
   padding: 0 1rem 0.6rem 0;
   border-bottom: 1px solid var(--line-strong);
@@ -2087,9 +2079,7 @@ a {
 
 .pill-stage {
   display: inline-block;
-  font-size: 0.6875rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
   padding: 0.25rem 0.5rem;
   border: 1px solid var(--line-strong);
   white-space: nowrap;

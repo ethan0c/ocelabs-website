@@ -13,6 +13,8 @@ export const metadata: Metadata = {
 type Project = {
   name: string;
   desc: string;
+  /** What we made, when it's more than a site. Tells a web app from a brochure at a glance. */
+  kind?: string;
   href: string;
   /** File in /public/work. Rendered only if it actually exists. */
   shot: string;
@@ -22,30 +24,35 @@ const projects: Project[] = [
   {
     name: 'Ada Palm',
     desc: 'A site for a New York marketing consultancy, with their showreel filling the screen.',
+    kind: 'Website',
     href: 'https://adapalm.com',
     shot: 'adapalm.png',
   },
   {
     name: 'Helthy',
-    desc: 'An AI fitness and nutrition app that tracks how you eat and train, and tells you what to do next.',
+    desc: 'An AI fitness and nutrition app. We designed the app itself, and the site that introduces it.',
+    kind: 'App design and website',
     href: 'https://helthy.app',
     shot: 'helthy.png',
   },
   {
     name: 'JobScout',
-    desc: 'An AI career agent that finds jobs that fit your resume and keeps track of every application.',
+    desc: 'An AI career agent that finds jobs to fit your resume and tracks every application, with accounts and a database behind it.',
+    kind: 'Web app',
     href: 'https://jobscout-pi-pied.vercel.app',
     shot: 'jobscout.png',
   },
   {
     name: 'Personal Portfolio',
     desc: 'A personal portfolio, and the place we try out new animation ideas first.',
+    kind: 'Website',
     href: 'https://chibudomonyejesi.com',
     shot: 'portfolio.png',
   },
   {
     name: 'Concepta',
     desc: 'The marketing site for Concepta.',
+    kind: 'Website',
     href: 'https://www.conceptainnovation.com/',
     shot: 'concepta.png',
   },
@@ -115,7 +122,7 @@ function Card({
   priority?: boolean;
   heading?: 'h2' | 'h3';
 }) {
-  const { name, desc, href, shot } = project;
+  const { name, desc, kind, href, shot } = project;
   return (
     <Reveal className="work-cell">
       <a
@@ -142,6 +149,7 @@ function Card({
         <div className="work-head">
           <span className="work-num">{String(index + 1).padStart(2, '0')}</span>
           <Heading className="work-name">{name}</Heading>
+          {kind && <span className="work-kind">{kind}</span>}
         </div>
         <p className="work-desc">{desc}</p>
         <span className="work-domain">{domainOf(href)}</span>

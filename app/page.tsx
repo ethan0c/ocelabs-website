@@ -126,8 +126,9 @@ export default function HomePage() {
         </Reveal>
         <Reveal>
           <p className="cap-note">
-            We keep things simple on purpose. If something on the page isn&apos;t helping the
-            person reading it, we take it out.
+            We keep things simple, on the page and in how we work. Running a business is hard
+            enough, so we look after everything technical, before launch and long after it, and
+            you get on with running yours.
           </p>
         </Reveal>
       </section>
