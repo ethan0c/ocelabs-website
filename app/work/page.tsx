@@ -86,10 +86,13 @@ const starters: Project[] = [
 
 /**
  * Bare host as the caption — more informative than a repeated "Visit →".
- * Keeps the path when there is one, so the demos read as host/restaurant.
+ * Keeps the path when there is one. A project still on its host's shared
+ * address gets a plain label instead: that address names the hosting
+ * company, which client-facing copy never does.
  */
 function domainOf(href: string) {
   const url = new URL(href);
+  if (url.hostname.endsWith('.vercel.app')) return 'Live demo';
   const path = url.pathname.replace(/\/$/, '');
   return url.hostname.replace(/^www\./, '') + path;
 }

@@ -84,7 +84,7 @@ We think of this as being legible: to people first, and to machines as a consequ
 
 Our tools, and why we do not use monthly-fee platforms
 
-We build with Next.js, the most widely used framework for modern websites, and host on Vercel, the company that maintains it. The code is written by us, specifically for you, and stored in a private repository that you can be given access to at any time.
+We build each site by hand, with the same modern tools large companies use for theirs, and host it on a global network built for speed. The code is written by us, specifically for you, and stored in a private repository that you can be given access to at any time.
 
 Platforms like Squarespace, Wix, and Webflow charge a monthly fee for as long as your site exists. In exchange you get templates that look like everyone else's, pages that load slower than they should, limited control over search settings, and a site you cannot take with you if you ever leave.
 

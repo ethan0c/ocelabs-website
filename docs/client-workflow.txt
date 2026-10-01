@@ -132,7 +132,7 @@ Best regards,
 OCE Labs
 ocelabs.xyz
 
-They go from "OCE Labs <hello@ocelabs.xyz>", so the subjects do not repeat the name.
+They go from "OCE Labs <hello@ocelabs.xyz>", so the subjects do not repeat the name. Client-facing wording never names the tools we run on: it says "a separate email with the invoice", not the payment provider's name.
 
 
 Email A: Reply to an inquiry
@@ -246,7 +246,7 @@ Hi [Name],
 
 Thank you for signing. We're glad to be working with you, and your signed copy is attached.
 
-You'll receive a separate email from Stripe with the deposit invoice for [amount]. You can pay by bank transfer or card.
+You'll receive a separate email with the deposit invoice for [amount]. You can pay by bank transfer or card.
 
 We'll begin as soon as we have the following:
 • The deposit
@@ -256,7 +256,7 @@ We'll begin as soon as we have the following:
 
 You can send files by replying to this email or by uploading them to this folder: [link]. Once everything is in, I'll confirm your start and launch dates.
 
-(On the pay-in-full plan it says "invoice" and "The payment". If they paid before signing, the Stripe paragraph becomes: "We've received your payment of [amount]. Thank you. The remaining [balance] will be invoiced once you approve the finished site, before launch.", and the first item reads "The payment (done)".)
+(On the pay-in-full plan it says "invoice" and "The payment". If they paid before signing, the invoice paragraph becomes: "We've received your payment of [amount]. Thank you. The remaining [balance] will be invoiced once you approve the finished site, before launch.", and the first item reads "The payment (done)".)
 
 
 Email E: Kickoff confirmation
@@ -298,7 +298,7 @@ Subject: [Company] is ready to launch
 
 Hi [Name],
 
-Thank you for approving the site. The final invoice for [amount] will arrive shortly from Stripe. [If change orders: It includes the additions we agreed on during the project: item, amount.]
+Thank you for approving the site. The final invoice for [amount] will arrive shortly in a separate email. [If change orders: It includes the additions we agreed on during the project: item, amount.]
 
 Once it's paid, we'll connect your domain and take the site live, usually on the same day. If you'd prefer a particular day or time for the launch, just let me know.
 
@@ -346,7 +346,7 @@ Hi [Name],
 
 You're all set. We'll look after [domain] starting [date]. Here's what's included:
 
-• [amount] a month, invoiced by Stripe on the [day] of each month, due in 7 days
+• [amount] a month, invoiced by email on the [day] of each month, due in 7 days
 • Content and image updates whenever you need them
 • Monitoring, plus security and software updates
 • A quarterly search review with recommendations

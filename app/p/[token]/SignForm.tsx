@@ -22,7 +22,7 @@ export default function SignForm({
         <p className="eyebrow">Signed</p>
         <h2 className="h2">Thank you. A signed copy is on its way to your inbox.</h2>
         <p className="lede">
-          You will also get the deposit invoice from Stripe in a separate email. The project starts
+          You will also get the deposit invoice in a separate email. The project starts
           once it clears and your files are in.
         </p>
         <a className="block" href={`/p/${token}/pdf`}>

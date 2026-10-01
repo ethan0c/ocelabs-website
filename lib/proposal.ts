@@ -113,8 +113,8 @@ export function buildProposal(q: Quote, now = new Date()): Proposal {
       blocks: [
         p(
           q.payments.length === 1
-            ? `The price is fixed at ${total}, payable in full on signature by invoice from Stripe. Bank transfer or card, from the link in the invoice.`
-            : `The price is fixed at ${total}, payable in ${q.payments.length} parts by invoice from Stripe. Bank transfer or card, from the link in the invoice.`,
+            ? `The price is fixed at ${total}, payable in full on signature by emailed invoice. Bank transfer or card, from the link in the invoice.`
+            : `The price is fixed at ${total}, payable in ${q.payments.length} parts by emailed invoice. Bank transfer or card, from the link in the invoice.`,
         ),
         { kind: 'table', rows: payments },
         ...(q.monthly > 0

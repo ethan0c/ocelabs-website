@@ -174,7 +174,7 @@ export function emailD(o: {
       `Thank you for signing. We're glad to be working with you, and your signed copy is attached.\n\n` +
       (paid
         ? `We've received your payment of ${usd.format(o.paidAlready!)}. Thank you.${o.balance ? ` The remaining ${usd.format(o.balance)} will be invoiced once you approve the finished site, before launch.` : ''}\n\n`
-        : `You'll receive a separate email from Stripe with the ${o.full ? 'invoice' : 'deposit invoice'} for ${usd.format(o.depositAmount)}. You can pay by bank transfer or card.\n\n`) +
+        : `You'll receive a separate email with the ${o.full ? 'invoice' : 'deposit invoice'} for ${usd.format(o.depositAmount)}. You can pay by bank transfer or card.\n\n`) +
       `We'll begin as soon as we have the following:\n` +
       bullets([
         paid ? 'The payment (done)' : o.full ? 'The payment' : 'The deposit',
@@ -238,7 +238,7 @@ export function emailG(o: { name?: string | null; company: string; amount: numbe
     subject: `${o.company} is ready to launch`,
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Thank you for approving the site. The final invoice for ${usd.format(o.amount)} will arrive shortly from Stripe` +
+      `Thank you for approving the site. The final invoice for ${usd.format(o.amount)} will arrive shortly in a separate email` +
       (o.changeOrders ? `. It includes the additions we agreed on during the project: ${o.changeOrders}.` : '.') +
       `\n\nOnce it's paid, we'll connect your domain and take the site live, usually on the same day. If you'd prefer a particular day or time for the launch, just let me know.` +
       sign(o.signer),
@@ -301,7 +301,7 @@ export function emailJ(o: { name?: string | null; domain?: string | null; monthl
       `Hi ${first(o.name)},\n\n` +
       `You're all set. We'll look after ${o.domain || 'your site'} starting ${fmtDate(o.startAt)}. Here's what's included:\n\n` +
       bullets([
-        `${usd.format(o.monthly)} a month, invoiced by Stripe on the ${ordinal(o.startAt.getDate())} of each month, due in 7 days`,
+        `${usd.format(o.monthly)} a month, invoiced by email on the ${ordinal(o.startAt.getDate())} of each month, due in 7 days`,
         'Content and image updates whenever you need them',
         'Monitoring, plus security and software updates',
         'A quarterly search review with recommendations',

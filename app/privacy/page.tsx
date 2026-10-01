@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description: 'What OCE Labs collects, why, and how to reach us about it.',
 };
 
-const UPDATED = 'September 30, 2026';
+const UPDATED = 'October 1, 2026';
 
 export default function PrivacyPage() {
   return (
@@ -22,17 +22,16 @@ export default function PrivacyPage() {
         <h2>When you contact us</h2>
         <p>
           The contact form sends us your name, email, message and the budget range you pick. We
-          save it in our database (hosted by Neon) and it lands in our inbox at <a href="mailto:hello@ocelabs.xyz" className="text-link">hello@ocelabs.xyz</a>,
-          which runs on Google Workspace. To help us reply faster, your message is passed to
-          Claude, an AI model made by Anthropic, which writes a one-line summary for our notes.
-          Anthropic doesn&rsquo;t use it to train its models. If you book a call, Cal.com handles
-          the booking and shares your name, email and the time with us.
+          save it in our database and it lands in our inbox at <a href="mailto:hello@ocelabs.xyz" className="text-link">hello@ocelabs.xyz</a>.
+          To help us reply faster, your message is passed to an AI service, which writes a
+          one-line summary for our notes. It isn&rsquo;t used to train AI models. If you book a
+          call, our booking service handles it and shares your name, email and the time with us.
         </p>
 
         <h2>Browsing the site</h2>
         <p>
           There are no analytics and no tracking cookies. The site remembers whether you picked
-          light or dark mode, and that setting stays in your browser. Our host, Vercel, keeps
+          light or dark mode, and that setting stays in your browser. Our hosting company keeps
           ordinary server logs (IP address, the page you asked for, the time) for a short while to
           keep the site secure and running.
         </p>
@@ -42,16 +41,18 @@ export default function PrivacyPage() {
           We keep what the project needs: your contact details, your questionnaire answers, the
           signed proposal, the files you send us and the code we write. When you sign a proposal
           online we record your typed name, email, the time, your IP address and browser, so
-          there&rsquo;s a clear record of who signed and when. Invoices go through Stripe, which
-          handles your card or bank details under its own privacy policy. We never see the full
-          numbers.
+          there&rsquo;s a clear record of who signed and when. Invoices go through our payment
+          provider, which handles your card or bank details under its own privacy policy. We
+          never see the full numbers.
         </p>
 
         <h2>Who else sees it</h2>
         <p>
-          Only the services named on this page, and only to do the job we use them for. We
-          don&rsquo;t sell or share your information with anyone else. The one exception is if the
-          law requires us to hand something over.
+          Only the kinds of services described on this page (hosting, our database, email,
+          call booking, payments and the AI summary), and only to do the job we use them for. If
+          you want to know which companies handle your information, email us and we&rsquo;ll tell
+          you. We don&rsquo;t sell or share your information with anyone else. The one exception
+          is if the law requires us to hand something over.
         </p>
 
         <h2>How long we keep it</h2>
