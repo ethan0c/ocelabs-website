@@ -23,8 +23,8 @@ type Project = {
 const projects: Project[] = [
   {
     name: 'Ada Palm',
-    desc: 'A site for a New York marketing consultancy, with their showreel filling the screen.',
-    kind: 'Website',
+    desc: 'A site for a New York marketing consultancy, with their showreel filling the screen. We moved them off a monthly website builder onto a site they own.',
+    kind: 'Brand website',
     href: 'https://adapalm.com',
     shot: 'adapalm.png',
   },
@@ -36,6 +36,13 @@ const projects: Project[] = [
     shot: 'helthy.png',
   },
   {
+    name: 'Temegs Engineering',
+    desc: 'A new website and logo for a civil engineering contractor in Port Harcourt, Nigeria.',
+    kind: 'Website and logo',
+    href: 'https://temegsengineering.com/',
+    shot: 'temegs.png',
+  },
+  {
     name: 'JobScout',
     desc: 'An AI career agent that finds jobs to fit your resume and tracks every application, with accounts and a database behind it.',
     kind: 'Web app',
@@ -43,25 +50,11 @@ const projects: Project[] = [
     shot: 'jobscout.png',
   },
   {
-    name: 'Personal Portfolio',
-    desc: 'A personal portfolio, and the place we try out new animation ideas first.',
-    kind: 'Website',
-    href: 'https://chibudomonyejesi.com',
-    shot: 'portfolio.png',
-  },
-  {
     name: 'Concepta',
-    desc: 'The marketing site for Concepta.',
+    desc: 'A site for an IT and cybersecurity firm serving government and regulated industries, with a page for each service and a quote request form.',
     kind: 'Website',
     href: 'https://www.conceptainnovation.com/',
     shot: 'concepta.png',
-  },
-  {
-    name: 'Temegs Engineering',
-    desc: 'A new website and logo for a civil engineering contractor in Port Harcourt, Nigeria.',
-    kind: 'Website and logo',
-    href: 'https://temegsengineering.com/',
-    shot: 'temegs.png',
   },
 ];
 

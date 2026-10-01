@@ -68,8 +68,8 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="hero-proof rise rise-3">
-            Recent work for Ada Palm, Helthy, and Concepta. Most sites launch in four to six
-            weeks.
+            Recent work for Ada Palm, Helthy, Temegs Engineering, and Concepta. Most sites launch
+            in four to six weeks.
           </p>
         </div>
 
