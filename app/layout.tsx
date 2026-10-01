@@ -8,8 +8,8 @@ import SmoothScroll from '@/components/SmoothScroll';
 /*
  * One typeface, one weight. Geist is a grotesque with tighter apertures than
  * the usual default sans, so it reads as a deliberate choice at display sizes
- * while staying neutral in body copy. The wordmark leans on letter-spacing
- * rather than a second weight, which keeps this to a single font file.
+ * while staying neutral in body copy. The logo's heavier lettering is drawn
+ * as outlines (lib/logo.ts), which keeps this to a single font file.
  */
 const geist = Geist({
   subsets: ['latin'],
@@ -28,7 +28,14 @@ export const metadata: Metadata = {
     title: 'OCE Labs',
     description: 'A studio building fast, search-ready websites, apps, and brand systems.',
     type: 'website',
-    images: [{ url: '/brand/oce-og.png', width: 1200, height: 630, alt: 'OCE Labs' }],
+    images: [
+      {
+        url: '/brand/oce-og.png',
+        width: 1200,
+        height: 630,
+        alt: 'OCE Labs. The whole thing, not just the website.',
+      },
+    ],
   },
 };
 

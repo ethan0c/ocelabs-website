@@ -11,6 +11,7 @@ import {
   View,
   renderToBuffer,
 } from '@react-pdf/renderer';
+import { LOCKUP_WIDTH, LOGO_SIZE, MARK_PATH, WORDMARK_PATH } from '@/lib/logo';
 import { STUDIO_EMAIL, type Block, type Proposal } from '@/lib/proposal';
 
 /**
@@ -75,10 +76,6 @@ const s = StyleSheet.create({
     fontSize: 8,
     color: DIM,
   },
-  brand: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  // lineHeight 1 so the text box hugs the letters; the page's 1.55 left the
-  // caps riding high in a tall box, and the mark looked like it had dropped.
-  wordmark: { color: INK, letterSpacing: 1.6, fontSize: 8, fontWeight: 500, lineHeight: 1 },
   footer: {
     position: 'absolute',
     // Measured from the top: react-pdf drops a `bottom`-anchored fixed box
@@ -139,14 +136,16 @@ const s = StyleSheet.create({
   signed: { fontSize: 13, marginBottom: 2 },
 });
 
-/** The aperture mark, as on the site: ring open at 3 o'clock with one tick. */
-function Mark({ size = 11 }: { size?: number }) {
+/** The logo, as on the site: mark and lettering from the same outlines. */
+function Lockup({ size = 10 }: { size?: number }) {
   return (
-    // Nudged down 1.2pt (half the margin) so the ring centres on the caps,
-    // measured on a render; flex centring alone leaves it riding high.
-    <Svg width={size} height={size} viewBox="0 0 24 24" style={{ marginTop: 2.4 }}>
-      <Path d="M20.6 8.4A10 10 0 1 0 20.6 15.6" stroke={INK} strokeWidth={1.75} fill="none" />
-      <Path d="M14 12h8" stroke={INK} strokeWidth={1.75} />
+    <Svg
+      width={(size * LOCKUP_WIDTH) / LOGO_SIZE}
+      height={size}
+      viewBox={`0 0 ${LOCKUP_WIDTH} ${LOGO_SIZE}`}
+    >
+      <Path d={MARK_PATH} fill={INK} />
+      <Path d={WORDMARK_PATH} fill={INK} />
     </Svg>
   );
 }
@@ -193,10 +192,7 @@ export default function ProposalPdf({ pr, sig }: { pr: Proposal; sig?: Signature
     >
       <Page size="LETTER" style={s.page}>
         <View style={s.header} fixed>
-          <View style={s.brand}>
-            <Mark />
-            <Text style={s.wordmark}>OCE LABS</Text>
-          </View>
+          <Lockup />
           <Text>Proposal and agreement · {pr.client}</Text>
         </View>
 

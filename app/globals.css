@@ -160,26 +160,15 @@ a {
 }
 
 .wordmark {
-  font-size: 0.875rem;
-  /* Only weight 400 is loaded — wide tracking carries the mark instead. */
-  letter-spacing: 0.2em;
-  white-space: nowrap;
   /* Flat, full-contrast: at nav size the metal sweep only reads as grey, so
      the mark was the quietest thing on the page. Metal stays for large uses. */
   color: var(--text);
-  /* The glyph sits optically low against caps, so nudge it up a hair. */
   display: inline-flex;
   align-items: center;
 }
 
-.wordmark svg {
-  /* Measured at 4x: this puts the ring's centre on the caps' centre. A
-     transform, because a margin this small snaps to a whole pixel. */
-  transform: translateY(-0.036em);
-}
-
 /*
- * SVG gradient stops for the glyph. Kept in CSS rather than on the element so
+ * SVG gradient stops for the logo. Kept in CSS rather than on the element so
  * the two themes can diverge, matching the --metal ramp band for band.
  */
 .logo-metal .ms-0 { stop-color: #6f6f6f; }
@@ -193,25 +182,6 @@ a {
 [data-theme='light'] .logo-metal .ms-2 { stop-color: #767676; }
 [data-theme='light'] .logo-metal .ms-3 { stop-color: #1f1f1f; }
 [data-theme='light'] .logo-metal .ms-4 { stop-color: #454545; }
-
-/*
- * Milled wordmark. Applied to the lettering span only — the glyph beside it
- * carries its own SVG gradient, since background-clip cannot reach into an
- * <svg>. Both reference the same 105deg sweep, so they read as one part.
- */
-.wordmark-text {
-  background: var(--metal);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  /* WebKit honours text-fill-color over color, so both must be cleared. */
-  -webkit-text-fill-color: transparent;
-  /* Fallback for engines that ignore background-clip: text — without this the
-     mark would render fully invisible rather than merely flat. */
-  @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
-    color: var(--text);
-  }
-}
 
 .nav-right {
   display: flex;
@@ -1264,12 +1234,6 @@ a {
  * more contrast. Drop back to flat --text and plain hairlines.
  */
 @media (prefers-contrast: more) {
-  .wordmark-text {
-    background: none;
-    color: var(--text);
-    -webkit-text-fill-color: var(--text);
-  }
-
   .logo-metal .ms {
     stop-color: currentColor;
   }

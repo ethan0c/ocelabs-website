@@ -77,8 +77,8 @@ export default function Nav() {
     <>
       <nav className="nav" data-scrolled={scrolled}>
         <div className="shell nav-inner">
-          <Link href="/" className="wordmark" aria-label="OCE LABS — home">
-            <Logo size={17} />
+          <Link href="/" className="wordmark" aria-label="OCE Labs — home">
+            <Logo />
           </Link>
 
           <div className="nav-right">
