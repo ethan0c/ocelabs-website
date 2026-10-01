@@ -1,6 +1,6 @@
 /*
- * The client-facing emails from client-workflow.txt, Part 3, written the way
- * a person writes: short, first person, contractions, one thing per email.
+ * The client-facing emails from client-workflow.txt, Part 3: warm but
+ * professional, first person, full sentences, one thing per email.
  * Anything only a human can write (the recap bullets, the Friday lists, the
  * day-30 observation) is a parameter or is left for a draft.
  *
@@ -18,7 +18,14 @@ export function first(name?: string | null) {
   return w.charAt(0).toUpperCase() + w.slice(1);
 }
 
-const sign = (signer: string) => `\n\n${signer.trim() || 'OCE Labs'}${signer.trim() ? '\nOCE Labs' : ''}`;
+/**
+ * "Best regards," then the person and the studio. A signer that already names
+ * the studio ("The OCE Labs team") stands on its own.
+ */
+const sign = (signer: string) => {
+  const who = signer.trim() || 'The OCE Labs team';
+  return `\n\nBest regards,\n${who}${/oce labs/i.test(who) ? '' : '\nOCE Labs'}\nocelabs.xyz`;
+};
 
 /** "September 29", or "September 29, 2027" when it isn't this year. */
 export function fmtDate(d: Date) {
@@ -35,10 +42,10 @@ export function emailA(o: { name?: string | null; topic: string; calLink: string
     subject: 'Re: your project',
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Thanks for reaching out about ${o.topic}.\n\n` +
-      `The easiest next step is a quick 30-minute call. I'll ask a few questions, tell you honestly whether we're the right people for it, and give you a rough range on the spot. Grab a time here:\n\n` +
+      `Thank you for getting in touch with us about ${o.topic}.\n\n` +
+      `The best next step is a short 30-minute call. I'll ask a few questions about what you need, let you know honestly whether we're a good fit for the project, and give you a rough price range before we hang up. You can book a time here:\n\n` +
       `${o.calLink}\n\n` +
-      `If nothing there works, just reply with a couple of times that do.` +
+      `If none of those times suit you, reply with a few that do and I'll make it work.` +
       sign(o.signer),
   };
 }
@@ -48,8 +55,9 @@ export function emailA2(o: { name?: string | null; calLink: string; signer: stri
     subject: 'Re: your project',
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Bumping this in case it got buried. The link to grab a call is below, and if the timing's changed on your end, no worries at all, just let me know.\n\n` +
-      `${o.calLink}` +
+      `I wanted to follow up in case my last email got lost in your inbox. If you'd still like to talk, you can book a call here:\n\n` +
+      `${o.calLink}\n\n` +
+      `And if the timing no longer works on your end, that's completely fine. Just let me know.` +
       sign(o.signer),
   };
 }
@@ -70,14 +78,14 @@ export function emailB(o: {
     subject: 'Recap from our call',
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Good talking today. Here's what I took away, so tell me if I've got anything wrong:\n\n` +
+      `Thank you for your time today. Here's a summary of what we discussed. Please let me know if I've missed or misunderstood anything:\n\n` +
       bullets(o.bullets) +
-      `\n\nBased on that, I'd point you at the ${o.packageLabel}. It usually runs ${o.range} and takes ${o.weeks} from kickoff.\n\n` +
-      `From here:\n` +
-      `1. Fill in this short questionnaire. ${o.prefilled ? "I've filled in what we covered on the call, so check those and add the rest" : 'About fifteen minutes, and short answers are fine'}: ${o.questionnaireLink}\n` +
-      `2. Within two business days I'll send you a fixed price, a launch date, and a short agreement you can sign online.\n` +
-      `3. Once that's signed and the deposit's in, we start.\n\n` +
-      `The questionnaire page also has a bit about how we work and what you get at the end.` +
+      `\n\nBased on this, I'd recommend our ${o.packageLabel}. Projects like this typically cost ${o.range} and take ${o.weeks} from the start date.\n\n` +
+      `Next steps:\n` +
+      `1. Complete this short questionnaire. ${o.prefilled ? "I've already filled in what we covered on the call, so please check those answers and add the rest" : 'It takes about fifteen minutes, and brief answers are fine'}: ${o.questionnaireLink}\n` +
+      `2. Within two business days of receiving it, I'll send you a fixed price, a launch date, and a short agreement you can sign online.\n` +
+      `3. Once the agreement is signed and the deposit is paid, we begin.\n\n` +
+      `The questionnaire page also explains how we work and what you'll receive at the end.` +
       sign(o.signer),
   };
 }
@@ -87,9 +95,9 @@ export function emailQuestionnaireNudge(o: { name?: string | null; questionnaire
     subject: 'Re: Recap from our call',
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Quick nudge on the questionnaire. It's what I need to put a fixed price and a launch date in front of you:\n\n` +
+      `A quick reminder about the questionnaire. Once it's in, I can send you a fixed price and a launch date:\n\n` +
       `${o.questionnaireLink}\n\n` +
-      `Short answers are fine, and skip anything that doesn't apply.` +
+      `Brief answers are fine, and feel free to skip anything that doesn't apply.` +
       sign(o.signer),
   };
 }
@@ -111,17 +119,17 @@ export function emailC(o: {
     subject: `Proposal for ${o.company}`,
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Thanks for the questionnaire, that was really helpful. Your proposal's ready:\n\n` +
+      `Thank you for completing the questionnaire. It was very helpful. Your proposal is ready:\n\n` +
       `${o.proposalLink}\n\n` +
-      `The short version:\n` +
+      `In summary:\n` +
       bullets([
         `What we're building: ${q.lines.map((l) => l.label).join(', ')}`,
         `Price: ${usd.format(q.total)}, fixed`,
-        `Timeline: ${weeksLabel(q.weeks)} from kickoff`,
+        `Timeline: ${weeksLabel(q.weeks)} from the start date`,
         `Payment: ${pay}`,
       ]) +
-      `\n\nYou can read it, download the PDF, and sign it right on that page. It takes about a minute. The price and start date are held until ${fmtDate(o.validUntil)}.\n\n` +
-      `If anything looks off or you'd like to change the scope, just reply, or grab a call: ${o.calLink}` +
+      `\n\nYou can review the proposal, download a PDF copy, and sign it on the same page in about a minute. This price and start date are held until ${fmtDate(o.validUntil)}.\n\n` +
+      `If you have questions or would like to adjust anything, reply to this email or book a call: ${o.calLink}` +
       sign(o.signer),
   };
 }
@@ -139,8 +147,8 @@ export function emailCNudge(o: {
     text:
       `Hi ${first(o.name)},\n\n` +
       (o.last
-        ? `Last nudge from me. The price and start date in the proposal are held until ${fmtDate(o.validUntil)}; after that I'd need to re-quote. If you'd like to go ahead, it's here:\n\n${o.proposalLink}\n\nEither way, thanks for considering us.`
-        : `Checking in on the proposal. Any questions, or want to tweak the scope? Just reply. If it looks right, signing takes a minute:\n\n${o.proposalLink}`) +
+        ? `A final reminder that the price and start date in your proposal are held until ${fmtDate(o.validUntil)}. After that, I'd need to prepare a new quote. If you'd like to go ahead, you can sign here:\n\n${o.proposalLink}\n\nWhatever you decide, thank you for considering us.`
+        : `I wanted to check in on the proposal. If you have any questions or would like to change anything, just reply to this email. If everything looks right, signing takes about a minute:\n\n${o.proposalLink}`) +
       sign(o.signer),
   };
 }
@@ -160,21 +168,21 @@ export function emailD(o: {
 }): Email {
   const paid = (o.paidAlready ?? 0) > 0;
   return {
-    subject: 'Welcome aboard, and what happens next',
+    subject: 'Welcome aboard: next steps',
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Thanks for signing. Glad to be working with you. Your signed copy is attached.\n\n` +
+      `Thank you for signing. We're glad to be working with you, and your signed copy is attached.\n\n` +
       (paid
-        ? `Your payment of ${usd.format(o.paidAlready!)} is already in, thank you.${o.balance ? ` The remaining ${usd.format(o.balance)} is invoiced when you approve the finished site, before launch.` : ''}\n\n`
-        : `You'll get a separate email from Stripe with the ${o.full ? 'invoice' : 'deposit invoice'} for ${usd.format(o.depositAmount)}. Bank transfer or card, whichever's easier.\n\n`) +
-      `We start the day these four things are in:\n` +
+        ? `We've received your payment of ${usd.format(o.paidAlready!)}. Thank you.${o.balance ? ` The remaining ${usd.format(o.balance)} will be invoiced once you approve the finished site, before launch.` : ''}\n\n`
+        : `You'll receive a separate email from Stripe with the ${o.full ? 'invoice' : 'deposit invoice'} for ${usd.format(o.depositAmount)}. You can pay by bank transfer or card.\n\n`) +
+      `We'll begin as soon as we have the following:\n` +
       bullets([
         paid ? 'The payment (done)' : o.full ? 'The payment' : 'The deposit',
         o.questionnaireDone ? 'The questionnaire (done)' : 'The questionnaire',
         'Your logo, brand files, and any photos you want used',
         'Any existing copy you want to keep',
       ]) +
-      `\n\nSend files by replying to this email${o.folderLink ? `, or drop them in this folder: ${o.folderLink}` : ''}. As soon as the last one lands I'll confirm your kickoff and launch dates.` +
+      `\n\nYou can send files by replying to this email${o.folderLink ? ` or by uploading them to this folder: ${o.folderLink}` : ''}. Once everything is in, I'll confirm your start and launch dates.` +
       sign(o.signer),
   };
 }
@@ -192,17 +200,17 @@ export function emailE(o: {
   signer: string;
 }): Email {
   return {
-    subject: `${o.company} has kicked off`,
+    subject: `Work on ${o.company} has started`,
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Everything's in, so today's day one: ${fmtDate(o.kickoff)}.\n\n` +
+      `We have everything we need, so work officially begins today, ${fmtDate(o.kickoff)}. Here are the key dates:\n\n` +
       bullets([
         `Launch: ${fmtDate(o.launch)}`,
-        `Content deadline: ${fmtDate(o.contentDeadline)}. Anything that arrives after this moves the launch by the same number of days`,
+        `Content deadline: ${fmtDate(o.contentDeadline)}. Anything received after this date moves the launch back by the same number of days`,
         `Design review: around ${fmtDate(o.designReview)}`,
-        `Staging review: around ${fmtDate(o.stagingReview)}`,
+        `Review of the working site: around ${fmtDate(o.stagingReview)}`,
       ]) +
-      `\n\nYou'll hear from me every Friday: what got done, what's next, and anything I need from you.` +
+      `\n\nI'll send you an update every Friday covering what we finished, what's coming next, and anything we need from you.` +
       sign(o.signer),
   };
 }
@@ -211,13 +219,14 @@ export function emailE(o: {
 
 export function emailF(o: { name?: string | null; company: string; week: number; launch: Date | null; signer: string }): Email {
   return {
-    subject: `${o.company}, week ${o.week}`,
+    subject: `${o.company}: week ${o.week} update`,
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Done this week:\n• \n\n` +
-      `Next week:\n• \n\n` +
+      `Here's your update for week ${o.week}.\n\n` +
+      `Completed this week:\n• \n\n` +
+      `Planned for next week:\n• \n\n` +
       `Needed from you:\n• Nothing this week\n\n` +
-      (o.launch ? `Still on track for ${fmtDate(o.launch)}.` : '') +
+      (o.launch ? `We're still on track to launch on ${fmtDate(o.launch)}.` : '') +
       sign(o.signer),
   };
 }
@@ -229,9 +238,9 @@ export function emailG(o: { name?: string | null; company: string; amount: numbe
     subject: `${o.company} is ready to launch`,
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Thanks for the approval. The final invoice for ${usd.format(o.amount)} is on its way from Stripe` +
-      (o.changeOrders ? `, and it includes what we added along the way: ${o.changeOrders}.` : '.') +
-      `\n\nOnce it's paid we connect your domain and go live, usually the same day. If there's a day or time you'd prefer for the switch, tell me.` +
+      `Thank you for approving the site. The final invoice for ${usd.format(o.amount)} will arrive shortly from Stripe` +
+      (o.changeOrders ? `. It includes the additions we agreed on during the project: ${o.changeOrders}.` : '.') +
+      `\n\nOnce it's paid, we'll connect your domain and take the site live, usually on the same day. If you'd prefer a particular day or time for the launch, just let me know.` +
       sign(o.signer),
   };
 }
@@ -253,15 +262,16 @@ export function emailH(o: {
     subject: `${o.domain} is live`,
     text:
       `Hi ${first(o.name)},\n\n` +
-      `${o.domain} is live. Here's everything that's now yours:\n\n` +
+      `Congratulations, ${o.domain} is now live. Here's everything that now belongs to you:\n\n` +
       bullets([
-        line('The site itself, with HTTPS, redirects and analytics set up', o.analyticsLink),
-        line('The code, with access on your email', o.repoLink),
-        line('The hosting account, with access on your email', o.hostingLink),
-        line('Google Search Console, sitemap submitted', o.searchConsoleLink),
-        'A short guide to updating content, attached',
+        line('The website, secured and with visitor analytics set up', o.analyticsLink),
+        line('The source code, shared with your email address', o.repoLink),
+        line('The hosting account, shared with your email address', o.hostingLink),
+        line('Google Search Console, with your site submitted to Google', o.searchConsoleLink),
+        'A short guide to updating your content (attached)',
       ]) +
-      `\n\nUntil ${fmtDate(o.until)}, anything we missed gets fixed at no charge. Just reply here.` +
+      `\n\nIf you notice anything that isn't right before ${fmtDate(o.until)}, we'll fix it at no charge. Just reply to this email.\n\n` +
+      `Thank you for working with us.` +
       sign(o.signer),
   };
 }
@@ -274,10 +284,10 @@ export function emailI(o: { name?: string | null; domain: string; monthly?: numb
     text:
       `Hi ${first(o.name)},\n\n` +
       `It's been a month since ${o.domain} went live. [One real observation from analytics or Search Console.]\n\n` +
-      `Your included fixes end today. If you'd like us to keep looking after the site (updates, monitoring, a search review each quarter), ${o.monthly ? `the retainer is ${usd.format(o.monthly)} a month` : 'the retainer starts at $300 a month'} and you can cancel any time. Just reply and I'll set it up.\n\n` +
-      `Two small asks, only if you're happy with the work:\n` +
-      bullets(['A sentence or two I could quote on our site', 'An intro to anyone you know who needs a site']) +
-      `\n\nThanks for trusting us with this.` +
+      `Your free fix period ends today. If you'd like us to continue looking after the site, including content updates, monitoring, and a quarterly search review, ${o.monthly ? `the retainer is ${usd.format(o.monthly)} a month` : 'the retainer starts at $300 a month'}, and you can cancel at any time. Just reply and I'll set it up.\n\n` +
+      `If you've been happy with our work, I'd also be grateful for either of the following:\n` +
+      bullets(['A sentence or two we could quote on our website', 'An introduction to anyone you know who needs a website']) +
+      `\n\nThank you again for trusting us with this project.` +
       sign(o.signer),
   };
 }
@@ -289,15 +299,15 @@ export function emailJ(o: { name?: string | null; domain?: string | null; monthl
     subject: 'Your retainer is set up',
     text:
       `Hi ${first(o.name)},\n\n` +
-      `You're all set. We'll keep looking after ${o.domain || 'the site'} from ${fmtDate(o.startAt)}.\n\n` +
+      `You're all set. We'll look after ${o.domain || 'your site'} starting ${fmtDate(o.startAt)}. Here's what's included:\n\n` +
       bullets([
         `${usd.format(o.monthly)} a month, invoiced by Stripe on the ${ordinal(o.startAt.getDate())} of each month, due in 7 days`,
         'Content and image updates whenever you need them',
-        'Monitoring, security and dependency updates',
-        'A search review each quarter, with recommendations',
-        'Cancel any time by replying here; it stops at the end of the month already paid',
+        'Monitoring, plus security and software updates',
+        'A quarterly search review with recommendations',
+        'Cancel any time by replying to this email; the retainer ends at the close of the month already paid',
       ]) +
-      `\n\nFor anything you need changed, just reply to this email.` +
+      `\n\nWhenever you need something changed, just reply to this email.` +
       sign(o.signer),
   };
 }
@@ -307,8 +317,8 @@ export function emailJEnd(o: { name?: string | null; until: Date; signer: string
     subject: 'Re: Your retainer is set up',
     text:
       `Hi ${first(o.name)},\n\n` +
-      `Done, the retainer is cancelled. It runs until ${fmtDate(o.until)}, the end of the month already paid, and there are no more invoices after that.\n\n` +
-      `Thanks for having us look after the site. If you need anything later, just write.` +
+      `This confirms that your retainer has been cancelled. It remains active until ${fmtDate(o.until)}, the end of the month already paid, and you won't be invoiced again.\n\n` +
+      `Thank you for letting us look after your site. If you need anything in the future, we're always happy to help.` +
       sign(o.signer),
   };
 }
