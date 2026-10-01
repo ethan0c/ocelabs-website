@@ -56,6 +56,13 @@ const projects: Project[] = [
     href: 'https://www.conceptainnovation.com/',
     shot: 'concepta.png',
   },
+  {
+    name: 'Temegs Engineering',
+    desc: 'A new website and logo for a civil engineering contractor in Port Harcourt, Nigeria.',
+    kind: 'Website and logo',
+    href: 'https://temegsengineering.com/',
+    shot: 'temegs.png',
+  },
 ];
 
 /**
