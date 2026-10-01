@@ -11,7 +11,7 @@ Four tools. Nothing here needs a paid plan beyond the Workspace seat.
 Most of this document now runs by itself. The studio at /studio (sign in with Google) holds every lead, sends the emails from hello@, creates and sends the invoices, and drafts the ones that need a human sentence. Each stage below says what is automatic and what still needs a person. The wording of the emails is in lib/emails.ts; the rules are in lib/studio.ts.
 
 Inbox (have it)
-hello@ocelabs.xyz. Every client email goes from this address, never a personal one. Save the Part 3 emails as templates or snippets in the mail client so each one is a paste and a two-minute edit.
+hello@ocelabs.xyz. Every client email goes from this address, never a personal one. The studio sends the Part 3 emails itself once Gmail is connected; they are also worth saving as templates in the mail client for the times one is sent by hand.
 
 Stripe (have it)
 Use Stripe Invoicing for every invoice. It sends a branded invoice by email with a pay link, produces a PDF and a receipt, sends its own overdue reminders, and pays out to Relay. No separate invoicing tool is needed. One-time setup:
@@ -21,7 +21,8 @@ Use Stripe Invoicing for every invoice. It sends a branded invoice by email with
 • Invoice footer: the legal name line (see Part 4) and "Questions? hello@ocelabs.xyz"
 • Invoice numbering prefix: OCE
 • The monthly retainer is a Stripe subscription, not a repeated manual invoice
-• Put a restricted API key (Invoices: write, Customers: write) in Vercel as STRIPE_SECRET_KEY. The /pricing estimator uses it to draft each payment of a quote as an invoice. Drafts only: every invoice is still read over and sent from the Stripe dashboard.
+• Put a restricted API key (Customers, Invoices, Subscriptions, Products, Prices: all write) in Vercel as STRIPE_SECRET_KEY. The studio uses it to create and send each invoice of a signed proposal and to start and stop retainers. The /pricing estimator can also draft a single payment as an invoice by hand; that one is read over and sent from the Stripe dashboard.
+• Webhook: <site>/api/webhooks/stripe, events invoice.paid and customer.subscription.deleted. That is how the studio learns an invoice was paid or a retainer ended.
 • Put the legal name in Vercel as OCE_LEGAL_NAME. It appears in the Parties section and the footer of every proposal.
 
 Scheduling (new): Cal.com, free plan
@@ -44,7 +45,7 @@ Each stage has one trigger, one thing we send, and one thing we wait for.
 
 Stage 1: Inquiry
 Trigger: the contact form lands in the inbox.
-Automatic: the lead is created in the studio, Email A goes out from hello@ with the booking link (the topic line is taken from their message), and the inbox gets a ping with a link to the lead. Set AUTO_EMAIL_A=false to send A by hand instead.
+Automatic: the lead is created in the studio, Email A goes out from hello@ with the booking link (the topic line is taken from their message), and everyone who can sign in to the studio gets an alert email with a one-line summary and a link to the lead. Set AUTO_EMAIL_A=false to send A by hand instead.
 We do: nothing, unless the message needs a personal reply, in which case reply in the thread.
 A personal reply that mentions what they wrote reads as more professional than an autoresponder, and it takes two minutes from the template.
 Automatic: no booking after 3 business days sends Email A2; no reply 7 days after that closes the lead as lost. A Cal.com booking moves the lead to Call booked by itself.
@@ -63,7 +64,7 @@ Do not quote a fixed price on the call.
 
 Stage 3: Recap
 Trigger: the call ends.
-We do: on the lead page, paste the call notes (a notetaker's summary such as Fathom's, a transcript, or your own notes) and press Draft the recap. The four bullets, package, range and timeline fill in; read them, fix anything, press Send recap. Email B goes out with a link to the questionnaire page (/q/<token>).
+We do: on the lead page, paste the call notes (a notetaker's summary such as Fathom's, a transcript, or your own notes) and press Draft the recap. The four bullets, package, range and timeline fill in; read them, fix anything, press Send recap. Email B goes out with a link to the questionnaire page (/q/<token>), where the answers you got on the call are already filled in for the client to check.
 Notetaker: Fathom's free plan joins Google Meet, Zoom and Teams calls and emails a summary within minutes. Put the Meet link on the Cal.com event and it joins by itself.
 Automatic: the questionnaire answers land on the lead. No answers after 5 business days sends one nudge.
 
@@ -84,7 +85,10 @@ Payment structure:
 • Website and Brand Website: 50% deposit, 50% before launch
 • Web App: 40% deposit, 30% when the design is approved, 30% before launch
 • Mobile App: 30% deposit, then equal milestone payments agreed in the proposal, final payment before store submission
+• Starter Site: 50% deposit, 50% before launch
+• Any package, pay-in-full plan (chosen in the estimator): one invoice for the whole amount on signature
 Deposit invoices are due on receipt. All other invoices are due in 7 days.
+Paid before signing: if a client has already paid an invoice made by hand (from the estimator or the Stripe dashboard), the studio records it on the lead when Stripe reports it and alerts us. When they sign, no deposit invoice goes out; Email D thanks them for the payment and the balance is billed at launch.
 
 
 Stage 6: Kickoff
@@ -98,6 +102,7 @@ Every Friday, Email F is drafted into Gmail with the week number and the launch 
 Two review points, each with two rounds of revisions included:
 • Design review: direction and the key pages, before development
 • Staging review: the full site on a private link, before launch
+A Starter Site has one review point: the staging review, with one round of changes.
 Feedback is collected in one email or one document per round, from the one approver named in the questionnaire.
 Anything outside the signed scope gets a change order before work starts: one paragraph describing it, a price, and the effect on the launch date. The client replies "approved" in writing. Enter it on the lead page when approving staging; it is added to the final invoice.
 Web App projects: press Design approved on the lead page when the design review is signed off; the 30% invoice goes out.
@@ -110,213 +115,272 @@ We do: press Staging approved on the lead page, with any change orders. The fina
 
 Stage 9: Handover
 Trigger: the site is live.
-We do: press Live on the lead page with the domain and the handover links. Email H goes out; the 30 days of fixes start on this date and the day-30 date is set.
+We do: press Live on the lead page with the domain and the handover links. Email H goes out; the 30 days of fixes (14 on a Starter Site) start on this date and the day-30 date is set.
 
 
 Stage 10: Day 30
-Automatic: Email I is drafted into Gmail on the day, quoting the retainer price from their quote. Add the one real observation from analytics and send it.
-If they say yes: lead page → Retainer → price and start date (defaults to day 30) → Start retainer. That creates a monthly Stripe subscription, invoiced by email and due in 7 days, and sends them a confirmation with the terms. Cancel retainer stops it at the end of the paid month and tells them. Otherwise press Close, won. Add the project to /work if the client agrees.
+Automatic: Email I is drafted into Gmail on the day (day 14 on a Starter Site), quoting the retainer price from their quote. Add the one real observation from analytics and send it.
+If they say yes: lead page → Retainer → price and start date (defaults to day 30) → Start retainer. That creates a monthly Stripe subscription, invoiced by email and due in 7 days, and sends them Email J with the terms. Cancel retainer stops it at the end of the paid month and sends the cancellation note. Otherwise press Close, won. Add the project to /work if the client agrees.
 
 
 Part 3: The emails
 
-Replace anything in [brackets]. Keep them short; every one of these fits on a phone screen.
+These are the emails as the studio sends them; the wording lives in lib/emails.ts, and this is a copy for reading and for the times one is sent by hand. Replace anything in [brackets]. Every one ends with the same sign-off:
+
+Best regards,
+[Your name]
+OCE Labs
+ocelabs.xyz
+
+They go from "OCE Labs <hello@ocelabs.xyz>", so the subjects do not repeat the name.
 
 
 Email A: Reply to an inquiry
-Subject: Re: your project, a time to talk
+Subject: Re: your project
 
 Hi [Name],
 
-Thanks for getting in touch about [one specific thing from their message].
+Thank you for getting in touch with us about [one specific thing from their message].
 
-The best next step is a 30-minute call so we can understand what you need and tell you honestly whether we are the right fit. You can pick a time here:
+The best next step is a short 30-minute call. I'll ask a few questions about what you need, let you know honestly whether we're a good fit for the project, and give you a rough price range before we hang up. You can book a time here:
 
 [Cal.com link]
 
-If none of those times work, reply with two or three that do and we will make one happen.
-
-[Your name]
-OCE Labs
-hello@ocelabs.xyz
+If none of those times suit you, reply with a few that do and I'll make it work.
 
 
 Email A2: Nudge, 3 business days later
-Subject: Re: your project, a time to talk
+Subject: Re: your project
 
 Hi [Name],
 
-Following up in case this got buried. The link to book a call is below. If the timing has changed on your side, no problem; just let us know and we will close the loop.
+I wanted to follow up in case my last email got lost in your inbox. If you'd still like to talk, you can book a call here:
 
 [Cal.com link]
 
-[Your name]
+And if the timing no longer works on your end, that's completely fine. Just let me know.
 
 
 Email B: Call recap, same day
-Subject: OCE Labs: recap and next steps
+Subject: Recap from our call
 
 Hi [Name],
 
-Good to speak with you today. Here is what we heard, so you can correct anything we got wrong:
+Thank you for your time today. Here's a summary of what we discussed. Please let me know if I've missed or misunderstood anything:
 
 • [Their business and who the site is for]
 • [The main problem with what they have now]
 • [What a visitor should do on the new site]
 • [Deadline, and who approves]
 
-Based on that, we would recommend the [Package], which typically runs [range] and takes [weeks] from kickoff.
+Based on this, I'd recommend our [Package]. Projects like this typically cost [range] and take [weeks] from the start date.
 
 Next steps:
-1. You fill in the attached questionnaire. Short answers are fine.
-2. Within two business days of getting it back, we send a fixed quote, a launch date, and a short agreement to sign.
-3. Once that is signed and the deposit is paid, we start.
+1. Complete this short questionnaire. I've already filled in what we covered on the call, so please check those answers and add the rest: [questionnaire link]
+2. Within two business days of receiving it, I'll send you a fixed price, a launch date, and a short agreement you can sign online.
+3. Once the agreement is signed and the deposit is paid, we begin.
 
-The attached document also explains how we work and what you get at the end.
+The questionnaire page also explains how we work and what you'll receive at the end.
 
-[Your name]
+(When nothing was filled in from the call, step 1 says: "It takes about fifteen minutes, and brief answers are fine".)
+
+
+Email B nudge: Questionnaire still out, 5 business days later
+Subject: Re: Recap from our call
+
+Hi [Name],
+
+A quick reminder about the questionnaire. Once it's in, I can send you a fixed price and a launch date:
+
+[questionnaire link]
+
+Brief answers are fine, and feel free to skip anything that doesn't apply.
 
 
 Email C: Proposal
-Subject: OCE Labs: proposal for [Company]
+Subject: Proposal for [Company]
 
 Hi [Name],
 
-Thank you for the questionnaire. Your proposal is ready to read and sign here: [proposal link]
+Thank you for completing the questionnaire. It was very helpful. Your proposal is ready:
 
-In short:
-• Scope: [one line]
-• Fixed price: [total]
-• Timeline: [weeks] from kickoff, which puts launch around [date] if we start by [date]
-• Payment: [50% deposit, 50% before launch]
+[proposal link]
 
-The price and the start date are held for 14 days. If anything looks off or you want to adjust the scope, reply here or book a call: [Cal.com link]
+In summary:
+• What we're building: [the lines of the quote]
+• Price: [total], fixed
+• Timeline: [weeks] from the start date
+• Payment: [50% deposit, 50% balance]
 
-[Your name]
+You can review the proposal, download a PDF copy, and sign it on the same page in about a minute. This price and start date are held until [date].
+
+If you have questions or would like to adjust anything, reply to this email or book a call: [Cal.com link]
+
+
+Email C nudge: Day 5
+Subject: Re: Proposal for [Company]
+
+Hi [Name],
+
+I wanted to check in on the proposal. If you have any questions or would like to change anything, just reply to this email. If everything looks right, signing takes about a minute:
+
+[proposal link]
+
+
+Email C nudge: Day 12, the last one
+Subject: Re: Proposal for [Company]
+
+Hi [Name],
+
+A final reminder that the price and start date in your proposal are held until [date]. After that, I'd need to prepare a new quote. If you'd like to go ahead, you can sign here:
+
+[proposal link]
+
+Whatever you decide, thank you for considering us.
 
 
 Email D: Signed, deposit invoice
-Subject: OCE Labs: welcome, and what happens next
+Subject: Welcome aboard: next steps
 
 Hi [Name],
 
-Thank you for signing. We are glad to be working with you.
+Thank you for signing. We're glad to be working with you, and your signed copy is attached.
 
-You will get a separate email from Stripe with the deposit invoice for [amount]. You can pay by bank transfer or card from the link in it.
+You'll receive a separate email from Stripe with the deposit invoice for [amount]. You can pay by bank transfer or card.
 
-The project starts on the day these four things are in:
+We'll begin as soon as we have the following:
 • The deposit
 • The questionnaire (done)
-• Your logo, brand files, and any photography you want used
-• Any existing copy you want kept
+• Your logo, brand files, and any photos you want used
+• Any existing copy you want to keep
 
-You can send files by replying here or adding them to this folder: [link]
+You can send files by replying to this email or by uploading them to this folder: [link]. Once everything is in, I'll confirm your start and launch dates.
 
-As soon as the last one arrives we will confirm your kickoff and launch dates.
-
-[Your name]
+(On the pay-in-full plan it says "invoice" and "The payment". If they paid before signing, the Stripe paragraph becomes: "We've received your payment of [amount]. Thank you. The remaining [balance] will be invoiced once you approve the finished site, before launch.", and the first item reads "The payment (done)".)
 
 
 Email E: Kickoff confirmation
-Subject: OCE Labs: [Company] has kicked off
+Subject: Work on [Company] has started
 
 Hi [Name],
 
-Everything is in, so your project officially started today, [date].
+We have everything we need, so work officially begins today, [date]. Here are the key dates:
 
-• Launch date: [date]
-• Content deadline: [kickoff plus 7 days]. Anything that arrives after this moves the launch by the same number of days.
+• Launch: [date]
+• Content deadline: [kickoff plus 7 days]. Anything received after this date moves the launch back by the same number of days
 • Design review: around [date]
-• Staging review: around [date]
+• Review of the working site: around [date]
 
-You will hear from us every Friday with what was done, what is next, and anything we need from you.
-
-[Your name]
+I'll send you an update every Friday covering what we finished, what's coming next, and anything we need from you.
 
 
-Email F: Friday update
-Subject: OCE Labs: [Company] update, week [n]
+Email F: Friday update (drafted into Gmail, never sent as is)
+Subject: [Company]: week [n] update
 
 Hi [Name],
 
-Done this week:
+Here's your update for week [n].
+
+Completed this week:
 • [item]
 
-Next week:
+Planned for next week:
 • [item]
 
 Needed from you:
 • [item and the date it is needed by, or "Nothing this week"]
 
-On track for [launch date].
-
-[Your name]
+We're still on track to launch on [launch date].
 
 
 Email G: Final invoice
-Subject: OCE Labs: [Company] is ready to launch
+Subject: [Company] is ready to launch
 
 Hi [Name],
 
-Thank you for approving the site. The final invoice for [amount] is on its way from Stripe. [If change orders: It includes the approved additions: item, amount.]
+Thank you for approving the site. The final invoice for [amount] will arrive shortly from Stripe. [If change orders: It includes the additions we agreed on during the project: item, amount.]
 
-As soon as it is paid we will connect your domain and go live, usually the same day. Tell us if there is a particular day or time you want the launch to happen.
-
-[Your name]
+Once it's paid, we'll connect your domain and take the site live, usually on the same day. If you'd prefer a particular day or time for the launch, just let me know.
 
 
 Email H: Handover
-Subject: OCE Labs: [Company] is live
+Subject: [Domain] is live
 
 Hi [Name],
 
-[Domain] is live. Here is everything that is now yours:
+Congratulations, [domain] is now live. Here's everything that now belongs to you:
 
-• The live site, with HTTPS, redirects, and analytics: [analytics link]
-• The code repository: [link, access granted to email]
-• The hosting account: [link, access granted to email]
-• Google Search Console, with the sitemap submitted: [link]
-• A short guide to updating content: attached
+• The website, secured and with visitor analytics set up: [analytics link]
+• The source code, shared with your email address: [link]
+• The hosting account, shared with your email address: [link]
+• Google Search Console, with your site submitted to Google: [link]
+• A short guide to updating your content (attached)
 
-For the next 30 days, until [date], we fix anything we missed at no charge. Just reply to this email.
+If you notice anything that isn't right before [date], we'll fix it at no charge. Just reply to this email.
 
-[Your name]
+Thank you for working with us.
 
 
-Email I: Day 30
-Subject: OCE Labs: one month in
+Email I: Day 30 (drafted into Gmail; day 14 on a Starter Site)
+Subject: One month in
 
 Hi [Name],
 
-It has been a month since [domain] went live. [One real observation from analytics or Search Console.]
+It's been a month since [domain] went live. [One real observation from analytics or Search Console.]
 
-The 30 days of included fixes end today. If you would like us to keep looking after the site, including updates, monitoring, and a search review each quarter, the monthly retainer starts at $300 and can be cancelled any time. Reply and we will set it up.
+Your free fix period ends today. If you'd like us to continue looking after the site, including content updates, monitoring, and a quarterly search review, the retainer is [amount] a month, and you can cancel at any time. Just reply and I'll set it up.
 
-Two small asks, only if you are happy with the work:
-• Two or three sentences we could quote on our site
-• An introduction to anyone you know who needs a site built
+If you've been happy with our work, I'd also be grateful for either of the following:
+• A sentence or two we could quote on our website
+• An introduction to anyone you know who needs a website
 
-Thank you for trusting us with this.
+Thank you again for trusting us with this project.
 
-[Your name]
+(With no retainer price on their quote it says "the retainer starts at $300 a month".)
+
+
+Email J: Retainer confirmed
+Subject: Your retainer is set up
+
+Hi [Name],
+
+You're all set. We'll look after [domain] starting [date]. Here's what's included:
+
+• [amount] a month, invoiced by Stripe on the [day] of each month, due in 7 days
+• Content and image updates whenever you need them
+• Monitoring, plus security and software updates
+• A quarterly search review with recommendations
+• Cancel any time by replying to this email; the retainer ends at the close of the month already paid
+
+Whenever you need something changed, just reply to this email.
+
+
+Email J, cancelled
+Subject: Re: Your retainer is set up
+
+Hi [Name],
+
+This confirms that your retainer has been cancelled. It remains active until [date], the end of the month already paid, and you won't be invoiced again.
+
+Thank you for letting us look after your site. If you need anything in the future, we're always happy to help.
 
 
 Part 4: The proposal and the paperwork
 
-The proposal is one PDF, two to three pages, and it is also the contract. It is generated at /pricing/proposal from the estimator's quote, so the numbers cannot drift from the calculation; edit the wording in app/pricing/proposal/page.tsx. Sections:
+The proposal is one PDF, two to three pages, and it is also the contract. It is generated from the estimator's quote, so the numbers cannot drift from the calculation; the wording is in lib/proposal.ts, and the on-screen proposal and the PDF both render it. Sections:
 
 1. Parties. [Legal name], doing business as OCE Labs, and the client's legal business name.
-2. Scope. The package, the pages, the add-ons, pasted from the estimator summary. Then a line: "Anything not listed here is outside the scope and is quoted separately."
+2. Scope. The package and what it includes, the pages, the add-ons, and any outside services the client signs up for and pays directly. Then a line: "Anything not listed here is outside the scope and is quoted separately."
 3. Price and payment schedule. The fixed total, each payment, and what triggers it.
 4. Timeline. Weeks from kickoff, what kickoff requires, and the content deadline rule.
-5. Revisions. Two rounds at each of the two review points. One named approver.
+5. Reviews and revisions. Two rounds at each of the two review points (a Starter Site has one review and one round). One named approver.
 6. Changes. Written change order, approved before work starts.
 7. Ownership. The client owns the site and the code once the final invoice is paid. We may show the work in our portfolio unless they ask us not to.
 8. Cancellation. Either side can stop with written notice. The deposit is non-refundable once work has started. Work completed beyond the deposit is billed.
 9. Late payment. Work pauses if an invoice is more than 7 days overdue, and the launch date moves by the length of the pause.
-10. After launch. 30 days of fixes. The retainer is optional and separate.
+10. After launch. 30 days of fixes (14 on a Starter Site). The retainer is optional and separate.
 11. Validity. 14 days from the date sent.
-12. Signatures.
+12. Signatures. Signed online at /p/<token>; the e-signature record is the last page of the signed PDF.
 
 Have a lawyer read the template once. It is a one-time cost and it covers every project after.
 

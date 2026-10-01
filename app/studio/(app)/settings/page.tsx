@@ -60,7 +60,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
 
         <h2 className="eyebrow" style={{ marginTop: '3rem' }}>URLs the outside services need</h2>
         <ul className="studio-list">
-          <li><span>Stripe webhook (invoice.paid)</span><code>{base}/api/webhooks/stripe</code></li>
+          <li><span>Stripe webhook (invoice.paid, customer.subscription.deleted)</span><code>{base}/api/webhooks/stripe</code></li>
           <li><span>Cal.com webhook (BOOKING_CREATED)</span><code>{base}/api/webhooks/cal</code></li>
           <li><span>Google OAuth redirect URIs</span><code>{base}/api/auth/callback, {base}/api/gmail/callback</code></li>
           <li><span>Daily cron (Vercel calls it)</span><code>{base}/api/cron/daily</code></li>

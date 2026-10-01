@@ -4,51 +4,53 @@ Project Questionnaire and How We Work
 
 Part 1: Project questionnaire
 
-Short answers are fine. Skip anything that does not apply. Send it back by email or paste your answers into the contact form.
+Short answers are fine. Skip anything that does not apply. You fill it in online, at the link in our recap email. Anything we covered on the call is already filled in for you to check.
 
 
 About you
 
-1. What does your business do, in one or two sentences?
+1. What does your business do? One or two sentences is plenty.
 
-2. Who is the site for? Describe your ideal visitor: who they are, what they need, and how they usually find businesses like yours.
+2. Who are your customers, and how do they usually find you?
 
-3. What should a visitor do after reading the site? For example: email you, book a call, buy something, download the app, follow you on social media.
+3. What do you want people to do after visiting the site? For example: call you, book an appointment, buy something, or fill in a form.
 
 
 The site
 
-4. Do you have an existing site? If so, what works about it and what does not?
+4. Do you have a website now? If so, what do you like about it, what bugs you, and roughly how many pages or blog posts does it have?
 
-5. Which pages do you need? Typical choices are Home, About, Services or Work, Pricing, and Contact. List anything else you have in mind.
+5. Which pages do you want? Most sites have Home, About, Services and Contact. Add anything else you have in mind.
 
-6. Is the written content ready, or do you need help writing it?
+6. Is the text for the site written yet, or will you need help with it?
 
-7. Do you have a logo, brand colours, fonts, or photography we should use? If not, we can create them.
+7. Do you have a logo, brand colours or photos we should use?
 
-8. Share two or three websites you like, and say what you like about each one. They do not have to be in your industry.
+8. Name two or three websites you like and what you like about them. They can be from any industry.
 
 
-Search
+Being found
 
-9. What would someone type into Google to find you? List a few phrases.
+9. What would someone type into Google to find a business like yours?
 
-10. Do you serve a specific city, region, or country?
+10. Where are your customers? A town, a region, the whole country?
 
-11. Do you already have a Google Business Profile, existing search rankings, or a newsletter list we should protect during the move?
+11. Do you have a Google Business listing (the box that shows up on Google Maps) or a mailing list we should keep in mind?
 
 
 Practical
 
-12. Do you own a domain name? Which one, and where is it registered?
+12. Do you already own a web address (like yourbusiness.com)? Which one, and who did you buy it through?
 
-13. Do you need anything beyond pages? For example: a contact form, appointment booking, a newsletter, online payments, a customer login, or a blog.
+13. Does the site need to do anything beyond showing information? For example: take bookings, take payments, sell products, sell tickets, or have a members-only area. If you already use a tool for any of this (like Square, Calendly or Shopify), tell us which. If you sell products, roughly how many?
 
-14. Who gives final approval on the project?
+14. For those features, is a well-known tool fine (booking through Calendly, a store on Shopify), or does it need to work in a way no existing tool does? If so, describe how.
 
-15. After launch, who will update the content, and roughly how often?
+15. Who has the final say on the site?
 
-16. When do you need the site live? Is there a budget range you are working within?
+16. After launch, who will keep the site up to date, and how often do you expect changes?
+
+17. Is there a date you need the site live by? If you have a budget in mind, let us know that too.
 
 
 Before we start
