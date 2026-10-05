@@ -93,7 +93,6 @@ docs/
   client-workflow.txt   the process, with what is automatic per stage
   client-onboarding.txt the questionnaire and how-we-work text, as a document
   pricing-guide.txt     how to quote: the rules, what to ask, common requests
-  checklist.txt         one-time setup and the deploy smoke test
 public/brand/           logo PNG set, the social card, and the Google Workspace images
 public/work/            a still and a hover clip per project and Starter demo
 public/fonts/           Geist TTFs for the PDF
@@ -120,7 +119,8 @@ Vercel builds from `main`. Environment variables in Vercel mirror `.env.example`
 ## Notes
 
 - Theme resolves before first paint in `app/layout.tsx` (saved choice → OS preference → dark).
-- The proposal wording lives once, in `lib/proposal.ts`; the on-screen view and the PDF both render it.
+- The proposal wording lives once, in `lib/proposal.ts`; the on-screen view and the PDF both render it. A signed proposal's PDF is drawn again from that wording on each download, so check for signed proposals before changing a clause.
+- Anything a visitor or client reads (the public pages, the emails, the signing page, `docs/client-onboarding.txt`) never names the tools the studio runs on: it says "our payment provider" or "a separate email with the invoice". Tools a client signs up for themselves are named in their proposal. On `/work`, a project still on its host's shared address is captioned "Live demo" instead of the address.
 - The questionnaire's questions live in `app/q/[token]/questions.ts`; `docs/client-onboarding.txt` carries the same list as a document.
 - The logo is drawn from the outlines in `lib/logo.ts`, on the site and in the PDF, so the site loads one font weight. The PNGs in `public/brand` are rendered from the same outlines.
 - Favicon and Apple icon are cut from `public/brand/oce-icon.png`. `oce-avatar.png` is the profile picture (safe under a round crop); `oce-workspace-logo.png` is the organisation logo for the Google Admin console.
