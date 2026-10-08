@@ -308,6 +308,24 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
 
         <aside className="studio-side">
           <section className="studio-sec">
+            <h2 className="eyebrow">Details</h2>
+            <Action id={id} action="details" label="Save details">
+              {[
+                ['name', 'Name', lead.name],
+                ['company', 'Company', lead.company],
+                ['email', 'Email', lead.email],
+                ['source', 'Source', lead.source],
+                ['budget', 'Budget', lead.budget],
+              ].map(([n, l, v]) => (
+                <div key={n} className="field field--inline">
+                  <label htmlFor={`d-${n}`}>{l}</label>
+                  <input id={`d-${n}`} name={n as string} type={n === 'email' ? 'email' : 'text'} defaultValue={v ?? ''} placeholder={n === 'budget' ? '$3,000 to $6,000' : ''} />
+                </div>
+              ))}
+            </Action>
+          </section>
+
+          <section className="studio-sec">
             <h2 className="eyebrow">Notes</h2>
             <Action id={id} action="notes" label="Save notes">
               <textarea name="notes" rows={5} defaultValue={lead.notes ?? ''} aria-label="Notes" />

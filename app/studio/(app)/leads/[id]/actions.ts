@@ -147,15 +147,26 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
         await S.setNotes(id, str(form, 'notes'));
         return 'Notes saved.';
       });
+    case 'details':
+      return run(id, async () => {
+        await S.setDetails(id, {
+          name: str(form, 'name'),
+          company: str(form, 'company'),
+          email: str(form, 'email'),
+          source: str(form, 'source'),
+          budget: str(form, 'budget'),
+        });
+        return 'Details saved.';
+      });
     default:
       return { error: 'Unknown action.' };
   }
 }
 
-/** Autosave while on the call. Only question ids and the call notes are kept. */
+/** Autosave while on the call. Only question ids, the call notes and the recap draft are kept. */
 export async function saveCallAction(id: string, raw: Record<string, string>): Promise<{ ok: true } | { error: string }> {
   await requireSession(`/studio/leads/${id}`);
-  const keys = new Set([...QUESTIONS.flatMap((g) => g.items).map((q) => q.id), S.CALL_NOTES]);
+  const keys = new Set<string>([...QUESTIONS.flatMap((g) => g.items).map((q) => q.id), S.CALL_NOTES, ...S.RECAP_KEYS]);
   const answers: Record<string, string> = {};
   for (const [k, v] of Object.entries(raw)) {
     const t = typeof v === 'string' ? v.trim() : '';
@@ -169,11 +180,20 @@ export async function saveCallAction(id: string, raw: Record<string, string>): P
   }
 }
 
-/** Call notes → the recap form's fields. A draft, nothing is sent. */
-export async function draftRecapAction(id: string, notes: string): Promise<RecapDraft | { error: string }> {
+/**
+ * The on-call answers and the call notes → the recap form's fields. A draft,
+ * nothing is sent. Answers are passed as question and answer so the drafter
+ * knows which is which.
+ */
+export async function draftRecapAction(id: string, answers: Record<string, string>): Promise<RecapDraft | { error: string }> {
   await requireSession(`/studio/leads/${id}`);
+  const qa = QUESTIONS.flatMap((g) => g.items)
+    .filter((q) => answers[q.id]?.trim())
+    .map((q) => `Q: ${q.text}\nA: ${answers[q.id].trim()}`);
+  const notes = answers[S.CALL_NOTES]?.trim();
+  const text = [...qa, ...(notes ? [`Call notes:\n${notes}`] : [])].join('\n\n');
   try {
-    return await draftRecap(notes);
+    return await draftRecap(text);
   } catch (e) {
     return { error: e instanceof Error ? e.message : 'Could not draft the recap.' };
   }

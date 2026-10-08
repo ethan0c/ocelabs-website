@@ -91,6 +91,19 @@ export async function setNotes(id: string, notes: string) {
   await update(id, { notes });
 }
 
+/** The card at the top of the lead: who they are and where they came from. */
+export async function setDetails(id: string, d: { name: string; company: string; email: string; source: string; budget: string }) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) throw new Error('Enter a valid email address.');
+  await update(id, {
+    name: d.name || null,
+    company: d.company || null,
+    email: d.email,
+    source: d.source || 'referral',
+    budget: d.budget || null,
+  });
+  await log(id, 'details');
+}
+
 /** Send, and record. Falls back to a logged "would send" when Gmail isn't connected yet. */
 async function send(leadId: string, kind: string, to: string, mail: E.Email, attachments?: Attachment[]) {
   if (!(await gmailConfigured())) {
@@ -210,6 +223,8 @@ export const questionnaireLink = (t: string) => `${siteUrl()}/q/${t}`;
  * (the call notes) and never reach the client.
  */
 export const CALL_NOTES = '_call_notes';
+/** The recap draft as last edited, so it survives a reload. Bullets, package kind, range and timeline. */
+export const RECAP_KEYS = ['_recap_b1', '_recap_b2', '_recap_b3', '_recap_b4', '_recap_kind', '_recap_range', '_recap_weeks'] as const;
 const isPrivate = (k: string) => k.startsWith('_');
 
 export function clientPrefill(q: Questionnaire | null | undefined): Questionnaire {

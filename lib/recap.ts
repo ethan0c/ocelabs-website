@@ -24,7 +24,7 @@ const RANGES: Record<Kind, string> = {
   mobile: '$25,000 and up',
 };
 
-const SYSTEM = `You help a small web studio write the recap email after an intro call with a prospective client. From the notes you are given, reply with JSON only:
+const SYSTEM = `You help a small web studio write the recap email after an intro call with a prospective client. You are given the questions asked on the call with the answers typed in, then the studio's own call notes (which may be loose or in the client's words). Reply with JSON only:
 
 {"bullets": ["...", "...", "...", "..."], "kind": "starter" | "website" | "brand" | "webapp" | "mobile"}
 
@@ -36,7 +36,7 @@ The four bullets, in this order, each one sentence, written to the client in pla
 
 "kind" is the package that fits: "starter" (a small business site on our existing layouts, up to three pages, for a tight budget), "website" (a custom site up to five pages), "brand" (design-led site with motion and video, up to ten pages), "webapp" (accounts, dashboard, CMS, integrations), "mobile" (iOS and Android app).
 
-If the notes don't say something, write what was said and no more; never invent a deadline or a name. No markdown, no quotes inside strings.`;
+If the notes don't say something, write what was said and no more; never invent a deadline or a name. An answer typed next to the wrong question is still an answer: "Nobody" under features means no features, a name under features means that person approves. No markdown, no quotes inside strings.`;
 
 export async function draftRecap(notes: string): Promise<RecapDraft> {
   const text = notes.trim();

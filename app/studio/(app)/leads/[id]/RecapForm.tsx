@@ -6,8 +6,9 @@ import { QUESTIONS } from '@/app/q/[token]/questions';
 import { act, draftRecapAction, saveCallAction, type ActionState } from './actions';
 
 const ALL = QUESTIONS.flatMap((g) => g.items);
-/** Same key as CALL_NOTES in lib/studio.ts, which is server-only. */
+/** Same keys as CALL_NOTES and RECAP_KEYS in lib/studio.ts, which is server-only. */
 const NOTES_KEY = '_call_notes';
+const RECAP = { b: ['_recap_b1', '_recap_b2', '_recap_b3', '_recap_b4'], kind: '_recap_kind', range: '_recap_range', weeks: '_recap_weeks' };
 
 function PrefillField({ q, saved }: { q: (typeof ALL)[number]; saved: Record<string, string> }) {
   return (
@@ -34,18 +35,20 @@ type Save = { kind: 'idle' } | { kind: 'saving' } | { kind: 'saved'; at: Date } 
  */
 export default function RecapForm({ id, saved }: { id: string; saved: Record<string, string> }) {
   const [state, dispatch, pending] = useActionState<ActionState, FormData>(act, {});
+  const savedKind = (saved[RECAP.kind] ?? 'website') as Kind;
   const [notes, setNotes] = useState(saved[NOTES_KEY] ?? '');
-  const [bullets, setBullets] = useState(['', '', '', '']);
-  const [kind, setKind] = useState<Kind>('website');
-  const [range, setRange] = useState('$3,000 to $6,000');
-  const [weeks, setWeeks] = useState(weeksLabel(PACKAGES.website.weeks));
+  const [bullets, setBullets] = useState(RECAP.b.map((k) => saved[k] ?? ''));
+  const [kind, setKind] = useState<Kind>(savedKind in PACKAGES ? savedKind : 'website');
+  const [range, setRange] = useState(saved[RECAP.range] ?? '$3,000 to $6,000');
+  const [weeks, setWeeks] = useState(saved[RECAP.weeks] ?? weeksLabel(PACKAGES.website.weeks));
+  const [typed, setTyped] = useState(() => Object.keys(saved).some((k) => !k.startsWith('_recap')));
   const [drafting, startDraft] = useTransition();
   const [draftError, setDraftError] = useState<string | null>(null);
   const [save, setSave] = useState<Save>({ kind: 'idle' });
   const form = useRef<HTMLFormElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Everything typed so far: the answer boxes plus the notes.
+  // Everything typed so far: the answer boxes, the notes, and the recap draft.
   const collect = () => {
     const out: Record<string, string> = {};
     if (form.current) {
@@ -53,6 +56,11 @@ export default function RecapForm({ id, saved }: { id: string; saved: Record<str
         if (typeof v !== 'string') continue;
         if (k.startsWith('pre_')) out[k.slice(4)] = v;
         if (k === 'call_notes') out[NOTES_KEY] = v;
+        const b = /^b([1-4])$/.exec(k);
+        if (b) out[RECAP.b[Number(b[1]) - 1]] = v;
+        if (k === 'packageLabel') out[RECAP.kind] = (Object.keys(PACKAGES) as Kind[]).find((x) => PACKAGES[x].label === v) ?? '';
+        if (k === 'range') out[RECAP.range] = v;
+        if (k === 'weeks') out[RECAP.weeks] = v;
       }
     }
     return out;
@@ -68,6 +76,7 @@ export default function RecapForm({ id, saved }: { id: string; saved: Record<str
 
   // Save shortly after typing stops, and straight away when a box loses focus.
   const schedule = () => {
+    setTyped(true);
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(saveNow, 800);
   };
@@ -84,7 +93,7 @@ export default function RecapForm({ id, saved }: { id: string; saved: Record<str
   const draft = () =>
     startDraft(async () => {
       setDraftError(null);
-      const r = await draftRecapAction(id, notes);
+      const r = await draftRecapAction(id, collect());
       if ('error' in r) {
         setDraftError(r.error);
         return;
@@ -93,6 +102,7 @@ export default function RecapForm({ id, saved }: { id: string; saved: Record<str
       setKind(r.kind);
       setRange(r.range);
       setWeeks(r.weeks);
+      schedule();
     });
 
   // Dispatched by hand so a failed send doesn't clear the answer boxes.
@@ -143,9 +153,10 @@ export default function RecapForm({ id, saved }: { id: string; saved: Record<str
 
       <fieldset className="recap-prefill">
         <legend className="eyebrow">The recap email</legend>
-        <button type="button" className="btn" onClick={draft} disabled={drafting || !notes.trim()}>
-          {drafting ? 'Drafting…' : 'Draft the recap from the call notes'}
+        <button type="button" className="btn" onClick={draft} disabled={drafting || !(typed || notes.trim())}>
+          {drafting ? 'Drafting…' : 'Draft the recap from the call'}
         </button>
+        <p className="tbl-sub">Written from the answers and notes above. Check every line; edits are kept until you send.</p>
         {draftError && (
           <p className="form-note act-note" data-kind="error" role="status">
             {draftError}
