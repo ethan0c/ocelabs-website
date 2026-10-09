@@ -82,6 +82,7 @@ Now editable in the Details box on the lead page (sidebar, top).
   - "Who has the final say?" → "Rodney"
   - "What do you want people to do after visiting?" → "See the work, get a feel for the brand, and reach out to book"
   - "After launch, who will keep the site up to date?" → "Rodney adds photos himself; OCE Labs for anything else"
+  - "Is a well-known tool fine, or does it need to work in a way no existing tool does?" → "No special features. The site just shows my work and people contact me by email or Instagram. I want to add photos myself, so a well-known builder (Framer) is fine. No store or booking tool needed."
 
 ## 2. Recap email (Email B)
 
@@ -153,3 +154,73 @@ Best regards,
 Ethan
 OCE Labs
 ocelabs.xyz
+
+## 5. Design direction and proposal ticks (October 8, later)
+
+Direction agreed between us: magazine, editorial, picture first. His 4K client photos carry the site.
+
+Templates to preview: Éloi Varenne (first choice, austere, no motion), LUMINA (bigger, louder type), backups Creative2tudio and Bureau Nine. Template is a starting grid; strip it and rebuild around his photos.
+
+References to show him (two, not ten): Schanel Bakkouche (stylist, gallery-driven, no chrome), Kelly McKeefrey (stylist across disciplines, clean sections).
+
+Pages (5): Home · Work (Gameday / Editorial / Runway / Event filters) · About · Services · Contact. Client/shoot pages use one CMS layout: 6 to 12 big photos, one-line caption. Not written case studies. He can add a client in minutes and it never counts as a page.
+
+Estimator ticks: Website Package, 5 pages; Logo and identity; Referral 10%; Starter care retainer $150; standard timeline. Notes: scope paragraph above, plus "Project pages for individual clients and shoots use one layout and are not counted as pages."
+Decide on the call: Image sourcing and art direction ($600) only if we pick from his archive; Video hero ($600) if he wants a loop on the home page.
+Leave off: Motion, Themes, Copywriting.
+
+Direction, refined (October 8): "full-bleed editorial." Home is huge pictures one at a time, edge to edge, with a short serif text beat every 3 or 4 pictures. No masonry or thumbnails (schanelb.com and visionaryofstyle.com are the opposite of this). Work is the only grid: 2 columns desktop, 1 on phone, four filters, tiles open project pages. About, Services and Contact fold into one short Info page. Design for 3 pages + project layout; keep "up to 5" in the proposal. Fonts: Instrument Serif + Inter (quiet) or Cormorant Garamond + Geist (more magazine). To decide with Rodney: two Framer home-page versions with 8 of his real photos (A pictures only, B with text beats), on his phone. Ask him for 20 to 30 best photos now.
+
+Decided by us (October 8): the site is a ten-second credibility check that ends in a Book click. First screen: name, "Styling and creative direction for athletes," one undeniable gameday photo. Proof by names: ask Rodney for the athletes/teams list (or team logos/leagues if he can't name them). Pages: Home, Work (Gameday first, then Editorial, Runway, Event), Info. Keep only the four categories and his email from the current site. Nav: wordmark + Work + Info + Book, fixed and small, mix-blend over photos, no hamburger on phone; home first screen can be wordmark only with nav on scroll. Logo runs first: week 1 two or three directions (wordmark + mark, "six" numeral), week 2 pick and lock the typeface, which the site then uses. He approves, we decide.
+
+Logo (October 8, later): likely clean-up only. Quote "Logo clean-up" $1,250 as a Not listed line, Logo and identity unticked. Website Package + clean-up = $4,250; $3,825 with referral; $3,400 with referral + launch client (two payments of $1,700). Scope wording for Notes: "Logo clean-up: we keep your current mark and redraw it properly: clean vectors, corrected spacing and weights, a matching wordmark if yours is set in a default font, and files for print, web and Instagram (black, white and colour versions). No new concepts; one round of changes. A new logo from scratch is quoted separately." Get his current logo file before sending; if the mark itself is the problem, say so on the call.
+
+## Final pricing, as built (October 9)
+
+Replaces the earlier option tables. Priced from what's in the closet-six repo, not from the call.
+
+Estimator ticks: Website Package, 5 pages; Image sourcing and art direction; discounts Referral + Launch client; retainer Starter care ($150, optional). Not listed: "Logo refresh: C6 mark" $200. Leave Logo and identity, Motion and Copywriting unticked.
+
+| Line | Price |
+|---|---|
+| Website Package (Home, Work, About, one project layout for every shoot, 404) | $3,000 |
+| Image sourcing and art direction (100+ photos picked from his site and Instagram, colour-corrected, sequenced, captioned) | $600 |
+| Logo refresh: C6 mark | $200 |
+| Subtotal | $3,800 |
+| Referral 10% + Launch client 10% | -$760 |
+| **Fixed price** | **$3,040** |
+
+Payments: $1,520 on signature, $1,520 on staging approval. If the logo goes in free: $2,880, two payments of $1,440.
+
+Why not Motion ($1,500): the loader, featured strip and hover filter were cut; what's left (fades, lightbox, cursor) is ordinary site polish. Why not Brand package: no motion and no video, so it would be charging for things he isn't getting.
+
+Same price on either build route in docs/framer-migration.md: the design is the work. Route A (Framer): he pays Framer for the plan and adds photos himself. Route B (keep Next.js): free hosting, but every new photo goes through us, so offer the $150 care retainer and say so plainly.
+
+Before the proposal goes out, ask him three things: real client names he's happy to show, sign-off on the Instagram photos, and route A or B.
+
+### Exact page count (from the build, October 9)
+
+4 designed pages, 16 live URLs:
+
+1. Home `/`
+2. Work `/work/` (Gameday, Editorial, Runway, Event filters on the same page)
+3. About `/about/`
+4. Project page, one layout, used for 11 shoots: Marcus Bell home opener, Nia Okafor away day, Devin Marsh week 7, Theo Lindqvist primetime, Devin Marsh season portraits, The yellow couch, Atelier Vance opening looks, Atelier Vance closing looks, Game week New Orleans, After hours New Orleans, Ten days in Shanghai
+
+Plus a 404 page (not counted). Contact isn't a page: it opens his email.
+
+For the proposal: "Up to 5 pages: Home, Work, About, a project layout for every shoot, and the 404 page. New shoots use the project layout and don't count as pages." That's inside the Website Package's 5, so no extra-page charge.
+
+### Discount, decided (October 9)
+
+Referral only, no launch-client discount. Subtotal $3,800 (with the $200 C6 mark).
+- 10%: **$3,420**, two payments of $1,710. Estimator: tick Referral.
+- 15%: $3,230, two payments of $1,615. Estimator: tick Referral, custom 5%. Only if the extra 5% buys the testimonial and a spot on /work.
+
+### Build route, decided (October 9): Framer
+
+Route A in docs/framer-migration.md. The Next.js build is the design reference, not the live site.
+- Price unchanged: $3,420 at 10% referral. The design is the work, not the build tool.
+- Rodney adds and removes photos himself in Framer's CMS. The Framer site plan is in his account and billed to him by Framer; the proposal says so and that it replaces our hosting line.
+- Analytics and search basics come from Framer's own settings; set them up before launch.
+- Retainer stays optional ($150 Starter care), offered after the free 30 days, never a condition.
