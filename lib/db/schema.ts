@@ -14,6 +14,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import type { Quote, QuoteInput } from '@/lib/pricing';
+import type { ProposalEdits } from '@/lib/proposal';
 
 export const STAGES = [
   'new',
@@ -65,6 +66,8 @@ export const leads = pgTable('leads', {
 
   /** The estimator's state for this lead. Saved from /pricing. */
   quote: jsonb('quote').$type<QuoteInput>(),
+  /** Wording changes to the next proposal, made in the studio before it is sent. */
+  proposalEdits: jsonb('proposal_edits').$type<ProposalEdits>(),
 
   questionnaireToken: text('questionnaire_token').unique(),
   /** The client's answers once questionnaireAt is set; before that, our pre-fill from the call. */
@@ -116,6 +119,8 @@ export const proposals = pgTable('proposals', {
   quote: jsonb('quote').$type<QuoteInput>().notNull(),
   /** The priced quote as sent, so later price-book changes never alter a sent or signed proposal. */
   priced: jsonb('priced').$type<Quote>(),
+  /** The wording changes as sent, frozen with the quote. */
+  edits: jsonb('edits').$type<ProposalEdits>(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   sentAt: timestamp('sent_at', { withTimezone: true }),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),

@@ -6,7 +6,7 @@ import { siteUrl } from '@/lib/auth';
 import * as E from '@/lib/emails';
 import { draftMail, gmailConfigured, sendMail, type Attachment } from '@/lib/gmail';
 import { CONTENT_DEADLINE_DAYS, PROPOSAL_VALID_DAYS, WARRANTY_DAYS, computeQuote, warrantyDays, usd, weeksLabel, type QuoteInput } from '@/lib/pricing';
-import { buildProposal, proposalFileName } from '@/lib/proposal';
+import { buildProposal, hasEdits, proposalFileName, type ProposalEdits } from '@/lib/proposal';
 import { renderProposalPdf } from '@/lib/proposal-pdf';
 import { gistOf } from '@/lib/summarize';
 import { notifyNewLead, notifyStudio } from '@/lib/notify';
@@ -298,11 +298,30 @@ export async function saveQuote(id: string, quote: QuoteInput) {
 
 export const proposalLink = (t: string) => `${siteUrl()}/p/${t}`;
 
+/** The lead's saved quote with the lead's own email and company filled in. */
+export function leadQuote(lead: Lead): QuoteInput | null {
+  if (!lead.quote) return null;
+  return { ...lead.quote, email: lead.email, client: lead.quote.client || lead.company || '' };
+}
+
+/** The proposal as it would be sent now: the saved quote with the lead's wording edits. */
+export function leadProposalDoc(lead: Lead, now = new Date()) {
+  const quote = leadQuote(lead);
+  if (!quote) return null;
+  return buildProposal(computeQuote(quote), now, lead.proposalEdits);
+}
+
+/** Wording changes from the studio editor. Null clears them. */
+export async function saveProposalEdits(id: string, edits: ProposalEdits | null) {
+  await update(id, { proposalEdits: hasEdits(edits) ? edits : null });
+  await log(id, edits ? 'proposal:edited' : 'proposal:edits-cleared', edits ? { blocks: Object.keys(edits.blocks ?? {}).length, extra: Object.keys(edits.extra ?? {}).length } : undefined);
+}
+
 export async function createAndSendProposal(id: string) {
   const lead = await getLead(id);
   if (!lead) throw new Error('No such lead.');
-  if (!lead.quote) throw new Error('Save a quote for this lead first (open the estimator from this page).');
-  const quote: QuoteInput = { ...lead.quote, email: lead.email, client: lead.quote.client || lead.company || '' };
+  const quote = leadQuote(lead);
+  if (!quote) throw new Error('Save a quote for this lead first (open the estimator from this page).');
   const q = computeQuote(quote);
 
   // One live proposal at a time: anything older still unsigned is voided.
@@ -319,6 +338,7 @@ export async function createAndSendProposal(id: string) {
       token: token(),
       quote,
       priced: q,
+      edits: hasEdits(lead.proposalEdits) ? lead.proposalEdits : null,
       sentAt: now,
       expiresAt: addDays(now, PROPOSAL_VALID_DAYS),
       status: 'sent',
@@ -358,8 +378,9 @@ export function proposalQuote(p: Proposal) {
   return p.priced ?? computeQuote(p.quote);
 }
 
+/** The document as sent: the frozen quote and the frozen wording edits. */
 export function proposalDoc(p: Proposal) {
-  return buildProposal(proposalQuote(p), p.createdAt);
+  return buildProposal(proposalQuote(p), p.createdAt, p.edits);
 }
 
 /* ── Stage 5: signature → deposit ──────────────────────────────────────── */
