@@ -2296,3 +2296,63 @@ a {
     gap: 2rem;
   }
 }
+
+/* ── Proposal wording editor (/studio/leads/[id]/proposal) ─────────────── */
+
+.ped {
+  max-width: 44rem;
+  padding-bottom: 6rem;
+}
+
+.ped-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.ped-bar .act-note {
+  flex-basis: 100%;
+}
+
+.ped-field {
+  margin-bottom: 1.5rem;
+}
+
+.ped-field textarea {
+  min-height: 3.5rem;
+  font-size: 0.9375rem;
+}
+
+.ped-field[data-changed] label {
+  color: var(--text);
+}
+
+.ped-field[data-changed] textarea,
+.ped-field[data-changed] input {
+  border-bottom-color: var(--text);
+}
+
+.ped-extra label {
+  font-style: italic;
+}
+
+.ped-tools {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: 0.6rem;
+}
+
+.ped-gen {
+  white-space: pre-wrap;
+}
+
+.ped-table {
+  margin-bottom: 1.5rem;
+}
+
+.ped-table .prop-table {
+  margin-top: 0;
+}

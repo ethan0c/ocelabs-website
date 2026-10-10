@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { STAGES, STAGE_LABEL } from '@/lib/db/schema';
 import { PACKAGES, computeQuote, encodeInput, usd, weeksLabel, type Kind } from '@/lib/pricing';
+import { hasEdits } from '@/lib/proposal';
 import { leadDetail, proposalLink, questionnaireLink, quoteSummary, retainerDashboard } from '@/lib/studio';
 import { QUESTIONS } from '@/app/q/[token]/questions';
 import Action from './Action';
@@ -120,14 +121,22 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
               ) : (
                 <p className="tbl-sub">No quote yet. Build it in the estimator from the questionnaire answers; it saves to this lead.</p>
               )}
+              {q && hasEdits(lead.proposalEdits) && (
+                <p className="tbl-sub">The wording has been edited for this lead; the next proposal goes out with those changes.</p>
+              )}
               <div className="act-row">
                 <Link href={estimatorHref} className="btn">
                   {q ? 'Edit quote' : 'Build quote'}
                 </Link>
-                {q && lead.quote?.client && (
-                  <Link href={`/pricing/proposal?q=${encodeInput(lead.quote)}`} className="btn">
-                    Preview proposal
-                  </Link>
+                {q && (
+                  <>
+                    <Link href={`/studio/leads/${id}/proposal`} className="btn">
+                      {hasEdits(lead.proposalEdits) ? 'Edit wording · edited' : 'Edit wording'}
+                    </Link>
+                    <Link href={`/studio/leads/${id}/proposal?preview=1`} className="btn">
+                      Preview proposal
+                    </Link>
+                  </>
                 )}
                 {q && !live?.signedAt && (
                   <Action

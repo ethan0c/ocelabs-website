@@ -506,10 +506,10 @@ export default function Estimator({ initial, leadId }: { initial?: QuoteInput | 
               Save to lead
             </button>
           )}
-          <a className={`btn${leadId ? '' : ' btn--primary'}`} href={`/pricing/proposal/pdf?q=${encoded}`}>
+          <a className={`btn${leadId ? '' : ' btn--primary'}`} href={`/pricing/proposal/pdf?q=${encoded}${leadId ? `&lead=${leadId}` : ''}`}>
             Download proposal PDF
           </a>
-          <a className="btn" href={`/pricing/proposal?q=${encoded}`}>
+          <a className="btn" href={`/pricing/proposal?q=${encoded}${leadId ? `&lead=${leadId}` : ''}`}>
             Preview proposal
           </a>
           <button type="button" className="btn" onClick={copy}>

@@ -51,15 +51,16 @@ test('applyEdits replaces, removes and appends; tables and other sections are un
   assert.equal(blockText(tl.blocks.at(-1)!), 'Finished site on a private link by week 3 or 4.');
   assert.equal(out.timeline, '4 to 6 weeks, aiming for 4');
   assert.deepEqual(out.sections.find((s) => s.key === 'ownership'), pr.sections.find((s) => s.key === 'ownership'));
-  assert.equal(find(out, 'scope.outside')?.kind === 'p' && find(out, 'scope.outside')?.kind === 'p' ? (find(out, 'scope.outside') as { strong?: boolean }).strong : false, true);
+  const outside = find(out, 'scope.outside');
+  assert.ok(outside?.kind === 'p' && outside.strong, 'the outside-scope line stays bold');
 });
 
 test('sanitiseEdits keeps only real changes to known blocks', () => {
   const pr = base();
   const same = blockText(find(pr, 'scope.intro')!);
   assert.equal(sanitiseEdits({ blocks: { 'scope.intro': same, 'scope.lines': 'nope', 'made.up': 'x' }, extra: { nowhere: 'x', scope: '  ' }, timeline: pr.timeline }, pr), null);
-  const e = sanitiseEdits({ blocks: { 'scope.intro': '  New.  ', 'price.retainer': '' }, extra: { scope: 'Added.' }, timeline: ' 4 weeks ' }, pr);
-  assert.deepEqual(e, { blocks: { 'scope.intro': 'New.', 'price.retainer': null }, extra: { scope: 'Added.' }, timeline: '4 weeks' });
+  const e = sanitiseEdits({ blocks: { 'scope.intro': '  New.  ', 'timeline.content': '' }, extra: { scope: 'Added.' }, timeline: ' 4 weeks ' }, pr);
+  assert.deepEqual(e, { blocks: { 'scope.intro': 'New.', 'timeline.content': null }, extra: { scope: 'Added.' }, timeline: '4 weeks' });
   assert.equal(hasEdits(e), true);
   assert.equal(hasEdits({ extra: { scope: ' ' } }), false);
 });

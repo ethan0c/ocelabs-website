@@ -73,6 +73,7 @@ Stage 4: Proposal
 Trigger: the questionnaire comes back.
 We do, within 2 business days:
 • Open the estimator from the lead page, build the quote from the questionnaire answers, press Save to lead.
+• Press Edit wording on the lead page and read the proposal as the client will. Any paragraph can be rewritten or removed and paragraphs can be added to any section; the price and payment tables stay tied to the quote. Make the scope read as their project, not as a package. Preview, then go back to the lead.
 • Press Send proposal. Email C goes out with a link to /p/<token>, where the client reads the agreement, downloads the PDF, and signs it by typing their name and ticking consent. No separate e-sign tool.
 Automatic: nudges at day 5 and day 12; at day 14 the proposal expires and the lead's next action says so.
 
@@ -367,7 +368,7 @@ Thank you for letting us look after your site. If you need anything in the futur
 
 Part 4: The proposal and the paperwork
 
-The proposal is one PDF, two to three pages, and it is also the contract. It is generated from the estimator's quote, so the numbers cannot drift from the calculation; the wording is in lib/proposal.ts, and the on-screen proposal and the PDF both render it. Sections:
+The proposal is one PDF, two to three pages, and it is also the contract. It is generated from the estimator's quote, so the numbers cannot drift from the calculation; the default wording is in lib/proposal.ts, and the on-screen proposal and the PDF both render it. Before sending, the wording can be changed for one lead (Edit wording on the lead page); those changes are frozen onto the proposal when it is sent, so a signed proposal always reads as it did when signed. Sections:
 
 1. Parties. [Legal name], doing business as OCE Labs, and the client's legal business name.
 2. Scope. The package and what it includes, the pages, the add-ons, and any outside services the client signs up for and pays directly. Then a line: "Anything not listed here is outside the scope and is quoted separately."
