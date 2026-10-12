@@ -418,25 +418,30 @@ a {
   text-wrap: pretty;
 }
 
-/* Reuses .work-shot for the frame; the caption mirrors the Work page rows. */
-.hero-preview {
+/* A shot with a two-part caption, linked to the Work page. The hero uses one;
+   the strip under the services uses three. Reuses .work-shot for the frame;
+   the caption mirrors the Work page rows. */
+.work-tile {
   display: block;
   min-width: 0;
 }
 
-.hero-preview .work-shot {
+.work-tile .work-shot {
   margin-bottom: 0.9rem;
 }
 
-.hero-preview-cap {
+.work-tile-cap {
   display: flex;
+  /* Wraps rather than overflows when a name and a client line won't share a
+     narrow tile; the second line reads as a sub-caption. */
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.15rem 1rem;
   font-size: 0.8125rem;
   color: var(--dim);
 }
 
-.hero-preview-cap span:first-child {
+.work-tile-cap span:first-child {
   color: var(--text);
 }
 
@@ -542,6 +547,90 @@ a {
 .steps .cap-desc {
   max-width: 44rem;
   text-wrap: pretty;
+}
+
+/* The chain as a grid of cells rather than a column of rows: a glyph, a name
+   and one line each, so the whole offer reads in a glance. The hairline on
+   top of each cell does the work the row dividers did. Four across, two on a
+   tablet, one on a phone. */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2.5rem 2rem;
+}
+
+.step {
+  border-top: 1px solid var(--line);
+  padding-top: 1.25rem;
+}
+
+.step-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.step-glyph {
+  display: block;
+}
+
+.step .cap-name {
+  font-size: 1.0625rem;
+}
+
+.step .cap-desc {
+  margin-top: 0.3rem;
+  max-width: 30ch;
+}
+
+@media (max-width: 56rem) {
+  .steps-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+/* Three shots under the services; the full list is on Work. */
+.home-work {
+  padding-block: 4.5rem 3.5rem;
+  border-top: 1px solid var(--line);
+}
+
+/* Section head with a link at the far end, level with the heading's baseline. */
+.sec-head--row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+}
+
+.home-work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+/* Same point the Work grid collapses: three 16:10 shots get too small before
+   the 40rem breakpoint. */
+@media (max-width: 52rem) {
+  .home-work-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .sec-head--row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 }
 
 /* What we make: head on the left, the four nouns as a hairline list on the right. */

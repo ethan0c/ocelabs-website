@@ -98,7 +98,9 @@ export default function WorkPreview({ name, shot, clip, priority, sizes }: Props
         width={1200}
         height={900}
         sizes={sizes ?? '(max-width: 68rem) 100vw, 64rem'}
-        priority={priority}
+        // Next 16 renamed `priority` to `preload`; the prop keeps the old name
+        // here so callers read the same.
+        preload={priority}
       />
 
       {clip && armed && (
