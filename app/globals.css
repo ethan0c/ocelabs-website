@@ -549,10 +549,11 @@ a {
   text-wrap: pretty;
 }
 
-/* The chain as a grid of cells rather than a column of rows: a glyph, a name
-   and one line each, so the whole offer reads in a glance. The hairline on
-   top of each cell does the work the row dividers did. Four across, two on a
-   tablet, one on a phone. */
+/* The chain as a grid of cells rather than a column of rows: a number, a name
+   and one line each, so the whole offer reads in a glance. The number is set
+   large and does the job an icon would, in type. The hairline on top of each
+   cell does the work the row dividers did. Four across, two on a tablet, one
+   on a phone. */
 .steps-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -564,15 +565,16 @@ a {
   padding-top: 1.25rem;
 }
 
-.step-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-}
-
-.step-glyph {
+.step-num {
   display: block;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--dim);
+  margin-bottom: 1.75rem;
+  /* Lining figures of equal width, so the numbers sit at one height across
+     the row and 01 is as wide as 07. */
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .step .cap-name {
