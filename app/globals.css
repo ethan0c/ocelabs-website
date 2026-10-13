@@ -47,7 +47,7 @@
      so wide screens get wide grids, not wide paragraphs. */
   --page: none;
   --gutter: 1.75rem;
-  --nav-h: 5rem;
+  --nav-h: 4rem;
 }
 
 [data-theme='light'] {
@@ -1252,7 +1252,7 @@ a {
 @media (max-width: 40rem) {
   :root {
     --gutter: 1.25rem;
-    --nav-h: 4.25rem;
+    --nav-h: 3.5rem;
   }
 
   .nav-right {
