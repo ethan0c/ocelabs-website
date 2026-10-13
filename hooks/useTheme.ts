@@ -1,48 +1,54 @@
 'use client';
 
-import { useCallback, useEffect, useSyncExternalStore } from 'react';
+import { useEffect } from 'react';
 
 type Theme = 'dark' | 'light';
 
 /**
- * The theme lives on <html data-theme>, written by the inline script in
- * layout.tsx before first paint. React subscribes to it rather than owning it,
- * which keeps the server render and the pre-paint value in agreement.
+ * The theme is never chosen on the site. It follows the device's light/dark
+ * setting, and when the browser reports no preference it follows the clock:
+ * dark from 7pm to 7am. Nothing is stored.
+ *
+ * Keep this in step with the inline script in app/layout.tsx, which runs the
+ * same rule before first paint so there is no flash.
  */
-function subscribe(onChange: () => void) {
-  const observer = new MutationObserver(onChange);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme'],
-  });
-  return () => observer.disconnect();
+export function resolveTheme(now = new Date()): Theme {
+  if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+  }
+  const h = now.getHours();
+  return h >= 19 || h < 7 ? 'dark' : 'light';
 }
 
-function getSnapshot(): Theme {
-  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+function apply() {
+  document.documentElement.setAttribute('data-theme', resolveTheme());
 }
 
-export function useTheme() {
-  // Matches the server-rendered data-theme on <html>.
-  const theme = useSyncExternalStore(subscribe, getSnapshot, () => 'dark' as Theme);
-
-  // Follow the system preference until the visitor picks a theme themselves.
+/** Keeps <html data-theme> in step with the device setting and the time. */
+export function useSystemTheme() {
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const onChange = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem('theme')) {
-        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-      }
+    apply();
+
+    // Follow the device if the setting changes while the page is open.
+    const dark = window.matchMedia('(prefers-color-scheme: dark)');
+    const light = window.matchMedia('(prefers-color-scheme: light)');
+    dark.addEventListener('change', apply);
+    light.addEventListener('change', apply);
+
+    // Re-check on the minute so the clock fallback crosses 7am/7pm without a
+    // reload, and when the tab comes back after being hidden.
+    const timer = window.setInterval(apply, 60_000);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') apply();
     };
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
+    document.addEventListener('visibilitychange', onVisible);
 
-  const toggle = useCallback(() => {
-    const next: Theme = getSnapshot() === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
+    return () => {
+      dark.removeEventListener('change', apply);
+      light.removeEventListener('change', apply);
+      window.clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, []);
-
-  return { theme, toggle };
 }

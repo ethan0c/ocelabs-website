@@ -30,8 +30,8 @@ export default function PrivacyPage() {
 
         <h2>Browsing the site</h2>
         <p>
-          There are no analytics and no tracking cookies. The site remembers whether you picked
-          light or dark mode, and that setting stays in your browser. Our hosting company keeps
+          There are no analytics and no tracking cookies. Light or dark mode follows your device
+          setting, or the time of day, and nothing is saved. Our hosting company keeps
           ordinary server logs (IP address, the page you asked for, the time) for a short while to
           keep the site secure and running.
         </p>

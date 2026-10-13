@@ -45,10 +45,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-theme="dark" className={geist.variable} suppressHydrationWarning>
       <head>
-        {/* Resolve theme before first paint so there is no flash. */}
+        {/* Resolve theme before first paint so there is no flash. Same rule as
+            resolveTheme in hooks/useTheme.ts: device setting, else the clock
+            (dark 7pm to 7am). Drops the choice older visits may have stored. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('theme');var p=window.matchMedia('(prefers-color-scheme:dark)').matches;document.documentElement.setAttribute('data-theme',s||(p?'dark':'light'));}catch(e){}})();`,
+            __html: `(function(){try{localStorage.removeItem('theme');var m=window.matchMedia,t;if(m&&m('(prefers-color-scheme:dark)').matches)t='dark';else if(m&&m('(prefers-color-scheme:light)').matches)t='light';else{var h=new Date().getHours();t=(h>=19||h<7)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
           }}
         />
       </head>
