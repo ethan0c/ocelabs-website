@@ -144,16 +144,16 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
       });
     }
     case 'delete': {
-      // The page being deleted cannot show the result, so this leaves for the
-      // list. redirect() throws to work, which is why it sits outside run().
-      await requireSession(`/studio/leads/${id}`);
-      try {
+      const result = await run(id, async () => {
         await S.deleteLead(id);
-      } catch (e) {
-        return { error: e instanceof Error ? e.message : 'Could not delete.' };
-      }
-      revalidatePath('/studio');
-      redirect('/studio');
+        return 'Deleted.';
+      });
+      // The list just loses the row. The lead's own page has nothing left to
+      // show, so it passes `then` to be sent on. redirect() throws to work,
+      // which is why it sits outside run().
+      const then = str(form, 'then');
+      if (result.ok && then.startsWith('/')) redirect(then);
+      return result;
     }
     case 'stage': {
       const stage = str(form, 'stage') as Stage;

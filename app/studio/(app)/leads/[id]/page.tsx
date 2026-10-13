@@ -368,7 +368,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
                     <input type="hidden" name="test" value="0" />
                   </Action>
                   <Action id={id} action="delete" label="Delete lead" confirm="Delete this lead and everything on it? This cannot be undone.">
-                    <input type="hidden" name="test" value="1" />
+                    <input type="hidden" name="then" value="/studio" />
                   </Action>
                 </div>
               </>
