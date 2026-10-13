@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { requireSession } from '@/lib/auth';
 import type { Stage } from '@/lib/db/schema';
 import * as S from '@/lib/studio';
@@ -135,6 +136,25 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
         await S.closeLead(id, false);
         return 'Closed, lost.';
       });
+    case 'test': {
+      const on = str(form, 'test') === '1';
+      return run(id, async () => {
+        await S.setTest(id, on);
+        return on ? 'Marked as test. It stays out of the dashboard.' : 'No longer a test.';
+      });
+    }
+    case 'delete': {
+      // The page being deleted cannot show the result, so this leaves for the
+      // list. redirect() throws to work, which is why it sits outside run().
+      await requireSession(`/studio/leads/${id}`);
+      try {
+        await S.deleteLead(id);
+      } catch (e) {
+        return { error: e instanceof Error ? e.message : 'Could not delete.' };
+      }
+      revalidatePath('/studio');
+      redirect('/studio');
+    }
     case 'stage': {
       const stage = str(form, 'stage') as Stage;
       return run(id, async () => {

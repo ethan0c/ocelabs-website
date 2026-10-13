@@ -46,6 +46,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
         <div>
           <p className="eyebrow rise rise-1">
             <Link href="/studio">Leads</Link> · {STAGE_LABEL[lead.stage]}
+            {lead.test && ' · Test'}
           </p>
           <h1 className="h1 rise rise-2">{lead.company || lead.name || lead.email}</h1>
           <p className="lede rise rise-3">
@@ -353,6 +354,31 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
             </Action>
             {!lead.closedAt && (
               <Action id={id} action="closeLost" label="Close, lost" confirm="Close this lead as lost?" />
+            )}
+          </section>
+
+          {/* Test leads stay out of the dashboard, and are the only ones that can go. */}
+          <section className="studio-sec">
+            <h2 className="eyebrow">Test</h2>
+            {lead.test ? (
+              <>
+                <p className="tbl-sub">Marked as test. Not counted on the dashboard.</p>
+                <div className="act-row">
+                  <Action id={id} action="test" label="Not a test">
+                    <input type="hidden" name="test" value="0" />
+                  </Action>
+                  <Action id={id} action="delete" label="Delete lead" confirm="Delete this lead and everything on it? This cannot be undone.">
+                    <input type="hidden" name="test" value="1" />
+                  </Action>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="tbl-sub">A real lead cannot be deleted. Mark it as test first.</p>
+                <Action id={id} action="test" label="Mark as test">
+                  <input type="hidden" name="test" value="1" />
+                </Action>
+              </>
             )}
           </section>
 

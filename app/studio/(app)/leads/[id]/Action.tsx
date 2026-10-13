@@ -12,6 +12,7 @@ export default function Action({
   action,
   label,
   primary,
+  small,
   confirm,
   children,
 }: {
@@ -19,6 +20,8 @@ export default function Action({
   action: string;
   label: string;
   primary?: boolean;
+  /** The compact button, for a table row. */
+  small?: boolean;
   confirm?: string;
   children?: React.ReactNode;
 }) {
@@ -34,7 +37,7 @@ export default function Action({
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="action" value={action} />
       {children}
-      <button type="submit" className={`btn${primary ? ' btn--primary' : ''}`} disabled={pending}>
+      <button type="submit" className={`btn${primary ? ' btn--primary' : ''}${small ? ' btn--sm' : ''}`} disabled={pending}>
         {pending ? 'Working…' : label}
       </button>
       {(state.ok || state.error) && (

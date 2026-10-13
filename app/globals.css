@@ -2447,3 +2447,158 @@ a {
 .ped-table .prop-table {
   margin-top: 0;
 }
+
+/* ─── Studio dashboard ──────────────────────────────────────── */
+
+/* Three charts across, then the numbers. Each chart is one series in the
+   text colour: the current period in full, the rest lighter, so the eye lands
+   on now. Hovering a slot lifts its bar; the table under each chart has every
+   value without hovering. */
+.dash-charts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.chart {
+  margin: 0;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 0.9rem;
+}
+
+.chart .eyebrow {
+  margin-bottom: 1rem;
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart text {
+  fill: var(--dim);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-val {
+  fill: var(--text);
+}
+
+.chart-bar {
+  fill: var(--text);
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+}
+
+.chart-bar[data-current],
+.chart g:hover .chart-bar {
+  opacity: 1;
+}
+
+.chart-base {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.chart-table {
+  margin-top: 0.9rem;
+  font-size: 0.8125rem;
+  color: var(--dim);
+}
+
+.chart-table summary {
+  cursor: pointer;
+  width: fit-content;
+}
+
+.chart-table table {
+  width: 100%;
+  margin-top: 0.5rem;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-table th,
+.chart-table td {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--line);
+  font-weight: 400;
+  text-align: left;
+}
+
+.chart-table td {
+  text-align: right;
+  color: var(--text);
+}
+
+/* Stat tiles: label, the number, one line of context. Proportional figures
+   on the number; it stands alone, nothing lines up under it. */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2.5rem;
+}
+
+.stat {
+  border-top: 1px solid var(--line);
+  padding-top: 0.9rem;
+}
+
+.stat-label,
+.stat-sub {
+  font-size: 0.8125rem;
+  color: var(--dim);
+}
+
+.stat-value {
+  margin-top: 0.35rem;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.stat-sub {
+  margin-top: 0.3rem;
+}
+
+/* The Test tag in the leads table sits after the stage pill. */
+.pill-stage[data-stage='test'] {
+  margin-left: 0.4rem;
+  color: var(--dim);
+}
+
+@media (max-width: 56rem) {
+  .dash-charts {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .stat-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+  }
+}
+
+/* The per-row test/delete control in the leads table: pinned to the row's
+   end, and its result note stays narrow so the row does not jump. */
+.tbl .tbl-act {
+  text-align: right;
+  padding-right: 0;
+  white-space: nowrap;
+}
+
+.tbl-act .act {
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.tbl-act .act-note {
+  font-size: 0.75rem;
+  white-space: normal;
+  max-width: 14rem;
+}

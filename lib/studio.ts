@@ -8,6 +8,7 @@ import { draftMail, gmailConfigured, sendMail, type Attachment } from '@/lib/gma
 import { CONTENT_DEADLINE_DAYS, PROPOSAL_VALID_DAYS, WARRANTY_DAYS, computeQuote, warrantyDays, usd, weeksLabel, type QuoteInput } from '@/lib/pricing';
 import { buildProposal, hasEdits, proposalFileName, type ProposalEdits } from '@/lib/proposal';
 import { renderProposalPdf } from '@/lib/proposal-pdf';
+import { computeDashboard } from '@/lib/dashboard';
 import { gistOf } from '@/lib/summarize';
 import { notifyNewLead, notifyStudio } from '@/lib/notify';
 import { createDraftInvoice, createRetainer, dashboardUrl, endRetainer, finalizeAndSend, findOrCreateCustomer, stripe, stripeLive } from '@/lib/stripe';
@@ -740,6 +741,39 @@ export const retainerDashboard = (subId: string) =>
 
 export async function closeLead(id: string, won: boolean) {
   await setStage(id, won ? 'closed_won' : 'closed_lost');
+}
+
+/* ── Test leads ────────────────────────────────────────────────────────── */
+
+export async function setTest(id: string, test: boolean) {
+  await update(id, { test });
+  await log(id, test ? 'test:marked' : 'test:cleared');
+}
+
+/**
+ * Only a lead marked as test can go; everything else is a record. The rows
+ * under it (events, proposals, payments) cascade. Anything it created in
+ * Stripe stays there.
+ */
+export async function deleteLead(id: string) {
+  const lead = await getLead(id);
+  if (!lead) throw new Error('Lead not found.');
+  if (!lead.test) throw new Error('Only a lead marked as test can be deleted.');
+  await db.delete(leads).where(eq(leads.id, id));
+}
+
+/* ── Dashboard ─────────────────────────────────────────────────────────── */
+
+export async function dashboardStats(now = new Date()) {
+  const [rows, pays] = await Promise.all([
+    db.select().from(leads).where(eq(leads.test, false)),
+    db
+      .select({ amount: payments.amount, status: payments.status, paidAt: payments.paidAt })
+      .from(payments)
+      .innerJoin(leads, eq(payments.leadId, leads.id))
+      .where(eq(leads.test, false)),
+  ]);
+  return computeDashboard(rows, pays, now);
 }
 
 /* ── The daily job ─────────────────────────────────────────────────────── */

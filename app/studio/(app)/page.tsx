@@ -3,6 +3,7 @@ import { nowMs } from '@/lib/now';
 import Link from 'next/link';
 import { STAGE_LABEL } from '@/lib/db/schema';
 import { listLeads, quoteSummary } from '@/lib/studio';
+import Action from './leads/[id]/Action';
 
 export const metadata: Metadata = {
   title: 'Leads — OCE Labs Studio',
@@ -54,6 +55,9 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                   <th>Next</th>
                   <th>Quote</th>
                   <th>Since</th>
+                  <th>
+                    <span className="sr-only">Test</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -76,6 +80,11 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                         <span className="pill-stage" data-stage={l.stage}>
                           {STAGE_LABEL[l.stage]}
                         </span>
+                        {l.test && (
+                          <span className="pill-stage" data-stage="test">
+                            Test
+                          </span>
+                        )}
                       </td>
                       <td data-overdue={overdue || undefined}>
                         {l.nextAction ?? '—'}
@@ -83,6 +92,17 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                       </td>
                       <td>{q ? `${q.total} · ${q.pkg}` : '—'}</td>
                       <td>{when.format(l.createdAt)}</td>
+                      {/* Only a test lead can go, so the row offers one step at a
+                          time: mark it, then delete it. Undoing the mark is on the lead's page. */}
+                      <td className="tbl-act">
+                        {l.test ? (
+                          <Action id={l.id} action="delete" label="Delete" small confirm={`Delete ${l.company || l.name || l.email} and everything on it? This cannot be undone.`} />
+                        ) : (
+                          <Action id={l.id} action="test" label="Mark as test" small>
+                            <input type="hidden" name="test" value="1" />
+                          </Action>
+                        )}
+                      </td>
                     </tr>
                   );
                 })}

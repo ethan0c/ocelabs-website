@@ -5,6 +5,7 @@
  */
 
 import {
+  boolean,
   integer,
   jsonb,
   pgTable,
@@ -63,6 +64,8 @@ export const leads = pgTable('leads', {
   nextAction: text('next_action'),
   nextActionAt: timestamp('next_action_at', { withTimezone: true }),
   notes: text('notes'),
+  /** Set by hand in the studio. Kept out of the dashboard, and the only kind of lead that can be deleted. */
+  test: boolean('test').notNull().default(false),
 
   /** The estimator's state for this lead. Saved from /pricing. */
   quote: jsonb('quote').$type<QuoteInput>(),

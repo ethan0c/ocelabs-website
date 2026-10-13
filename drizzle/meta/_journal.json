@@ -8,6 +8,13 @@
       "when": 1790108165431,
       "tag": "0000_studio",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791897996798,
+      "tag": "0001_test_flag",
+      "breakpoints": true
     }
   ]
 }
