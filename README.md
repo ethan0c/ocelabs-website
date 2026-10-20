@@ -26,8 +26,10 @@ Public:
 
 Studio (Google sign-in, allow-listed):
 
-- `/studio` — leads, ordered by what is due
+- `/studio` — leads, ordered by what is due; test leads can be marked and deleted
+- `/studio/dashboard` — leads per month, money paid per month, the open pipeline by stage (test leads left out)
 - `/studio/leads/<id>` — one lead: stage actions, call notes and recap, quote, proposals, payments, retainer, questionnaire, log
+- `/studio/leads/<id>/proposal` — edit the proposal's wording before it is sent, with a preview
 - `/studio/leads/new` — a lead that did not come through the form
 - `/studio/settings` — what is connected; Gmail connect; webhook URLs
 - `/pricing` — the estimator; `?lead=` saves to a lead
@@ -75,11 +77,14 @@ app/
   pricing/              estimator, proposal preview, pdf route, Stripe draft action
   api/                  inquiry, webhooks, cron, auth, gmail
 lib/
-  pricing.ts            price book, quote maths, URL encoding (tests in pricing.test.ts)
+  pricing.ts            price book, quote maths, URL encoding (tests in pricing.test.ts, proposal.test.ts)
   proposal.ts           the agreement's wording as data
   proposal-pdf.tsx      the agreement as PDF (+ signature page)
   emails.ts             the workflow emails, A to J, and their nudges
   studio.ts             every stage transition and the daily job
+  dashboard.ts          the dashboard's numbers, from plain rows (tests in dashboard.test.ts)
+  projects.ts           the portfolio, shared by home and /work
+  settings.ts           key/value settings in the database
   recap.ts              the recap draft, from pasted call notes
   summarize.ts          the one-line summary of an inquiry
   notify.ts             alerts to the studio (new lead, signed, paid)
@@ -88,7 +93,8 @@ lib/
   auth.ts               Google OAuth, session cookie, allow-list
   gmail.ts              MIME builder, Gmail send/draft
   stripe.ts             customers, invoices, subscriptions, webhook signature
-components/             site and studio UI
+components/             site and studio UI (Charts.tsx draws the dashboard)
+hooks/                  useTheme
 docs/
   client-workflow.txt   the process, with what is automatic per stage
   client-onboarding.txt the questionnaire and how-we-work text, as a document
@@ -118,7 +124,7 @@ Vercel builds from `main`. Environment variables in Vercel mirror `.env.example`
 
 ## Notes
 
-- Theme resolves before first paint in `app/layout.tsx` (saved choice → OS preference → dark).
+- There is no theme toggle. The theme follows the device's light/dark setting, else the clock (dark 7pm–7am), resolved before first paint in `app/layout.tsx`; `hooks/useTheme.ts` holds the same rule. Nothing is stored.
 - The proposal wording lives once, in `lib/proposal.ts`; the on-screen view and the PDF both render it. A signed proposal's PDF is drawn again from that wording on each download, so check for signed proposals before changing a clause.
 - Anything a visitor or client reads (the public pages, the emails, the signing page, `docs/client-onboarding.txt`) never names the tools the studio runs on: it says "our payment provider" or "a separate email with the invoice". Tools a client signs up for themselves are named in their proposal. On `/work`, a project still on its host's shared address is captioned "Live demo" instead of the address.
 - The questionnaire's questions live in `app/q/[token]/questions.ts`; `docs/client-onboarding.txt` carries the same list as a document.

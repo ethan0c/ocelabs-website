@@ -1,7 +1,7 @@
 {
   "name": "ocelabs-website",
   "version": "1.0.0",
-  "description": "A bold and minimalist website for Oce Labs - Digital Innovation & Development.",
+  "description": "OCE Labs: the studio's website and its client workflow — leads, proposals and e-signature, invoices, retainers.",
   "main": "script.js",
   "directories": {
     "lib": "lib"
