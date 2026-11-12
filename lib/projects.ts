@@ -34,17 +34,6 @@ export const projects: Project[] = [
     shot: 'adapalm.png',
   },
   {
-    name: 'Closet Six',
-    desc: 'A portfolio for a stylist and creative director who works with athletes. Three directions, all photo first, with the type and marks to match. He is choosing one.',
-    client: 'Stylist and creative director',
-    kind: 'Website, type and marks',
-    // Still on its staging address until the domain moves over; swap for
-    // https://closetsix.com when it does. Visitors go to the case study anyway.
-    href: 'https://closetsix.vercel.app',
-    shot: 'closet-six/site-1.png',
-    study: '/work/closet-six',
-  },
-  {
     name: 'Semli',
     desc: 'A daily planner for college students. We made the brand and logo, the iPhone app, and the site that introduces it.',
     client: 'Planner for college students',

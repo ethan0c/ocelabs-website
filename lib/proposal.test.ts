@@ -8,7 +8,7 @@ import { computeQuote, defaultInput } from './pricing';
 import { applyEdits, blockText, buildProposal, hasEdits, parseBlocks, quoteWithProposalEdits, sanitiseEdits } from './proposal';
 import { emailCTemplate, emailCWithEdits } from './emails';
 
-const base = () => buildProposal(computeQuote({ ...defaultInput('website'), client: 'Closet Six', notes: 'A note.' }), new Date('2026-10-10T12:00:00Z'));
+const base = () => buildProposal(computeQuote({ ...defaultInput('website'), client: 'Example Client', notes: 'A note.' }), new Date('2026-10-10T12:00:00Z'));
 const find = (pr: ReturnType<typeof buildProposal>, id: string) => pr.sections.flatMap((s) => s.blocks).find((b) => b.id === id);
 
 test('every paragraph and list carries an id; tables too', () => {
@@ -68,7 +68,7 @@ test('sanitiseEdits keeps only real changes to known blocks', () => {
 });
 
 test('buildProposal with edits is applyEdits of buildProposal without', () => {
-  const q = computeQuote({ ...defaultInput('website'), client: 'Closet Six' });
+  const q = computeQuote({ ...defaultInput('website'), client: 'Example Client' });
   const now = new Date('2026-10-10T12:00:00Z');
   const edits = { blocks: { 'reviews.p': 'One approver: Rodney.' } };
   assert.deepEqual(buildProposal(q, now, edits), applyEdits(buildProposal(q, now), edits));
