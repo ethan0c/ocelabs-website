@@ -26,9 +26,11 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
   const d = await leadDetail(id);
   if (!d) notFound();
   const { lead, log, proposals, payments } = d;
-  const q = quoteSummary(lead.quote);
+  const q = quoteSummary(lead.quote, lead.proposalEdits);
   const deposit = payments.find((p) => p.stageIndex === 0);
   const live = proposals.find((p) => p.status === 'sent' || p.status === 'signed');
+  const signed = proposals.find((p) => p.status === 'signed');
+  const signedCustom = signed?.edits?.payments?.length ? signed : null;
   const sentA = log.some((e) => e.kind === 'email:A');
   const kickoffReady = [
     { label: 'Deposit paid', done: deposit?.status === 'paid' },
@@ -194,8 +196,8 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
               <div className="act-row">
                 {!lead.designApprovedAt && <Action id={id} action="designApproved" label="Design approved" />}
                 {!lead.stagingApprovedAt && (
-                  <Action id={id} action="stagingApproved" label="Staging approved → final invoice + Email G" primary confirm="This sends the final invoice. Continue?">
-                    {[1, 2, 3].map((n) => (
+                  <Action id={id} action="stagingApproved" label={signedCustom ? 'Staging approved' : 'Staging approved → final invoice + Email G'} primary confirm={signedCustom ? 'Mark staging approved? Send custom invoices separately from the payment schedule below.' : 'This sends the final invoice. Continue?'}>
+                    {!signedCustom && [1, 2, 3].map((n) => (
                       <div key={n} className="field field--inline field--pair">
                         <input name={`co${n}`} type="text" placeholder={`Change order ${n} (optional)`} aria-label={`Change order ${n}`} />
                         <input name={`co${n}a`} type="number" min={0} placeholder="$" aria-label={`Change order ${n} amount`} />
@@ -279,7 +281,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
                 {payments.map((p) => (
                   <li key={p.id}>
                     <span>
-                      {p.label} {p.pct}% · {usd.format(p.amount)} · {p.status}
+                      {p.label}{p.pct ? ` ${p.pct}%` : ''} · {usd.format(p.amount)} · {p.status}
                       {p.paidAt ? ` ${day.format(p.paidAt)}` : p.sentAt ? ` ${day.format(p.sentAt)}` : ''}
                     </span>
                     {p.stripeUrl && (
@@ -287,6 +289,11 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
                         Stripe
                       </a>
                     )}
+                    {p.status === 'scheduled' && signedCustom?.id === p.proposalId ? (
+                      <Action id={id} action="customPayment" label="Send invoice" small confirm={`Send the ${usd.format(p.amount)} ${p.label} invoice now?`}>
+                        <input type="hidden" name="stageIndex" value={p.stageIndex} />
+                      </Action>
+                    ) : null}
                   </li>
                 ))}
               </ul>

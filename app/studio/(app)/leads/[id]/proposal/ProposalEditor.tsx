@@ -1,7 +1,9 @@
 'use client';
 
 import { useMemo, useState, useTransition } from 'react';
-import { blockText, type Block, type Proposal, type ProposalEdits } from '@/lib/proposal';
+import { emailCTemplate, emailCWithEdits } from '@/lib/emails';
+import { usd, type Quote } from '@/lib/pricing';
+import { blockText, quoteWithProposalEdits, type Block, type EditablePayment, type Proposal, type ProposalEdits, type Row } from '@/lib/proposal';
 import { clearEdits, saveEdits, type EditState } from './actions';
 
 /** What each generated block is, in the editor's labels. Anything else is "Paragraph". */
@@ -30,7 +32,15 @@ type Field = { id: string; block: Block; text: string };
  * Saving sends only what differs from the generated text; the server checks
  * that again before it keeps anything.
  */
-export default function ProposalEditor({ id, generated, edits }: { id: string; generated: Proposal; edits: ProposalEdits | null }) {
+export default function ProposalEditor({
+  id, generated, quote, edits, emailContext,
+}: {
+  id: string;
+  generated: Proposal;
+  quote: Quote;
+  edits: ProposalEdits | null;
+  emailContext: { name: string | null; company: string; signer: string; bookingLink: string; validUntil: string };
+}) {
   const fields = useMemo(() => {
     const out = new Map<string, Field>();
     for (const sec of generated.sections) {
@@ -49,14 +59,62 @@ export default function ProposalEditor({ id, generated, edits }: { id: string; g
   });
   const [extra, setExtra] = useState<Record<string, string>>(() => ({ ...(edits?.extra ?? {}) }));
   const [timeline, setTimeline] = useState(edits?.timeline ?? generated.timeline);
+  const [customSchedule, setCustomSchedule] = useState(Boolean(edits?.payments?.length));
+  const [payments, setPayments] = useState<EditablePayment[]>(() =>
+    edits?.payments?.map((p) => ({ ...p })) ?? quote.payments.map((p) => ({ label: p.label, amount: p.amount, trigger: p.trigger, dueDays: p.dueDays })),
+  );
+  const [emailSubject, setEmailSubject] = useState<string | null>(edits?.email?.subject ?? null);
+  const [emailBody, setEmailBody] = useState<string | null>(edits?.email?.body ?? null);
   const [state, setState] = useState<EditState>({});
   const [pending, start] = useTransition();
+  const customPriceIntro = `The price is fixed at ${usd.format(quote.total)}, payable by emailed invoice according to the custom payment schedule below. Bank transfer or card, from the link in each invoice.`;
+  const toggleCustomSchedule = (on: boolean) => {
+    setCustomSchedule(on);
+    setValues((current) => {
+      const next = { ...current };
+      const original = fields.get('price.intro')?.text;
+      if (on && original && next['price.intro'] === original) next['price.intro'] = customPriceIntro;
+      if (!on && next['price.intro'] === customPriceIntro && original) next['price.intro'] = original;
+      return next;
+    });
+  };
+
+  const scheduleTotal = payments.reduce((sum, p) => sum + (Number.isFinite(p.amount) ? p.amount : 0), 0);
+  const scheduleValid = !customSchedule || (payments.length > 0 && payments.length <= 12 && scheduleTotal === quote.total && payments.every((p) => p.label.trim() && p.trigger.trim() && Number.isInteger(p.amount) && p.amount > 0 && Number.isInteger(p.dueDays) && p.dueDays >= 0 && p.dueDays <= 90));
+  const liveQuote = useMemo(() => {
+    if (!customSchedule || !scheduleValid) return quote;
+    return quoteWithProposalEdits(quote, { payments });
+  }, [quote, customSchedule, scheduleValid, payments]);
+  const defaultEmail = useMemo(() => emailCTemplate({
+    name: emailContext.name,
+    company: emailContext.company,
+    q: liveQuote,
+    signer: emailContext.signer,
+    timeline,
+  }), [emailContext.name, emailContext.company, emailContext.signer, liveQuote, timeline]);
+  const subject = emailSubject ?? defaultEmail.subject;
+  const body = emailBody ?? defaultEmail.text;
+  const emailReady = Boolean(subject.trim()) && body.includes('{{proposal_link}}');
+  const emailPreview = emailReady ? emailCWithEdits({
+    name: emailContext.name,
+    company: emailContext.company,
+    q: liveQuote,
+    signer: emailContext.signer,
+    timeline,
+    proposalLink: 'https://www.ocelabs.xyz/p/[created-when-sent]',
+    validUntil: emailContext.validUntil,
+    calLink: emailContext.bookingLink,
+  }, { subject, body }) : null;
 
   const changed = (f: Field) => (values[f.id] ?? '').trim() !== f.text.trim();
   const dirty =
     [...fields.values()].some(changed) ||
     Object.values(extra).some((v) => v.trim()) ||
-    timeline.trim() !== generated.timeline;
+    timeline.trim() !== generated.timeline ||
+    customSchedule || Boolean(edits?.payments?.length) ||
+    Boolean(edits?.email) ||
+    (emailSubject !== null && emailSubject.trim() !== defaultEmail.subject) ||
+    (emailBody !== null && emailBody.trim() !== defaultEmail.text);
 
   const save = () =>
     start(async () => {
@@ -66,7 +124,15 @@ export default function ProposalEditor({ id, generated, edits }: { id: string; g
         const t = (values[f.id] ?? '').trim();
         blocks[f.id] = t ? t : null;
       }
-      setState(await saveEdits(id, { blocks, extra, timeline }));
+      const email = {
+        ...(emailSubject !== null && emailSubject.trim() !== defaultEmail.subject ? { subject: emailSubject } : {}),
+        ...(emailBody !== null && emailBody.trim() !== defaultEmail.text ? { body: emailBody } : {}),
+      };
+      setState(await saveEdits(id, {
+        blocks, extra, timeline,
+        ...(customSchedule ? { payments } : {}),
+        ...(Object.keys(email).length ? { email } : {}),
+      }));
     });
 
   const reset = () => {
@@ -79,6 +145,10 @@ export default function ProposalEditor({ id, generated, edits }: { id: string; g
         setValues(v);
         setExtra({});
         setTimeline(generated.timeline);
+        setCustomSchedule(false);
+        setPayments(quote.payments.map((p) => ({ label: p.label, amount: p.amount, trigger: p.trigger, dueDays: p.dueDays })));
+        setEmailSubject(null);
+        setEmailBody(null);
       }
       setState(r);
     });
@@ -89,7 +159,7 @@ export default function ProposalEditor({ id, generated, edits }: { id: string; g
   return (
     <div className="ped">
       <div className="ped-bar">
-        <button type="button" className="btn btn--primary" onClick={save} disabled={pending || !dirty}>
+        <button type="button" className="btn btn--primary" onClick={save} disabled={pending || !dirty || !scheduleValid || !emailReady}>
           {pending ? 'Working…' : 'Save wording'}
         </button>
         <button type="button" className="btn" onClick={reset} disabled={pending}>
@@ -118,6 +188,42 @@ export default function ProposalEditor({ id, generated, edits }: { id: string; g
         </div>
       </section>
 
+      <section className="studio-sec">
+        <h2 className="eyebrow">Payment schedule</h2>
+        <p className="tbl-sub">These amounts appear in the agreement and become the Stripe invoice schedule after signing. Total: {usd.format(quote.total)}.</p>
+        <label className="field field--inline">
+          <input type="checkbox" checked={customSchedule} onChange={(e) => toggleCustomSchedule(e.target.checked)} />
+          Use custom payments for this proposal
+        </label>
+        {customSchedule && (
+          <>
+            {payments.map((payment, i) => (
+              <div className="studio-sec" key={i}>
+                <p className="eyebrow">Payment {i + 1}</p>
+                <div className="field"><label htmlFor={`ped-pay-label-${i}`}>Label</label><input id={`ped-pay-label-${i}`} value={payment.label} onChange={(e) => setPayments((rows) => rows.map((row, j) => j === i ? { ...row, label: e.target.value } : row))} /></div>
+                <div className="field"><label htmlFor={`ped-pay-amount-${i}`}>Amount ($)</label><input id={`ped-pay-amount-${i}`} type="number" min={1} step={1} value={payment.amount} onChange={(e) => setPayments((rows) => rows.map((row, j) => j === i ? { ...row, amount: Number(e.target.value) || 0 } : row))} /></div>
+                <div className="field"><label htmlFor={`ped-pay-trigger-${i}`}>When to invoice</label><input id={`ped-pay-trigger-${i}`} value={payment.trigger} onChange={(e) => setPayments((rows) => rows.map((row, j) => j === i ? { ...row, trigger: e.target.value } : row))} /></div>
+                <div className="field"><label htmlFor={`ped-pay-due-${i}`}>Days until due (0 = on receipt)</label><input id={`ped-pay-due-${i}`} type="number" min={0} max={90} step={1} value={payment.dueDays} onChange={(e) => setPayments((rows) => rows.map((row, j) => j === i ? { ...row, dueDays: Number(e.target.value) || 0 } : row))} /></div>
+                <button type="button" className="btn btn--sm" onClick={() => setPayments((rows) => rows.filter((_, j) => j !== i))}>Remove payment</button>
+              </div>
+            ))}
+            <button type="button" className="btn btn--sm" disabled={payments.length >= 12} onClick={() => setPayments((rows) => [...rows, { label: '', amount: 0, trigger: '', dueDays: 7 }])}>Add payment</button>
+            <p className="tbl-sub" role="status">Entered: {usd.format(scheduleTotal)} of {usd.format(quote.total)}{scheduleValid ? ' · ready to save' : ' · amounts and fields must be complete before saving'}</p>
+            <p className="tbl-sub">After signing, the first invoice goes out automatically unless a payment was already recorded. Send remaining invoices from the lead page when each phase is approved.</p>
+          </>
+        )}
+      </section>
+
+      <section className="studio-sec">
+        <h2 className="eyebrow">Proposal email (Email C)</h2>
+        <p className="tbl-sub">Edit the subject and body sent with the proposal. Keep <code>{'{{proposal_link}}'}</code> in the body. <code>{'{{valid_until}}'}</code> and <code>{'{{booking_link}}'}</code> are filled when the email is sent.</p>
+        <div className="field"><label htmlFor="ped-email-subject">Subject</label><input id="ped-email-subject" value={subject} onChange={(e) => setEmailSubject(e.target.value)} /></div>
+        <div className="field"><label htmlFor="ped-email-body">Body</label><textarea id="ped-email-body" rows={14} value={body} onChange={(e) => setEmailBody(e.target.value)} /></div>
+        {!emailReady && <p className="form-note" role="alert">Add a subject and keep {'{{proposal_link}}'} in the body.</p>}
+        <button type="button" className="btn btn--sm" onClick={() => { setEmailSubject(null); setEmailBody(null); }}>Reset email to generated</button>
+        {emailPreview && <div className="studio-sec"><p className="eyebrow">Preview if sent today</p><p><strong>Subject:</strong> {emailPreview.subject}</p><pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>{emailPreview.text}</pre></div>}
+      </section>
+
       {generated.sections.map((sec) => (
         <section key={sec.key} className="studio-sec">
           <h2 className="eyebrow">
@@ -125,11 +231,18 @@ export default function ProposalEditor({ id, generated, edits }: { id: string; g
           </h2>
           {sec.blocks.map((b, i) => {
             if (b.kind === 'table') {
+              const rows: Row[] = b.id === 'price.payments' && scheduleValid
+                ? liveQuote.payments.map((p) => ({
+                    label: p.pct ? `${p.label}, ${p.pct}%` : p.label,
+                    note: `${p.trigger}. Due ${p.dueDays === 0 ? 'on receipt' : `in ${p.dueDays} days`}.`,
+                    amount: usd.format(p.amount),
+                  }))
+                : b.rows;
               return (
                 <div key={b.id ?? i} className="ped-table">
                   <table className="prop-table">
                     <tbody>
-                      {b.rows.map((r, j) => (
+                      {rows.map((r, j) => (
                         <tr key={j} className={r.total ? 'prop-table-total' : undefined}>
                           <td>
                             {r.label}
@@ -140,7 +253,7 @@ export default function ProposalEditor({ id, generated, edits }: { id: string; g
                       ))}
                     </tbody>
                   </table>
-                  <p className="tbl-sub">From the quote. Change it in the estimator.</p>
+                  <p className="tbl-sub">{b.id === 'price.payments' ? 'Edit the schedule above.' : 'Scope prices come from the estimator.'}</p>
                 </div>
               );
             }
@@ -186,7 +299,7 @@ export default function ProposalEditor({ id, generated, edits }: { id: string; g
       ))}
 
       <div className="ped-bar">
-        <button type="button" className="btn btn--primary" onClick={save} disabled={pending || !dirty}>
+        <button type="button" className="btn btn--primary" onClick={save} disabled={pending || !dirty || !scheduleValid || !emailReady}>
           {pending ? 'Working…' : 'Save wording'}
         </button>
         <p className="tbl-sub">{HELP}</p>

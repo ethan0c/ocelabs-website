@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ProposalView from '@/components/ProposalView';
 import { computeQuote } from '@/lib/pricing';
-import { buildProposal, hasEdits } from '@/lib/proposal';
+import { buildProposal, hasEdits, quoteWithProposalEdits } from '@/lib/proposal';
 import { getLead, leadQuote } from '@/lib/studio';
 import ProposalEditor from './ProposalEditor';
 
@@ -41,7 +41,9 @@ export default async function ProposalEditPage({ params, searchParams }: Props) 
 
   const q = computeQuote(quote);
   const generated = buildProposal(q);
-  const edited = buildProposal(q, new Date(), lead.proposalEdits);
+  let editedQuote = q;
+  try { editedQuote = quoteWithProposalEdits(q, lead.proposalEdits); } catch { /* The editor will show the stale schedule for correction. */ }
+  const edited = buildProposal(editedQuote, new Date(), lead.proposalEdits);
   const showing = preview === '1';
 
   return (
@@ -55,7 +57,7 @@ export default async function ProposalEditPage({ params, searchParams }: Props) 
           <p className="lede rise rise-3">
             {showing
               ? 'This is what the client sees on their page and in the PDF. Send it from the lead page.'
-              : 'Rewrite any paragraph, clear one to drop it, or add to the end of a section. Prices and tables come from the quote; change those in the estimator.'}
+              : 'Edit the proposal text, payment schedule, and the email that sends it. Scope prices still come from the estimator.'}
           </p>
         </div>
       </header>
@@ -84,7 +86,19 @@ export default async function ProposalEditPage({ params, searchParams }: Props) 
       </div>
 
       <div className="shell">
-        {showing ? <ProposalView pr={edited} /> : <ProposalEditor id={id} generated={generated} edits={lead.proposalEdits ?? null} />}
+        {showing ? <ProposalView pr={edited} /> : <ProposalEditor
+          id={id}
+          generated={generated}
+          quote={q}
+          edits={lead.proposalEdits ?? null}
+          emailContext={{
+            name: lead.name,
+            company: quote.client || 'your project',
+            signer: process.env.STUDIO_SIGNER || 'The OCE Labs team',
+            bookingLink: process.env.CAL_LINK || 'https://cal.com/ocelabs/intro',
+            validUntil: generated.validUntil,
+          }}
+        />}
       </div>
     </>
   );

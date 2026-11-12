@@ -20,6 +20,8 @@ export type Project = {
   href: string;
   /** File in /public/work. Rendered only if it actually exists. */
   shot: string;
+  /** A page of our own about the project. The card links here instead of to `href`. */
+  study?: string;
 };
 
 export const projects: Project[] = [
@@ -32,12 +34,24 @@ export const projects: Project[] = [
     shot: 'adapalm.png',
   },
   {
-    name: 'Helthy',
-    desc: 'An AI fitness and nutrition app. We designed the app itself, and the site that introduces it.',
-    client: 'Fitness and nutrition app',
-    kind: 'App design and website',
-    href: 'https://helthy.app',
-    shot: 'helthy.png',
+    name: 'Closet Six',
+    desc: 'A portfolio for a stylist and creative director who works with athletes. Three directions, all photo first, with the type and marks to match. He is choosing one.',
+    client: 'Stylist and creative director',
+    kind: 'Website, type and marks',
+    // Still on its staging address until the domain moves over; swap for
+    // https://closetsix.com when it does. Visitors go to the case study anyway.
+    href: 'https://closetsix.vercel.app',
+    shot: 'closet-six/site-1.png',
+    study: '/work/closet-six',
+  },
+  {
+    name: 'Semli',
+    desc: 'A daily planner for college students. We made the brand and logo, the iPhone app, and the site that introduces it.',
+    client: 'Planner for college students',
+    kind: 'App, website and brand',
+    href: 'https://semli.app',
+    shot: 'semli/site.png',
+    study: '/work/semli',
   },
   {
     name: 'Temegs Engineering',
@@ -46,6 +60,14 @@ export const projects: Project[] = [
     kind: 'Website and logo',
     href: 'https://temegsengineering.com/',
     shot: 'temegs.png',
+  },
+  {
+    name: 'Helthy',
+    desc: 'An AI fitness and nutrition app. We designed the app itself, and the site that introduces it.',
+    client: 'Fitness and nutrition app',
+    kind: 'App design and website',
+    href: 'https://helthy.app',
+    shot: 'helthy.png',
   },
   {
     name: 'JobScout',

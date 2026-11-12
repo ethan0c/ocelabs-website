@@ -128,7 +128,7 @@ export default function HomePage() {
         </Reveal>
         <Reveal stagger className="home-work-grid">
           {strip.map((p) => (
-            <Link key={p.name} href="/work" className="work-tile">
+            <Link key={p.name} href={p.study ?? '/work'} className="work-tile">
               <WorkPreview
                 name={p.name}
                 shot={p.shot}

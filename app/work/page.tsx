@@ -24,16 +24,10 @@ function Card({
   priority?: boolean;
   heading?: 'h2' | 'h3';
 }) {
-  const { name, desc, kind, href, shot } = project;
-  return (
-    <Reveal className="work-cell">
-      <a
-        className="work-item"
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {hasAsset(shot) ? (
+  const { name, desc, kind, href, shot, study } = project;
+  const body = (
+    <>
+      {hasAsset(shot) ? (
           <WorkPreview
             name={name}
             shot={shot}
@@ -54,8 +48,22 @@ function Card({
           {kind && <span className="work-kind">{kind}</span>}
         </div>
         <p className="work-desc">{desc}</p>
-        <span className="work-domain">{domainOf(href)}</span>
-      </a>
+        <span className="work-domain">{study ? 'Case study' : domainOf(href)}</span>
+    </>
+  );
+  return (
+    <Reveal className="work-cell">
+      {/* A project with a page of its own stays on the site; the rest open
+          the live site in a new tab. */}
+      {study ? (
+        <Link className="work-item" href={study}>
+          {body}
+        </Link>
+      ) : (
+        <a className="work-item" href={href} target="_blank" rel="noopener noreferrer">
+          {body}
+        </a>
+      )}
     </Reveal>
   );
 }

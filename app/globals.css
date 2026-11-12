@@ -886,6 +886,188 @@ a {
   border-top: 1px solid var(--line);
 }
 
+/* ─── Case study ────────────────────────────────────────────── */
+
+/* Facts under the lede: a hairline row per pair, term dim, detail in the
+   text colour. Same measure as the lede. */
+.cs-meta {
+  margin-top: 2.5rem;
+  max-width: 44rem;
+}
+
+.cs-meta div {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 1rem;
+  padding-block: 0.8rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.9375rem;
+}
+
+.cs-meta div:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.cs-meta dt {
+  color: var(--dim);
+}
+
+.cs-meta dd {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* Each direction: the shot full width, then number and name on the left,
+   what it does on the right. The shot carries the weight, so the text under
+   it stays at the Work page's caption sizes. */
+.cs-dirs {
+  padding-bottom: 2rem;
+}
+
+.cs-dir {
+  padding-block: 1.5rem 3rem;
+}
+
+.cs-dir .work-shot {
+  margin-bottom: 1.25rem;
+}
+
+.cs-dir-text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+.cs-dir-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.cs-dir-name {
+  font-size: 1.125rem;
+  letter-spacing: -0.015em;
+}
+
+.cs-dir-open {
+  display: block;
+  width: fit-content;
+  margin-top: 0.6rem;
+  font-size: 0.8125rem;
+}
+
+.cs-dir-desc {
+  color: var(--dim);
+  font-size: 0.9375rem;
+  max-width: 44rem;
+  text-wrap: pretty;
+}
+
+/* Marks and type: hairline tiles. The wordmarks keep the page they were cut
+   from behind them, so each reads in its own setting. */
+.cs-marks {
+  padding-block: 4.5rem 3.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.cs-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.cs-row + .cs-row {
+  margin-top: 2.5rem;
+}
+
+.cs-tile {
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.cs-tile img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Marks sit centred on fixed white whatever the theme: they are artwork with
+   their own grounds (one is a black mask), not page furniture. */
+.cs-tile--mark {
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  background: #fff;
+}
+
+.cs-tile--mark img {
+  width: 34%;
+  height: auto;
+}
+
+/* Wordmarks are wide, so they get more of the tile than a square mark. */
+.cs-tile--wordmark img {
+  width: 62%;
+}
+
+/* Phone screens: four across, tall, so the row reads as one strip. */
+.cs-row--phones {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Four narrow columns: name above note, so every caption breaks the same way. */
+.cs-row--phones .cs-cap {
+  flex-direction: column;
+}
+
+/* An app icon shows with the corners the phone gives it. */
+.cs-icon {
+  border-radius: 22.5%;
+}
+
+.cs-cap {
+  margin-top: 0.7rem;
+  font-size: 0.8125rem;
+  color: var(--dim);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.15rem 1rem;
+}
+
+.cs-cap span:first-child {
+  color: var(--text);
+}
+
+.cs-end {
+  padding-bottom: 6rem;
+}
+
+.cs-end .hero-links {
+  margin-top: 0;
+}
+
+@media (max-width: 56rem) {
+  .cs-meta div {
+    grid-template-columns: 6rem minmax(0, 1fr);
+  }
+
+  .cs-dir-text {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .cs-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .cs-row--phones {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* ─── Contact ───────────────────────────────────────────────── */
 
 .contact-wrap {

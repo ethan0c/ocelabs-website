@@ -17,6 +17,7 @@ import {
   usd,
   weeksLabel,
   type Quote,
+  type Payment,
 } from './pricing';
 
 export type Row = { label: string; note?: string; amount: string; total?: boolean };
@@ -42,7 +43,43 @@ export type ProposalEdits = {
   blocks?: Record<string, string | null>;
   extra?: Record<string, string>;
   timeline?: string;
+  /** Exact installment amounts and invoice triggers for a custom schedule. */
+  payments?: EditablePayment[];
+  /** Email C text, with {{proposal_link}} kept in the body. */
+  email?: { subject?: string; body?: string };
 };
+
+export type EditablePayment = { label: string; amount: number; trigger: string; dueDays: number };
+
+/** Keep the signed payment table and Stripe invoices on the same schedule. */
+export function customPayments(raw: unknown, total: number): EditablePayment[] {
+  if (!Array.isArray(raw) || raw.length < 1 || raw.length > 12) {
+    throw new Error('Add 1 to 12 payments.');
+  }
+  const rows = raw.map((value): EditablePayment => {
+    if (!value || typeof value !== 'object') throw new Error('Complete every payment row.');
+    const row = value as Record<string, unknown>;
+    const label = typeof row.label === 'string' ? row.label.replace(/\s+/g, ' ').trim().slice(0, 100) : '';
+    const trigger = typeof row.trigger === 'string' ? row.trigger.replace(/\s+/g, ' ').trim().slice(0, 300) : '';
+    const amount = Number(row.amount);
+    const dueDays = Number(row.dueDays);
+    if (!label || !trigger || !Number.isSafeInteger(amount) || amount <= 0 || !Number.isInteger(dueDays) || dueDays < 0 || dueDays > 90) {
+      throw new Error('Each payment needs a label, positive whole-dollar amount, trigger, and due days from 0 to 90.');
+    }
+    return { label, amount, trigger, dueDays };
+  });
+  if (rows.reduce((sum, row) => sum + row.amount, 0) !== total) {
+    throw new Error(`Payment amounts must add up to ${usd.format(total)}.`);
+  }
+  return rows;
+}
+
+/** Exact amounts use pct=0 so the invoice flow does not imply a rounded share. */
+export function quoteWithProposalEdits(q: Quote, edits?: ProposalEdits | null): Quote {
+  if (!edits?.payments) return q;
+  const payments: Payment[] = customPayments(edits.payments, q.total).map((row) => ({ ...row, pct: 0 }));
+  return { ...q, payments };
+}
 
 export type Proposal = {
   client: string;
@@ -94,7 +131,7 @@ export function buildProposal(q: Quote, now = new Date(), edits?: ProposalEdits 
   ];
 
   const payments: Row[] = q.payments.map((p) => ({
-    label: `${p.label}, ${p.pct}%`,
+    label: p.pct ? `${p.label}, ${p.pct}%` : p.label,
     note: `${p.trigger}. Due ${p.dueDays === 0 ? 'on receipt' : `in ${p.dueDays} days`}.`,
     amount: usd.format(p.amount),
   }));
@@ -322,7 +359,9 @@ export function applyEdits(pr: Proposal, edits: ProposalEdits): Proposal {
         if (v === null) continue;
         out.push(...parseBlocks(v, b).map((nb) => ({ ...nb, id: b.id })));
       } else {
-        out.push(b);
+        out.push(b.kind === 'p' && b.id === 'timeline.kickoff' && edits.timeline?.trim()
+          ? { ...b, text: b.text.replace(pr.timeline, edits.timeline.trim()) }
+          : b);
       }
     }
     const add = extra[sec.key];
@@ -338,6 +377,8 @@ export function hasEdits(e: ProposalEdits | null | undefined): boolean {
   if (!e) return false;
   if (Object.keys(e.blocks ?? {}).length) return true;
   if (Object.values(e.extra ?? {}).some((v) => v.trim())) return true;
+  if (e.payments?.length) return true;
+  if (e.email?.subject?.trim() || e.email?.body?.trim()) return true;
   return Boolean(e.timeline?.trim());
 }
 
@@ -346,7 +387,7 @@ export function hasEdits(e: ProposalEdits | null | undefined): boolean {
  * that match the generated text are dropped, so a saved edit always means a
  * real change. Returns null when nothing is left.
  */
-export function sanitiseEdits(raw: unknown, generated: Proposal): ProposalEdits | null {
+export function sanitiseEdits(raw: unknown, generated: Proposal, quoteTotal?: number): ProposalEdits | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Record<string, unknown>;
   const ids = new Map<string, Block>();
@@ -385,6 +426,18 @@ export function sanitiseEdits(raw: unknown, generated: Proposal): ProposalEdits 
   if (Object.keys(blocks).length) out.blocks = blocks;
   if (Object.keys(extra).length) out.extra = extra;
   if (timeline && timeline !== generated.timeline) out.timeline = timeline;
+  if (r.payments !== undefined) {
+    if (quoteTotal === undefined) throw new Error('A quote is needed to set custom payments.');
+    out.payments = customPayments(r.payments, quoteTotal);
+  }
+  if (r.email && typeof r.email === 'object') {
+    const email = r.email as Record<string, unknown>;
+    const subject = typeof email.subject === 'string' ? email.subject.replace(/\s+/g, ' ').trim().slice(0, 200) : undefined;
+    const body = typeof email.body === 'string' ? email.body.trim().slice(0, 12000) : undefined;
+    if (subject !== undefined && !subject) throw new Error('The proposal email needs a subject.');
+    if (body !== undefined && !body.includes('{{proposal_link}}')) throw new Error('The proposal email needs a {{proposal_link}} in its body.');
+    if (subject !== undefined || body !== undefined) out.email = { subject, body };
+  }
   return hasEdits(out) ? out : null;
 }
 

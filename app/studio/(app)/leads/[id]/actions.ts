@@ -70,6 +70,11 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
         const r = await S.createAndSendProposal(id);
         return r.sent ? 'Proposal sent.' : `Proposal created (Gmail not connected). Link: ${S.proposalLink(r.proposal.token)}`;
       });
+    case 'customPayment':
+      return run(id, async () => {
+        await S.sendCustomPayment(id, Number(str(form, 'stageIndex')));
+        return 'Invoice sent for the selected payment.';
+      });
     case 'brandFiles':
       return run(id, async () => {
         await S.markBrandFiles(id);
@@ -94,7 +99,7 @@ export async function act(_prev: ActionState, form: FormData): Promise<ActionSta
       }
       return run(id, async () => {
         await S.approveStaging(id, extras);
-        return 'Final invoice sent with Email G.';
+        return 'Staging approved. Check the payment schedule for any invoice to send.';
       });
     }
     case 'launched': {

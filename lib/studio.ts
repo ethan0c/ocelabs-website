@@ -6,7 +6,7 @@ import { siteUrl } from '@/lib/auth';
 import * as E from '@/lib/emails';
 import { draftMail, gmailConfigured, sendMail, type Attachment } from '@/lib/gmail';
 import { CONTENT_DEADLINE_DAYS, PROPOSAL_VALID_DAYS, WARRANTY_DAYS, computeQuote, warrantyDays, usd, weeksLabel, type QuoteInput } from '@/lib/pricing';
-import { buildProposal, hasEdits, proposalFileName, type ProposalEdits } from '@/lib/proposal';
+import { buildProposal, hasEdits, proposalFileName, quoteWithProposalEdits, type ProposalEdits } from '@/lib/proposal';
 import { renderProposalPdf } from '@/lib/proposal-pdf';
 import { computeDashboard } from '@/lib/dashboard';
 import { gistOf } from '@/lib/summarize';
@@ -309,7 +309,9 @@ export function leadQuote(lead: Lead): QuoteInput | null {
 export function leadProposalDoc(lead: Lead, now = new Date()) {
   const quote = leadQuote(lead);
   if (!quote) return null;
-  return buildProposal(computeQuote(quote), now, lead.proposalEdits);
+  const q = computeQuote(quote);
+  try { return buildProposal(quoteWithProposalEdits(q, lead.proposalEdits), now, lead.proposalEdits); }
+  catch { return buildProposal(q, now, lead.proposalEdits); }
 }
 
 /** Wording changes from the studio editor. Null clears them. */
@@ -323,7 +325,20 @@ export async function createAndSendProposal(id: string) {
   if (!lead) throw new Error('No such lead.');
   const quote = leadQuote(lead);
   if (!quote) throw new Error('Save a quote for this lead first (open the estimator from this page).');
-  const q = computeQuote(quote);
+  const q = quoteWithProposalEdits(computeQuote(quote), lead.proposalEdits);
+  const now = new Date();
+  const proposalToken = token();
+  const expiresAt = addDays(now, PROPOSAL_VALID_DAYS);
+  const outgoing = E.emailCWithEdits({
+    name: lead.name,
+    company: quote.client || 'your project',
+    q,
+    proposalLink: proposalLink(proposalToken),
+    validUntil: expiresAt,
+    calLink: calLink(),
+    signer: signer(),
+    timeline: lead.proposalEdits?.timeline,
+  }, lead.proposalEdits?.email);
 
   // One live proposal at a time: anything older still unsigned is voided.
   await db
@@ -331,17 +346,16 @@ export async function createAndSendProposal(id: string) {
     .set({ status: 'void' })
     .where(and(eq(proposals.leadId, id), inArray(proposals.status, ['draft', 'sent', 'expired'])));
 
-  const now = new Date();
   const [p] = await db
     .insert(proposals)
     .values({
       leadId: id,
-      token: token(),
+      token: proposalToken,
       quote,
       priced: q,
       edits: hasEdits(lead.proposalEdits) ? lead.proposalEdits : null,
       sentAt: now,
-      expiresAt: addDays(now, PROPOSAL_VALID_DAYS),
+      expiresAt,
       status: 'sent',
     })
     .returning();
@@ -350,15 +364,7 @@ export async function createAndSendProposal(id: string) {
     id,
     'C',
     lead.email,
-    E.emailC({
-      name: lead.name,
-      company: quote.client || 'your project',
-      q,
-      proposalLink: proposalLink(p.token),
-      validUntil: p.expiresAt,
-      calLink: calLink(),
-      signer: signer(),
-    }),
+    outgoing,
   );
   await setStage(id, 'proposal_sent', 'Nudge, day 5', addDays(now, 5));
   return { proposal: p, sent: ok };
@@ -376,7 +382,7 @@ export async function markProposalViewed(p: Proposal) {
 
 /** The quote as it was priced when sent. Proposals from before `priced` existed are recomputed. */
 export function proposalQuote(p: Proposal) {
-  return p.priced ?? computeQuote(p.quote);
+  return p.priced ?? quoteWithProposalEdits(computeQuote(p.quote), p.edits);
 }
 
 /** The document as sent: the frozen quote and the frozen wording edits. */
@@ -429,7 +435,16 @@ export async function signProposal(t: string, s: { name: string; email: string; 
   if (paidSum > 0) {
     await db.update(payments).set({ proposalId: p.id }).where(and(eq(payments.leadId, lead.id), eq(payments.status, 'paid')));
     const balance = Math.max(0, q.total - paidSum);
-    if (balance > 0) {
+    if (balance > 0 && p.edits?.payments?.length) {
+      let credit = paidSum;
+      const remaining = q.payments.flatMap((pay, i) => {
+        const applied = Math.min(credit, pay.amount);
+        credit -= applied;
+        const amount = pay.amount - applied;
+        return amount ? [{ leadId: lead.id, proposalId: p.id, stageIndex: i, label: pay.label, pct: 0, amount, trigger: pay.trigger, dueDays: pay.dueDays, status: 'scheduled' as const }] : [];
+      });
+      await db.insert(payments).values(remaining);
+    } else if (balance > 0) {
       const last = q.payments[q.payments.length - 1];
       await db.insert(payments).values({
         leadId: lead.id,
@@ -445,8 +460,8 @@ export async function signProposal(t: string, s: { name: string; email: string; 
     }
     await log(lead.id, 'payments:paid-ahead', { paid: paidSum, balance });
     const to = [lead.email, s.email.toLowerCase()].filter((e, i, a) => a.indexOf(e) === i).join(', ');
-    await send(lead.id, 'D', to, E.emailD({ name: lead.name, depositAmount: 0, paidAlready: paidSum, balance, questionnaireDone: Boolean(lead.questionnaireAt), folderLink: process.env.CLIENT_FOLDER_LINK, signer: signer() }), [attachment]);
-    await notifyStudio(lead, 'Proposal signed', `Signed by ${s.name} <${s.email}>. ${usd.format(paidSum)} was already paid, so no invoice went out.${balance > 0 ? ` The ${usd.format(balance)} balance is scheduled for launch.` : ''}`);
+    await send(lead.id, 'D', to, E.emailD({ name: lead.name, depositAmount: 0, paidAlready: paidSum, balance, customPaymentSchedule: Boolean(p.edits?.payments?.length), questionnaireDone: Boolean(lead.questionnaireAt), folderLink: process.env.CLIENT_FOLDER_LINK, signer: signer() }), [attachment]);
+    await notifyStudio(lead, 'Proposal signed', `Signed by ${s.name} <${s.email}>. ${usd.format(paidSum)} was already paid.${balance > 0 ? p.edits?.payments?.length ? ` ${usd.format(balance)} remains on the signed custom schedule.` : ` The ${usd.format(balance)} balance is scheduled for launch.` : ''}`);
     await setStage(lead.id, 'signed', 'Chase the kickoff items', addBusinessDays(signedAt, 3));
     await checkKickoff(lead.id);
     return { proposal: signed, pdf, invoiceError: null };
@@ -495,8 +510,8 @@ export async function sendPayment(lead: Lead, pay: Payment, quote: QuoteInput, e
   const invoice = await createDraftInvoice({
     customer,
     amount: pay.amount,
-    line: `${q.pkg.label}${quote.client ? ` for ${quote.client}` : ''}: ${pay.label.toLowerCase()} (${pay.pct}%)`,
-    memo: `${pay.label}, ${pay.pct}% of ${usd.format(q.total)}. ${pay.trigger}.`,
+    line: `${q.pkg.label}${quote.client ? ` for ${quote.client}` : ''}: ${pay.label.toLowerCase()}${pay.pct ? ` (${pay.pct}%)` : ''}`,
+    memo: `${pay.label}, ${pay.pct ? `${pay.pct}% of ${usd.format(q.total)}` : usd.format(pay.amount)}. ${pay.trigger}.`,
     dueDays: pay.dueDays,
     metadata: { lead: lead.id, stage: String(pay.stageIndex), package: q.pkg.label },
   });
@@ -510,6 +525,20 @@ export async function sendPayment(lead: Lead, pay: Payment, quote: QuoteInput, e
     .where(eq(payments.id, pay.id));
   await log(lead.id, 'invoice:sent', { stage: pay.stageIndex, label: pay.label, amount: pay.amount, invoice: sent.id, extras });
   return sent;
+}
+
+/** Custom phase invoices are sent one at a time from the signed schedule. */
+export async function sendCustomPayment(id: string, stageIndex: number) {
+  const lead = await getLead(id);
+  if (!lead?.quote) throw new Error('No quote on this lead.');
+  const signed = await db.query.proposals.findFirst({ where: and(eq(proposals.leadId, id), eq(proposals.status, 'signed')), orderBy: desc(proposals.createdAt) });
+  if (!signed?.edits?.payments?.length) throw new Error('This lead has no signed custom payment schedule.');
+  if (!Number.isInteger(stageIndex) || stageIndex < 0) throw new Error('Choose a payment stage.');
+  const pay = await db.query.payments.findFirst({
+    where: and(eq(payments.leadId, id), eq(payments.proposalId, signed.id), eq(payments.stageIndex, stageIndex), eq(payments.status, 'scheduled')),
+  });
+  if (!pay) throw new Error('That payment is not scheduled or was already invoiced.');
+  await sendPayment(lead, pay, signed.quote);
 }
 
 /** The fields of a Stripe invoice the webhook needs. */
@@ -647,6 +676,8 @@ export async function approveDesign(id: string) {
   if (!lead || !lead.quote) throw new Error('No quote on this lead.');
   await update(id, { designApprovedAt: new Date() });
   await log(id, 'review:design-approved');
+  const signed = await db.query.proposals.findFirst({ where: and(eq(proposals.leadId, id), eq(proposals.status, 'signed')), orderBy: desc(proposals.createdAt) });
+  if (signed?.edits?.payments?.length) return;
   // Web App: the 30% design-approved payment goes out now.
   const mid = await db.query.payments.findFirst({
     where: and(eq(payments.leadId, id), eq(payments.status, 'scheduled'), eq(payments.label, 'Design approved')),
@@ -659,6 +690,12 @@ export async function approveStaging(id: string, extras: Array<{ label: string; 
   if (!lead || !lead.quote) throw new Error('No quote on this lead.');
   await update(id, { stagingApprovedAt: new Date() });
   await log(id, 'review:staging-approved', { extras });
+  const signed = await db.query.proposals.findFirst({ where: and(eq(proposals.leadId, id), eq(proposals.status, 'signed')), orderBy: desc(proposals.createdAt) });
+  if (signed?.edits?.payments?.length) {
+    if (extras.length) throw new Error('Add change orders to a separate invoice for a custom payment schedule.');
+    await setStage(id, 'review', 'Send custom payment milestones when each phase is approved', null);
+    return;
+  }
   const remaining = await db
     .select()
     .from(payments)
@@ -860,8 +897,9 @@ export async function runDaily(now = new Date()): Promise<CronReport> {
 
 /* ── Summaries for the studio UI ───────────────────────────────────────── */
 
-export function quoteSummary(quote: QuoteInput | null) {
+export function quoteSummary(quote: QuoteInput | null, edits?: ProposalEdits | null) {
   if (!quote) return null;
-  const q = computeQuote(quote);
-  return { total: usd.format(q.total), pkg: q.pkg.label, weeks: weeksLabel(q.weeks), deposit: usd.format(q.payments[0].amount) };
+  let q = computeQuote(quote);
+  try { q = quoteWithProposalEdits(q, edits); } catch { /* The schedule must be fixed before sending. */ }
+  return { total: usd.format(q.total), pkg: q.pkg.label, weeks: edits?.timeline || weeksLabel(q.weeks), deposit: usd.format(q.payments[0].amount) };
 }

@@ -30,7 +30,7 @@ export async function saveEdits(id: string, raw: ProposalEdits): Promise<EditSta
     const lead = await getLead(id);
     const quote = lead && leadQuote(lead);
     if (!quote) throw new Error('Save a quote for this lead first.');
-    const edits = sanitiseEdits(raw, buildProposal(computeQuote(quote)));
+    const edits = sanitiseEdits(raw, buildProposal(computeQuote(quote)), computeQuote(quote).total);
     await saveProposalEdits(id, edits);
     return edits
       ? 'Wording saved. It goes out with the next proposal you send from the lead page.'

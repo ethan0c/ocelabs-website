@@ -109,12 +109,13 @@ export function emailC(o: {
   company: string;
   q: Quote;
   proposalLink: string;
-  validUntil: Date;
+  validUntil: Date | string;
   calLink: string;
   signer: string;
+  timeline?: string;
 }): Email {
   const { q } = o;
-  const pay = q.payments.map((p) => `${p.pct}% ${p.label.toLowerCase()}`).join(', ');
+  const pay = q.payments.map((p) => p.pct ? `${p.pct}% ${p.label.toLowerCase()}` : `${usd.format(p.amount)} ${p.label.toLowerCase()}`).join(', ');
   return {
     subject: `Proposal for ${o.company}`,
     text:
@@ -125,12 +126,45 @@ export function emailC(o: {
       bullets([
         `What we're building: ${q.lines.map((l) => l.label).join(', ')}`,
         `Price: ${usd.format(q.total)}, fixed`,
-        `Timeline: ${weeksLabel(q.weeks)} from the start date`,
+        `Timeline: ${o.timeline || `${weeksLabel(q.weeks)} from the start date`}`,
         `Payment: ${pay}`,
       ]) +
-      `\n\nYou can review the proposal, download a PDF copy, and sign it on the same page in about a minute. This price and start date are held until ${fmtDate(o.validUntil)}.\n\n` +
+      `\n\nYou can review the proposal, download a PDF copy, and sign it on the same page in about a minute. This price and start date are held until ${typeof o.validUntil === 'string' ? o.validUntil : fmtDate(o.validUntil)}.\n\n` +
       `If you have questions or would like to adjust anything, reply to this email or book a call: ${o.calLink}` +
       sign(o.signer),
+  };
+}
+
+export const PROPOSAL_LINK_TOKEN = '{{proposal_link}}';
+export const PROPOSAL_VALID_UNTIL_TOKEN = '{{valid_until}}';
+export const PROPOSAL_BOOKING_LINK_TOKEN = '{{booking_link}}';
+
+/** Editable Email C copy with tokens that are filled only when it is sent. */
+export function emailCTemplate(o: Omit<Parameters<typeof emailC>[0], 'proposalLink' | 'validUntil' | 'calLink'>): Email {
+  return emailC({
+    ...o,
+    proposalLink: PROPOSAL_LINK_TOKEN,
+    validUntil: PROPOSAL_VALID_UNTIL_TOKEN,
+    calLink: PROPOSAL_BOOKING_LINK_TOKEN,
+  });
+}
+
+export function emailCWithEdits(
+  o: Parameters<typeof emailC>[0],
+  edits?: { subject?: string; body?: string } | null,
+): Email {
+  const base = emailCTemplate(o);
+  const subject = edits?.subject || base.subject;
+  const body = edits?.body || base.text;
+  if (!body.includes(PROPOSAL_LINK_TOKEN)) throw new Error('The proposal email needs a {{proposal_link}}.');
+  const replacements: Record<string, string> = {
+    [PROPOSAL_LINK_TOKEN]: o.proposalLink,
+    [PROPOSAL_VALID_UNTIL_TOKEN]: typeof o.validUntil === 'string' ? o.validUntil : fmtDate(o.validUntil),
+    [PROPOSAL_BOOKING_LINK_TOKEN]: o.calLink,
+  };
+  return {
+    subject: Object.entries(replacements).reduce((text, [token, value]) => text.split(token).join(value), subject),
+    text: Object.entries(replacements).reduce((text, [token, value]) => text.split(token).join(value), body),
   };
 }
 
@@ -162,6 +196,7 @@ export function emailD(o: {
   /** Paid before signing, on an invoice made by hand. */
   paidAlready?: number;
   balance?: number;
+  customPaymentSchedule?: boolean;
   questionnaireDone: boolean;
   folderLink?: string | null;
   signer: string;
@@ -173,7 +208,7 @@ export function emailD(o: {
       `Hi ${first(o.name)},\n\n` +
       `Thank you for signing. We're glad to be working with you, and your signed copy is attached.\n\n` +
       (paid
-        ? `We've received your payment of ${usd.format(o.paidAlready!)}. Thank you.${o.balance ? ` The remaining ${usd.format(o.balance)} will be invoiced once you approve the finished site, before launch.` : ''}\n\n`
+        ? `We've received your payment of ${usd.format(o.paidAlready!)}. Thank you.${o.balance ? o.customPaymentSchedule ? ` The remaining ${usd.format(o.balance)} follows the payment schedule in your signed proposal.` : ` The remaining ${usd.format(o.balance)} will be invoiced once you approve the finished site, before launch.` : ''}\n\n`
         : `You'll receive a separate email with the ${o.full ? 'invoice' : 'deposit invoice'} for ${usd.format(o.depositAmount)}. You can pay by bank transfer or card.\n\n`) +
       `We'll begin as soon as we have the following:\n` +
       bullets([
