@@ -35,11 +35,11 @@ export const projects: Project[] = [
   },
   {
     name: 'Semli',
-    desc: 'A daily planner for college students. We made the brand and logo, the iPhone app, and the site that introduces it.',
+    desc: 'An iPhone planner for classes, shifts and due dates. We built the identity, app and website.',
     client: 'Planner for college students',
     kind: 'App, website and brand',
     href: 'https://semli.app',
-    shot: 'semli/site.png',
+    shot: 'semli/site-card.png',
     study: '/work/semli',
   },
   {

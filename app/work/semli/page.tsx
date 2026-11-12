@@ -6,30 +6,30 @@ import WorkPreview from '@/components/WorkPreview';
 import { clipFor } from '@/lib/projects';
 
 /*
- * Semli gets a page of its own because it is more than one thing: an iPhone
- * app, the site that introduces it, and the brand both share. A Work card can
- * only show one of them. Everything here is in /public/work/semli.
+ * Semli's app, site, and identity use assets from the Semli project. The
+ * website image reflects the public site; phone and store images come from
+ * Semli's current screenshot set in /design/screenshots.
  */
 
 export const metadata: Metadata = {
   title: 'Semli — OCE Labs',
-  description: 'A daily planner for college students: the iPhone app, the website, the brand and the logo.',
+  description: 'Semli brings classes, shifts and deadlines into one iPhone planner. OCE Labs built the app, identity and website.',
 };
 
 const SITE = 'https://semli.app';
 
 const facts = [
-  ['Product', 'Semli. A daily planner for college students, especially the ones who also work.'],
-  ['What we did', 'Brand and logo, app design and build, the website, and the App Store artwork.'],
-  ['Platforms', 'iPhone, and a website with pricing and a beta sign-up.'],
-  ['Where it is', 'The site is live. The iPhone beta opens soon.'],
+  ['Product', 'An iPhone planner for students balancing classes, work and due dates.'],
+  ['What we did', 'Identity, iPhone app design and build, website and App Store artwork.'],
+  ['Platforms', 'iPhone app and a website with pricing and a schedule import preview.'],
+  ['Where it is', 'The iPhone app is on the App Store, and the website is live.'],
 ];
 
 const screens = [
-  { file: 'app-today.png', name: 'Today', note: "What's next, and how long until it ends." },
-  { file: 'app-review.png', name: 'Review', note: 'A syllabus read into dates, checked before saving.' },
-  { file: 'app-plan.png', name: 'Plan', note: 'The week, with work hours and clashes marked.' },
-  { file: 'app-school.png', name: 'School', note: "Every course and what's due in the next four weeks." },
+  { file: 'app-today.png', name: 'Today', note: 'Classes, shifts and due dates on one list.' },
+  { file: 'app-review.png', name: 'Review', note: 'Dates from a syllabus, ready to check before adding.' },
+  { file: 'app-plan.png', name: 'Plan', note: 'The week by hour, with the next few days below.' },
+  { file: 'app-school.png', name: 'School', note: 'Courses and due dates across the next four weeks.' },
 ];
 
 const marks = [
@@ -39,9 +39,9 @@ const marks = [
 ];
 
 const store = [
-  { file: 'store-today.png', name: 'Know what matters today' },
-  { file: 'store-review.png', name: 'A semester in two minutes' },
-  { file: 'store-spread.png', name: 'A heavy week, spread out' },
+  { file: 'store-today.png', name: 'Classes, shifts, and deadlines' },
+  { file: 'store-review.png', name: 'Your syllabus, in your planner' },
+  { file: 'store-spread.png', name: 'Plan ahead for busy weeks' },
 ];
 
 const role = [
@@ -53,22 +53,22 @@ const role = [
   {
     num: '02',
     name: 'App design',
-    desc: 'Every screen, from the first run to the paid plan. Plain rows, one big number per screen, and colour only when it means something.',
+    desc: 'Today, calendar, school and import review screens built around what needs attention now.',
   },
   {
     num: '03',
     name: 'App build',
-    desc: 'An iPhone app that keeps the plan on the phone, reads syllabi, shift schedules and screenshots into dates, and backs up to an account.',
+    desc: 'An iPhone planner that reads syllabi, schedules and screenshots into dates, lets students check them, and backs up signed-in plans.',
   },
   {
     num: '04',
     name: 'Website',
-    desc: 'Home, pricing and a beta sign-up, in the same colours and type as the app.',
+    desc: 'A home page, pricing and an import preview, with a path to the public iPhone app.',
   },
   {
     num: '05',
-    name: 'Launch',
-    desc: 'The App Store screenshots and artwork, and the run-up to the iPhone beta.',
+    name: 'App Store launch',
+    desc: 'The App Store screenshots, icon artwork and website links for the public release.',
   },
 ];
 
@@ -79,8 +79,8 @@ export default function SemliPage() {
         <p className="eyebrow rise rise-1">Semli</p>
         <h1 className="h1 rise rise-2">One plan for classes, shifts and deadlines.</h1>
         <p className="lede rise rise-3">
-          Students juggle a syllabus per class, a work schedule and a group chat. Semli turns all
-          of it into one plan. We made the brand, the logo, the iPhone app and the site.
+          Semli gives students one place to see their week and check dates pulled from syllabi and
+          schedules. We designed and built the iPhone app, its identity and the website.
         </p>
         <dl className="cs-meta rise rise-3">
           {facts.map(([term, detail]) => (
@@ -117,9 +117,9 @@ export default function SemliPage() {
               </a>
             </div>
             <p className="cs-dir-desc">
-              A sky photo, one serif headline and one lavender word. It says what the app does in a
-              sentence, shows it on a phone, and signs students up for the beta. Pricing has a page
-              of its own.
+              A sky backdrop, a clear headline and a phone showing the Today view. The site explains
+              the app and sends iPhone visitors to the App Store. Pricing and an import preview have
+              pages of their own.
             </p>
           </div>
         </Reveal>
@@ -128,11 +128,11 @@ export default function SemliPage() {
       <section className="shell cs-marks">
         <Reveal className="sec-head">
           <p className="eyebrow">The app</p>
-          <h2 className="h2">Plain rows and one big number.</h2>
+          <h2 className="h2">A plan students can check at a glance.</h2>
           <p className="sec-lede">
-            Each screen leads with the one thing that matters now, like the minutes until a lecture
-            ends or the dates found in a syllabus. Colour only means something: red is due or
-            clashing, green is done. Nothing an import finds is saved until the student checks it.
+            Today shows what is next. Plan puts classes and shifts on a weekly calendar. School keeps
+            course deadlines in view, and the import review shows the dates found in a syllabus before
+            a student adds them.
           </p>
         </Reveal>
         <Reveal stagger className="cs-row cs-row--phones">
@@ -142,8 +142,8 @@ export default function SemliPage() {
                 <Image
                   src={`/work/semli/${file}`}
                   alt={`Semli ${name} screen`}
-                  width={920}
-                  height={2000}
+                  width={1320}
+                  height={2868}
                   sizes="(max-width: 56rem) 50vw, 25vw"
                 />
               </div>
@@ -161,9 +161,9 @@ export default function SemliPage() {
           <p className="eyebrow">Brand and logo</p>
           <h2 className="h2">Two dots: today, and what comes next.</h2>
           <p className="sec-lede">
-            The mark is a big dot for today and a small lavender one for what&apos;s next. In the
-            wordmark they become the dot on the i and the full stop. One typeface runs the app, and
-            a serif is kept for the few lines that speak to students, like the store captions.
+            A large dot and a smaller lavender one make the app mark. In the wordmark they become the
+            dot on the i and the full stop. The same colours and type carry through the app, website
+            and App Store images.
           </p>
         </Reveal>
         <Reveal stagger className="cs-row">
@@ -187,6 +187,14 @@ export default function SemliPage() {
             </figure>
           ))}
         </Reveal>
+      </section>
+
+      <section className="shell cs-marks">
+        <Reveal className="sec-head">
+          <p className="eyebrow">App Store</p>
+          <h2 className="h2">Screens that show the product.</h2>
+          <p className="sec-lede">The store images pair current app screens with short lines about the day, syllabus imports and busy weeks.</p>
+        </Reveal>
         <Reveal stagger className="cs-row">
           {store.map(({ file, name }) => (
             <figure key={file}>
@@ -194,8 +202,8 @@ export default function SemliPage() {
                 <Image
                   src={`/work/semli/${file}`}
                   alt={`Semli App Store screenshot: ${name}`}
-                  width={920}
-                  height={2000}
+                  width={1320}
+                  height={2868}
                   sizes="(max-width: 56rem) 50vw, 33vw"
                 />
               </div>
@@ -211,7 +219,7 @@ export default function SemliPage() {
       <section className="shell steps">
         <Reveal className="sec-head">
           <p className="eyebrow">Our part</p>
-          <h2 className="h2">All of it, from the icon to the code.</h2>
+          <h2 className="h2">Brand, app, website and launch.</h2>
         </Reveal>
         <Reveal stagger>
           {role.map(({ num, name, desc }) => (
